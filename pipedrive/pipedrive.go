@@ -25,6 +25,7 @@ type Client struct {
 	common service
 
 	Deals *DealService
+	Currencies *CurrenciesService
 }
 
 type service struct {
@@ -79,7 +80,7 @@ func (c *Client) CreateRequestPayload() string {
 }
 
 func (c *Client) CreateRequestUrl(resource string) string {
-	return "https://api.pipedrive.com/v1/deals?api_token=bc5b30cb07ac9572597b427c1767ab650eef03ef"
+	return "https://api.pipedrive.com/v1/" + resource + "?api_token=" + c.apiKey
 }
 
 func New(apiKey string) *Client {
@@ -94,6 +95,7 @@ func New(apiKey string) *Client {
 	c.common.client = c
 
 	c.Deals = (*DealService)(&c.common)
+	c.Currencies = (*CurrenciesService)(&c.common)
 
-	return c;
+	return c
 }

@@ -139,7 +139,6 @@ func (c *Client) CreateRequestUrl(path string) string {
 
 	parameters.Add("api_token", c.apiKey)
 
-
 	uri.RawQuery = parameters.Encode()
 
 	return uri.String()

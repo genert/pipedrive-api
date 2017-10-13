@@ -3,9 +3,9 @@ package pipedrive
 type MailThreadService service
 
 type MailThreadsListOptions struct {
-	Folder string	`url:"folder"`
-	Start int `url:"start"`
-	Limit int `url:"limit"`
+	Folder string `url:"folder"`
+	Start  int    `url:"start"`
+	Limit  int    `url:"limit"`
 }
 
 func (s *MailThreadService) List(opt *MailThreadsListOptions) (*Currencies, *Response, error) {
@@ -26,4 +26,3 @@ func (s *MailThreadService) List(opt *MailThreadsListOptions) (*Currencies, *Res
 
 	return record, resp, nil
 }
-

@@ -37,11 +37,9 @@ access different parts of the API. For example:
 ```go
     const apiKey = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
-    config := &pipedrive.Config{
+    client := pipedrive.New(&pipedrive.Config{
         ApiKey: apiKey,
-    }
-
-    client := pipedrive.New(config)
+    })
 
     // Return list of all fields for note
     noteFields, _, _ := client.NoteFields.List()

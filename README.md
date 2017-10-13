@@ -38,17 +38,17 @@ access different parts of the API. For example:
     const apiKey = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
     config := &pipedrive.Config{
-		ApiKey: apiKey,
-	}
+        ApiKey: apiKey,
+    }
 
-	client := pipedrive.New(config)
+    client := pipedrive.New(config)
 
     // Return list of all fields for note
-	noteFields, _, _ := client.NoteFields.List()
+    noteFields, _, _ := client.NoteFields.List()
 
-	// You can then access data like this:
-	fmt.Println("Success = ", noteFields.Success)
-	fmt.Println("First note field: ", noteFields.Data[0].Name)
+    // You can then access data like this:
+    fmt.Println("Success = ", noteFields.Success)
+    fmt.Println("First note field: ", noteFields.Data[0].Name)
 ```
 
 ## License

@@ -1,6 +1,7 @@
 package pipedrive
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -33,6 +34,7 @@ type Client struct {
 
 	Currencies *CurrenciesService
 	NoteFields *NoteFieldsService
+	Notes      *NotesService
 }
 
 type service struct {
@@ -55,14 +57,25 @@ func (c *Client) NewRequest(method, url string, body interface{}) (*http.Request
 		return nil, err
 	}
 
-	request, err := http.NewRequest(method, u.String(), nil)
+	var buf io.ReadWriter
+
+	if body != nil {
+		buf = new(bytes.Buffer)
+		err := json.NewEncoder(buf).Encode(body)
+
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	request, err := http.NewRequest(method, u.String(), buf)
 
 	if err != nil {
 		return nil, err
 	}
 
-	if method == http.MethodGet {
-		request.Header.Set("Accept", "application/json")
+	if body != nil {
+		request.Header.Set("Content-Type", "application/json")
 	}
 
 	return request, nil
@@ -128,6 +141,7 @@ func New(options *Config) *Client {
 
 	c.Currencies = (*CurrenciesService)(&c.common)
 	c.NoteFields = (*NoteFieldsService)(&c.common)
+	c.Notes = (*NotesService)(&c.common)
 
 	return c
 }

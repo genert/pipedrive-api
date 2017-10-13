@@ -1,32 +1,31 @@
 package pipedrive
 
 import (
+	"fmt"
 	"log"
 	"net/http"
-	"fmt"
 )
 
 type DealService service
 
 type Deal struct {
-	ID       int 	  	`json:"id,omitempty"`
-	StageId  int 	  	`json:"stage_id,omitempty"`
-	Title    string   	`json:"title,omitempty"`
-	Value    int 		`json:"value,omitempty"`
-	Currency string		`json:"currency,omitempty"`
-	AddTime  string		`json:"title,omitempty"`
-	UpdateTime string   `json:"update:time,omitempty"`
+	ID         int    `json:"id,omitempty"`
+	StageId    int    `json:"stage_id,omitempty"`
+	Title      string `json:"title,omitempty"`
+	Value      int    `json:"value,omitempty"`
+	Currency   string `json:"currency,omitempty"`
+	AddTime    string `json:"title,omitempty"`
+	UpdateTime string `json:"update:time,omitempty"`
 }
 
-
 type Deals struct {
-	Success  bool  `json:"success,omitempty"`
-	Data []  Deal  `json:"data,omitempty"`
+	Success bool   `json:"success,omitempty"`
+	Data    []Deal `json:"data,omitempty"`
 }
 
 type DealUpdate struct {
-	Success  bool  `json:"success,omitempty"`
-	Data     Deal  `json:"data,omitempty"`
+	Success bool `json:"success,omitempty"`
+	Data    Deal `json:"data,omitempty"`
 }
 
 // IssueRequest represents a request to create/edit an issue.
@@ -62,7 +61,6 @@ func (s *DealService) ListDealUpdates(id int) (*Deals, *http.Response, error) {
 
 	return record, resp, nil
 }
-
 
 func (s *DealService) List() (*Deals, *http.Response, error) {
 	uri := s.client.CreateRequestUrl("deals")

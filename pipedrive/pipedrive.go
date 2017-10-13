@@ -3,8 +3,8 @@ package pipedrive
 import (
 	"encoding/json"
 	"fmt"
-	"net/http"
 	"io"
+	"net/http"
 	"net/url"
 	"strings"
 )
@@ -18,21 +18,21 @@ const (
 )
 
 type Client struct {
-	client   *http.Client // HTTP client used to communicate with the API.
+	client *http.Client // HTTP client used to communicate with the API.
 
 	// Base URL for API requests. Defaults to the public Pipedrive API, but can be
 	// set to a domain endpoint to use. BaseURL should
 	// always be specified with a trailing slash.
-	BaseURL  *url.URL
-	apiKey   string
+	BaseURL *url.URL
+	apiKey  string
 
 	// Reuse a single struct instead of allocating one for each service.
-	common 			service
+	common service
 
-	Deals 			*DealService
+	Deals *DealService
 
-	Currencies 		*CurrenciesService
-	NoteFields		*NoteFieldsService
+	Currencies *CurrenciesService
+	NoteFields *NoteFieldsService
 }
 
 type service struct {
@@ -40,11 +40,11 @@ type service struct {
 }
 
 type Config struct {
-	ApiKey 			string
-	CompanyDomain 	string
+	ApiKey        string
+	CompanyDomain string
 }
 
-func (c *Client) NewRequest(method, url string, body interface {}) (*http.Request, error) {
+func (c *Client) NewRequest(method, url string, body interface{}) (*http.Request, error) {
 	if !strings.HasSuffix(c.BaseURL.Path, "/") {
 		return nil, fmt.Errorf("BaseURL must have a trailing slash, but %q does not", c.BaseURL)
 	}
@@ -87,7 +87,7 @@ func (c *Client) Do(request *http.Request, v interface{}) (*http.Response, error
 }
 
 func (c *Client) CreateRequestPayload() string {
-	payload := url.Values{};
+	payload := url.Values{}
 
 	payload.Add("api_token", c.apiKey)
 
@@ -117,9 +117,9 @@ func New(options *Config) *Client {
 	baseURL, _ := url.Parse(defaultBaseUrl)
 
 	c := &Client{
-		client: http.DefaultClient,
+		client:  http.DefaultClient,
 		BaseURL: baseURL,
-		apiKey: options.ApiKey,
+		apiKey:  options.ApiKey,
 	}
 
 	c.common.client = c

@@ -5,9 +5,9 @@ import "net/http"
 type NoteFieldsService service
 
 type Pagination struct {
-	Start					int		`json:"start,omitempty"`
-	Limit 					int		`json:"limit,omitempty"`
-	MoreItemsInCollection	bool 	`json:"more_items_in_collection,omitempty"`
+	Start                 int  `json:"start,omitempty"`
+	Limit                 int  `json:"limit,omitempty"`
+	MoreItemsInCollection bool `json:"more_items_in_collection,omitempty"`
 }
 
 type AdditionalData struct {
@@ -15,26 +15,26 @@ type AdditionalData struct {
 }
 
 type Option struct {
-	Id 		int 	`json:"id,omitempty"`
-	Label	string 	`json:"label,omitempty"`
+	Id    int    `json:"id,omitempty"`
+	Label string `json:"label,omitempty"`
 }
 
 type NoteField struct {
-	Id 						int 		`json:"id,omitempty"`
-	Key 					string 		`json:"key,omitempty"`
-	Name 					string 		`json:"name,omitempty"`
-	ActiveFlag 				bool 		`json:"active_flag,omitempty"`
-	FieldType 				string 		`json:"field_type,omitempty"`
-	EditFlag 				int 		`json:"edit_flag,omitempty"`
-	MandatoryFlag 			bool 		`json:"mandatory_flag,omitempty"`
-	VisibleInExportsFlag	bool 		`json:"visible_in_exports_flag,omitempty"`
-	Options [] 				Option 		`json:"options,omitempty"`
+	Id                   int      `json:"id,omitempty"`
+	Key                  string   `json:"key,omitempty"`
+	Name                 string   `json:"name,omitempty"`
+	ActiveFlag           bool     `json:"active_flag,omitempty"`
+	FieldType            string   `json:"field_type,omitempty"`
+	EditFlag             int      `json:"edit_flag,omitempty"`
+	MandatoryFlag        bool     `json:"mandatory_flag,omitempty"`
+	VisibleInExportsFlag bool     `json:"visible_in_exports_flag,omitempty"`
+	Options              []Option `json:"options,omitempty"`
 }
 
 type NoteFields struct {
-	Success			bool	 		`json:"success,omitempty"`
-	Data []			NoteField 		`json:"data,omitempty"`
-	AdditionalData	AdditionalData	`json:"additional_data,omitempty"`
+	Success        bool           `json:"success,omitempty"`
+	Data           []NoteField    `json:"data,omitempty"`
+	AdditionalData AdditionalData `json:"additional_data,omitempty"`
 }
 
 // Return list of all fields for note.

@@ -1,8 +1,8 @@
 package pipedrive
 
 import (
-	"testing"
 	"fmt"
+	"testing"
 )
 
 func TestCurrenciesService_List(t *testing.T) {

@@ -30,7 +30,9 @@ type Client struct {
 	common 			service
 
 	Deals 			*DealService
+
 	Currencies 		*CurrenciesService
+	NoteFields		*NoteFieldsService
 }
 
 type service struct {
@@ -57,6 +59,10 @@ func (c *Client) NewRequest(method, url string, body interface {}) (*http.Reques
 
 	if err != nil {
 		return nil, err
+	}
+
+	if method == http.MethodGet {
+		request.Header.Set("Accept", "application/json")
 	}
 
 	return request, nil
@@ -119,7 +125,9 @@ func New(options *Config) *Client {
 	c.common.client = c
 
 	c.Deals = (*DealService)(&c.common)
+
 	c.Currencies = (*CurrenciesService)(&c.common)
+	c.NoteFields = (*NoteFieldsService)(&c.common)
 
 	return c
 }

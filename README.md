@@ -35,6 +35,8 @@ Construct a new Pipedrive client, then use the various services on the client to
 access different parts of the API. For example:
 
 ```go
+    const apiKey = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+
     config := &pipedrive.Config{
 		ApiKey: apiKey,
 	}

@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 )
 
 const (
@@ -16,6 +17,15 @@ const (
 	libraryVersion = "1"
 
 	hostProtocol = "https"
+
+	// The amount of requests current API token can perform for the 10 seconds window.
+	headerRateLimit = "X-RateLimit-Limit"
+
+	// The amount of requests left for the 10 seconds window.
+	headerRateRemaining = "X-RateLimit-Remaining"
+
+	// The amount of seconds before the limit resets.
+	headerRateReset = "X-RateLimit-Reset"
 )
 
 type Client struct {
@@ -45,6 +55,18 @@ type Config struct {
 	ApiKey        string
 	CompanyDomain string
 }
+
+type Rate struct {
+	Limit     int       `json:"limit"`
+	Remaining int       `json:"remaining"`
+	Reset     Timestamp `json:"reset"`
+}
+
+type Response struct {
+	*http.Response
+}
+
+type Timestamp time.Time
 
 func (c *Client) NewRequest(method, url string, body interface{}) (*http.Request, error) {
 	if !strings.HasSuffix(c.BaseURL.Path, "/") {
@@ -81,30 +103,26 @@ func (c *Client) NewRequest(method, url string, body interface{}) (*http.Request
 	return request, nil
 }
 
-func (c *Client) Do(request *http.Request, v interface{}) (*http.Response, error) {
+func (c *Client) Do(request *http.Request, v interface{}) (*Response, error) {
 	resp, err := c.client.Do(request)
 
 	if err != nil {
-		return resp, nil
+		return &Response{
+			Response: resp,
+		}, err
 	}
 
 	defer resp.Body.Close()
 
+	response := newResponse(resp)
+
 	err = json.NewDecoder(resp.Body).Decode(v)
 
 	if err == io.EOF {
-		return resp, nil
+		return response, nil
 	}
 
-	return resp, nil
-}
-
-func (c *Client) CreateRequestPayload() string {
-	payload := url.Values{}
-
-	payload.Add("api_token", c.apiKey)
-
-	return payload.Encode()
+	return response, nil
 }
 
 func (c *Client) CreateRequestUrl(path string) string {
@@ -144,4 +162,9 @@ func New(options *Config) *Client {
 	c.Notes = (*NotesService)(&c.common)
 
 	return c
+}
+
+func newResponse(r *http.Response) *Response {
+	response := &Response{Response: r}
+	return response
 }

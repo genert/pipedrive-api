@@ -1,7 +1,5 @@
 package pipedrive
 
-import "net/http"
-
 type NoteFieldsService service
 
 type Pagination struct {
@@ -38,7 +36,7 @@ type NoteFields struct {
 }
 
 // Return list of all fields for note.
-func (s *NoteFieldsService) List() (*NoteFields, *http.Response, error) {
+func (s *NoteFieldsService) List() (*NoteFields, *Response, error) {
 	uri := s.client.CreateRequestUrl("/noteFields")
 	req, err := s.client.NewRequest("GET", uri, nil)
 

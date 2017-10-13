@@ -2,8 +2,6 @@ package pipedrive
 
 import (
 	"fmt"
-	"log"
-	"net/http"
 )
 
 type DealService service
@@ -42,9 +40,8 @@ type DealRequest struct {
 }
 
 // List updates about a deal
-func (s *DealService) ListDealUpdates(id int) (*Deals, *http.Response, error) {
+func (s *DealService) ListDealUpdates(id int) (*Deals, *Response, error) {
 	uri := s.client.CreateRequestUrl(fmt.Sprintf("/deals/%v/flow", id))
-
 	req, err := s.client.NewRequest("GET", uri, nil)
 
 	if err != nil {
@@ -62,13 +59,11 @@ func (s *DealService) ListDealUpdates(id int) (*Deals, *http.Response, error) {
 	return record, resp, nil
 }
 
-func (s *DealService) List() (*Deals, *http.Response, error) {
-	uri := s.client.CreateRequestUrl("deals")
-
+func (s *DealService) List() (*Deals, *Response, error) {
+	uri := s.client.CreateRequestUrl("/deals")
 	req, err := s.client.NewRequest("GET", uri, nil)
 
 	if err != nil {
-		log.Fatal("NewRequest: ", err)
 		return nil, nil, err
 	}
 
@@ -77,16 +72,14 @@ func (s *DealService) List() (*Deals, *http.Response, error) {
 	resp, err := s.client.Do(req, &record)
 
 	if err != nil {
-		log.Fatal("Do: ", err)
 		return nil, resp, err
 	}
 
 	return record, resp, nil
 }
 
-func (s *DealService) Duplicate(id int) (*DealUpdate, *http.Response, error) {
-	uri := s.client.CreateRequestUrl(fmt.Sprintf("deals/%v/duplicate", id))
-
+func (s *DealService) Duplicate(id int) (*DealUpdate, *Response, error) {
+	uri := s.client.CreateRequestUrl(fmt.Sprintf("/deals/%v/duplicate", id))
 	req, err := s.client.NewRequest("POST", uri, nil)
 
 	if err != nil {

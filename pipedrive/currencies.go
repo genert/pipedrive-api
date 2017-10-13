@@ -1,9 +1,5 @@
 package pipedrive
 
-import (
-	"net/http"
-)
-
 type CurrenciesService service
 
 type Currency struct {
@@ -21,7 +17,7 @@ type Currencies struct {
 	Data    []Currency `json:"data,omitempty"`
 }
 
-func (s *CurrenciesService) List() (*Currencies, *http.Response, error) {
+func (s *CurrenciesService) List() (*Currencies, *Response, error) {
 	uri := s.client.CreateRequestUrl("/currencies")
 	req, err := s.client.NewRequest("GET", uri, nil)
 

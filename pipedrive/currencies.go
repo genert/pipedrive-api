@@ -2,7 +2,6 @@ package pipedrive
 
 import (
 	"net/http"
-	"log"
 )
 
 type CurrenciesService service
@@ -23,13 +22,10 @@ type Currencies struct {
 }
 
 func (s *CurrenciesService) List() (*Currencies, *http.Response, error) {
-	uri := s.client.CreateRequestUrl("currencies")
-
-	// Build the request
+	uri := s.client.CreateRequestUrl("/currencies")
 	req, err := s.client.NewRequest("GET", uri, nil)
 
 	if err != nil {
-		log.Fatal("NewRequest: ", err)
 		return nil, nil, err
 	}
 
@@ -38,7 +34,6 @@ func (s *CurrenciesService) List() (*Currencies, *http.Response, error) {
 	resp, err := s.client.Do(req, &record)
 
 	if err != nil {
-		log.Fatal("Do: ", err)
 		return nil, resp, err
 	}
 

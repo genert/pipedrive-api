@@ -7,7 +7,7 @@
 - [ ] Activities
 - [ ] ActivityTypes
 - [ ] Authorizations
-- [ ] Currencies
+- [x] Currencies
 - [ ] Deals
 - [ ] DealFields
 - [ ] Files

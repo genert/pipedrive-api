@@ -1,5 +1,7 @@
 # Golang Pipedrive client
 
+[![Build Status](https://travis-ci.org/Genert/go-pipedrive.svg?branch=master)](https://travis-ci.org/Genert/go-pipedrive)
+
 > Work in progress. Do not use in production.
 
 # Supported resources

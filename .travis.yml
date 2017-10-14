@@ -7,6 +7,8 @@ go:
   - 1.7.x
   - master
 
+repo_token: q3K2f9nSxazHhcN34eeCSeufIjY4cy6Cm
+
 matrix:
   allow_failures:
     - go: master
@@ -20,4 +22,5 @@ script:
   - go get -t -v ./...
   - diff -u <(echo -n) <(gofmt -d -s .)
   - go generate -x ./... && git diff --exit-code; code=$?; git checkout -- .; (exit $code) # Check that go generate ./... produces a zero diff; clean up any changes afterwards.
-  - go test -v -race ./...
+  - go test -v -covermode=count -coverprofile=coverage.out ./pipedrive
+  - $HOME/gopath/bin/goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN

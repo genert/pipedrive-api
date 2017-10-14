@@ -21,8 +21,8 @@
 - [ ] Pipelines
 - [ ] Products
 - [ ] ProductFields
-- [X] Recents
-- [ ] SearchResults
+- [x] Recents
+- [x] SearchResults
 - [ ] Stages
 - [ ] Users
 

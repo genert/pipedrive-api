@@ -42,11 +42,12 @@ type Client struct {
 	// Reuse a single struct instead of allocating one for each service.
 	common service
 
-	Deals      *DealService
-	Currencies *CurrenciesService
-	NoteFields *NoteFieldsService
-	Notes      *NotesService
-	Recents    *RecentsService
+	Deals         *DealService
+	Currencies    *CurrenciesService
+	NoteFields    *NoteFieldsService
+	Notes         *NotesService
+	Recents       *RecentsService
+	SearchResults *SearchResultsService
 }
 
 type service struct {
@@ -176,6 +177,7 @@ func New(options *Config) *Client {
 	c.NoteFields = (*NoteFieldsService)(&c.common)
 	c.Notes = (*NotesService)(&c.common)
 	c.Recents = (*RecentsService)(&c.common)
+	c.SearchResults = (*SearchResultsService)(&c.common)
 
 	return c
 }

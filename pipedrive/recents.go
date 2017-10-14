@@ -1,9 +1,5 @@
 package pipedrive
 
-import (
-	"fmt"
-)
-
 type RecentsService service
 
 type RecentRecordDetails struct {
@@ -52,8 +48,6 @@ type RecentsListOptions struct {
 // https://developers.pipedrive.com/docs/api/v1/#!/Recents/get_recents
 func (s *RecentsService) List(opt *RecentsListOptions) (*Recents, *Response, error) {
 	uri, err := s.client.CreateRequestUrl("/recents", opt)
-
-	fmt.Println(uri)
 
 	if err != nil {
 		return nil, nil, err

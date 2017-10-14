@@ -4,9 +4,11 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/google/go-querystring/query"
 	"io"
 	"net/http"
 	"net/url"
+	"reflect"
 	"strings"
 	"time"
 )
@@ -40,11 +42,11 @@ type Client struct {
 	// Reuse a single struct instead of allocating one for each service.
 	common service
 
-	Deals *DealService
-
+	Deals      *DealService
 	Currencies *CurrenciesService
 	NoteFields *NoteFieldsService
 	Notes      *NotesService
+	Recents    *RecentsService
 }
 
 type service struct {
@@ -125,23 +127,37 @@ func (c *Client) Do(request *http.Request, v interface{}) (*Response, error) {
 	return response, nil
 }
 
-func (c *Client) CreateRequestUrl(path string) string {
+func (c *Client) CreateRequestUrl(path string, opt interface{}) (string, error) {
 	uri, err := c.BaseURL.Parse(hostProtocol + "://" + defaultBaseUrl + "v" + libraryVersion)
 
 	if err != nil {
-		panic(err)
-		return ""
+		return path, err
 	}
 
 	uri.Path += path
 
-	parameters := url.Values{}
+	v := reflect.ValueOf(opt)
 
-	parameters.Add("api_token", c.apiKey)
+	if v.Kind() == reflect.Ptr && v.IsNil() {
+		parameters := url.Values{}
+		parameters.Add("api_token", c.apiKey)
 
-	uri.RawQuery = parameters.Encode()
+		uri.RawQuery = parameters.Encode()
 
-	return uri.String()
+		return uri.String(), nil
+	}
+
+	qs, err := query.Values(opt)
+
+	if err != nil {
+		return path, err
+	}
+
+	qs.Add("api_token", c.apiKey)
+
+	uri.RawQuery = qs.Encode()
+
+	return uri.String(), nil
 }
 
 func New(options *Config) *Client {
@@ -156,10 +172,10 @@ func New(options *Config) *Client {
 	c.common.client = c
 
 	c.Deals = (*DealService)(&c.common)
-
 	c.Currencies = (*CurrenciesService)(&c.common)
 	c.NoteFields = (*NoteFieldsService)(&c.common)
 	c.Notes = (*NotesService)(&c.common)
+	c.Recents = (*RecentsService)(&c.common)
 
 	return c
 }

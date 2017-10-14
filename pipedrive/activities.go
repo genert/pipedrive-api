@@ -52,7 +52,12 @@ type Activities struct {
 // Returns all activities assigned to a particular user
 // https://developers.pipedrive.com/docs/api/v1/#!/Activities/get_activities
 func (s *ActivitiesService) List(id int) (*Activities, *Response, error) {
-	uri := s.client.CreateRequestUrl("/activities")
+	uri, err := s.client.CreateRequestUrl("/activities", nil)
+
+	if err != nil {
+		return nil, nil, err
+	}
+
 	req, err := s.client.NewRequest("GET", uri, nil)
 
 	if err != nil {
@@ -73,7 +78,12 @@ func (s *ActivitiesService) List(id int) (*Activities, *Response, error) {
 // Returns details of a specific activity.
 // https://developers.pipedrive.com/docs/api/v1/#!/Activities/get_activities
 func (s *ActivitiesService) GetById(id int) (*Activities, *Response, error) {
-	uri := s.client.CreateRequestUrl(fmt.Sprintf("/activities/%v", id))
+	uri, err := s.client.CreateRequestUrl(fmt.Sprintf("/activities/%v", id), nil)
+
+	if err != nil {
+		return nil, nil, err
+	}
+
 	req, err := s.client.NewRequest("GET", uri, nil)
 
 	if err != nil {
@@ -94,7 +104,11 @@ func (s *ActivitiesService) GetById(id int) (*Activities, *Response, error) {
 // Deletes an activity.
 // https://developers.pipedrive.com/docs/api/v1/#!/Activities/delete_activities_id
 func (s *ActivitiesService) Delete(id int) (*Activities, *Response, error) {
-	uri := s.client.CreateRequestUrl(fmt.Sprintf("/activities/%v", id))
+	uri, err := s.client.CreateRequestUrl(fmt.Sprintf("/activities/%v", id), nil)
+
+	if err != nil {
+		return nil, nil, err
+	}
 
 	req, err := s.client.NewRequest("DELEtE", uri, nil)
 

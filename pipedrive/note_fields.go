@@ -2,16 +2,6 @@ package pipedrive
 
 type NoteFieldsService service
 
-type Pagination struct {
-	Start                 int  `json:"start,omitempty"`
-	Limit                 int  `json:"limit,omitempty"`
-	MoreItemsInCollection bool `json:"more_items_in_collection,omitempty"`
-}
-
-type AdditionalData struct {
-	Pagination Pagination
-}
-
 type Option struct {
 	Id    int    `json:"id,omitempty"`
 	Label string `json:"label,omitempty"`
@@ -37,7 +27,12 @@ type NoteFields struct {
 
 // Return list of all fields for note.
 func (s *NoteFieldsService) List() (*NoteFields, *Response, error) {
-	uri := s.client.CreateRequestUrl("/noteFields")
+	uri, err := s.client.CreateRequestUrl("/noteFields", nil)
+
+	if err != nil {
+		return nil, nil, err
+	}
+
 	req, err := s.client.NewRequest("GET", uri, nil)
 
 	if err != nil {

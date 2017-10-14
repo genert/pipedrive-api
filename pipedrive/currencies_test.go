@@ -1,7 +1,7 @@
 package pipedrive
 
 import (
-	"fmt"
+	"github.com/go-test/deep"
 	"testing"
 )
 
@@ -16,5 +16,17 @@ func TestCurrenciesService_List(t *testing.T) {
 		t.Error("Unsuccessful currencies request")
 	}
 
-	fmt.Println(currencies.Data[0])
+	expectedCurrency := Currency{
+		ID:            2,
+		Code:          "AFN",
+		Name:          "Afghanistan Afghani",
+		DecimalPoints: 2,
+		Symbol:        "AFN",
+		ActiveFlag:    true,
+		IsCustomFlag:  false,
+	}
+
+	if diff := deep.Equal(expectedCurrency, currencies.Data[0]); diff != nil {
+		t.Error(diff)
+	}
 }

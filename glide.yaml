@@ -1,3 +1,0 @@
-package: github.com/genert/api-client
-import:
-- package: github.com/google/go-querystring

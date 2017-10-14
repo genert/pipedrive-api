@@ -36,7 +36,12 @@ type SingleNote struct {
 // Returns all notes
 // https://developers.pipedrive.com/docs/api/v1/#!/Notes/get_notes
 func (s *NotesService) List() (*Notes, *Response, error) {
-	uri := s.client.CreateRequestUrl("/notes")
+	uri, err := s.client.CreateRequestUrl("/notes", nil)
+
+	if err != nil {
+		return nil, nil, err
+	}
+
 	req, err := s.client.NewRequest("GET", uri, nil)
 
 	if err != nil {
@@ -57,7 +62,12 @@ func (s *NotesService) List() (*Notes, *Response, error) {
 // Returns details about a specific note.
 // https://developers.pipedrive.com/docs/api/v1/#!/Notes/get_notes_id
 func (s *NotesService) GetById(id int) (*SingleNote, *Response, error) {
-	uri := s.client.CreateRequestUrl(fmt.Sprintf("/notes/%v", id))
+	uri, err := s.client.CreateRequestUrl(fmt.Sprintf("/notes/%v", id), nil)
+
+	if err != nil {
+		return nil, nil, err
+	}
+
 	req, err := s.client.NewRequest("GET", uri, nil)
 
 	if err != nil {

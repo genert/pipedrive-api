@@ -1,6 +1,7 @@
 # Golang Pipedrive client
 
 **Build Status:** [![Build Status](https://travis-ci.org/Genert/go-pipedrive.svg?branch=master)](https://travis-ci.org/Genert/go-pipedrive)
+
 **Test Coverage:** [![Coverage Status](https://coveralls.io/repos/github/Genert/go-pipedrive/badge.svg?branch=master)](https://coveralls.io/github/Genert/go-pipedrive?branch=master)
 
 > Work in progress.

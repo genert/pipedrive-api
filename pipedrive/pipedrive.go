@@ -48,6 +48,7 @@ type Client struct {
 	Notes         *NotesService
 	Recents       *RecentsService
 	SearchResults *SearchResultsService
+	Users         *UsersService
 }
 
 type service struct {
@@ -178,6 +179,7 @@ func New(options *Config) *Client {
 	c.Notes = (*NotesService)(&c.common)
 	c.Recents = (*RecentsService)(&c.common)
 	c.SearchResults = (*SearchResultsService)(&c.common)
+	c.Users = (*UsersService)(&c.common)
 
 	return c
 }

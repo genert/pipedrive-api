@@ -7,7 +7,7 @@ type Pagination struct {
 }
 
 type AdditionalData struct {
-	CompanyID int `json:"company_id"`
+	CompanyID           int        `json:"company_id"`
 	SinceTimestamp      string     `json:"since_timestamp"`
 	LastTimestampOnPage string     `json:"last_timestamp_on_page"`
 	Pagination          Pagination `json:"pagination"`

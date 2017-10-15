@@ -44,10 +44,6 @@ type ActivityTypesEditOptions struct {
 	OrderNr uint   `url:"order_nr,omitempty"`
 }
 
-type ActivityTypesDeleteMultipleOptions struct {
-	Ids string `url:"ids,omitempty"`
-}
-
 // Returns all activity types.
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/ActivityTypes/get_activityTypes
 func (s *ActivityTypesService) List() (*ActivityTypes, *Response, error) {
@@ -111,7 +107,7 @@ func (s *ActivityTypesService) Edit(opt *ActivityTypesEditOptions) (*SingleActiv
 // Marks multiple activity types as deleted.
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/ActivityTypes/delete_activityTypes
 func (s *ActivityTypesService) DeleteMultiple(ids []int) (*Response, error) {
-	req, err := s.client.NewRequest(http.MethodDelete, "/activityTypes", &ActivityTypesDeleteMultipleOptions{
+	req, err := s.client.NewRequest(http.MethodDelete, "/activityTypes", &DeleteMultipleOptions{
 		Ids: arrayToString(ids, ","),
 	}, nil)
 

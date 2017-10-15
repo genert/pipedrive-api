@@ -51,10 +51,6 @@ type FiltersListOptions struct {
 	Type string `url:"type,omitempty"`
 }
 
-type FiltersDeleteMultipleOptions struct {
-	Ids string `url:"ids,omitempty"`
-}
-
 // Returns data about all filters
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Filters/get_filters
 func (s *FiltersService) List(opt *FiltersListOptions) (*Filters, *Response, error) {
@@ -99,7 +95,7 @@ func (s *FiltersService) GetById(id int) (*SingleFilter, *Response, error) {
 // Marks multiple filters as deleted.
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Filters/delete_filters
 func (s *FiltersService) DeleteMultiple(ids []int) (*Response, error) {
-	req, err := s.client.NewRequest(http.MethodDelete, "/filter", &FiltersDeleteMultipleOptions{
+	req, err := s.client.NewRequest(http.MethodDelete, "/filter", &DeleteMultipleOptions{
 		Ids: arrayToString(ids, ","),
 	}, nil)
 

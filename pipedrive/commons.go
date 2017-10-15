@@ -1,5 +1,10 @@
 package pipedrive
 
+const (
+	VisibleToOwnersAndFollowers = 1
+	VisibleToWholeCompany       = 3
+)
+
 type Pagination struct {
 	Start                 int  `json:"start"`
 	Limit                 int  `json:"limit"`
@@ -11,4 +16,8 @@ type AdditionalData struct {
 	SinceTimestamp      string     `json:"since_timestamp"`
 	LastTimestampOnPage string     `json:"last_timestamp_on_page"`
 	Pagination          Pagination `json:"pagination"`
+}
+
+type DeleteMultipleOptions struct {
+	Ids string `url:"ids,omitempty"`
 }

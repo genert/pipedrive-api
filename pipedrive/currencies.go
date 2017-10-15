@@ -1,5 +1,7 @@
 package pipedrive
 
+import "net/http"
+
 type CurrenciesService service
 
 type Currency struct {
@@ -27,7 +29,7 @@ type CurrenciesListOptions struct {
 // the currency code according to ISO 4217 for all non-custom currencies.
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Currencies/get_currencies
 func (s *CurrenciesService) List(opt *CurrenciesListOptions) (*Currencies, *Response, error) {
-	req, err := s.client.NewRequest("GET", "/currencies", opt, nil)
+	req, err := s.client.NewRequest(http.MethodGet, "/currencies", opt, nil)
 
 	if err != nil {
 		return nil, nil, err

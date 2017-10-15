@@ -2,6 +2,7 @@ package pipedrive
 
 import (
 	"fmt"
+	"net/http"
 )
 
 type NotesService service
@@ -36,7 +37,7 @@ type SingleNote struct {
 // Returns all notes.
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Notes/get_notes
 func (s *NotesService) List() (*Notes, *Response, error) {
-	req, err := s.client.NewRequest("GET", "/notes", nil, nil)
+	req, err := s.client.NewRequest(http.MethodGet, "/notes", nil, nil)
 
 	if err != nil {
 		return nil, nil, err
@@ -57,7 +58,7 @@ func (s *NotesService) List() (*Notes, *Response, error) {
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Notes/get_notes_id
 func (s *NotesService) GetById(id int) (*SingleNote, *Response, error) {
 	uri := fmt.Sprintf("/notes/%v", id)
-	req, err := s.client.NewRequest("GET", uri, nil, nil)
+	req, err := s.client.NewRequest(http.MethodGet, uri, nil, nil)
 
 	if err != nil {
 		return nil, nil, err

@@ -1,6 +1,9 @@
 package pipedrive
 
-import "fmt"
+import (
+	"fmt"
+	"net/http"
+)
 
 type ActivitiesService service
 
@@ -52,7 +55,7 @@ type Activities struct {
 // Returns all activities assigned to a particular user
 // https://developers.pipedrive.com/docs/api/v1/#!/Activities/get_activities
 func (s *ActivitiesService) List(id int) (*Activities, *Response, error) {
-	req, err := s.client.NewRequest("GET", "/activities", nil, nil)
+	req, err := s.client.NewRequest(http.MethodGet, "/activities", nil, nil)
 
 	if err != nil {
 		return nil, nil, err
@@ -73,7 +76,7 @@ func (s *ActivitiesService) List(id int) (*Activities, *Response, error) {
 // https://developers.pipedrive.com/docs/api/v1/#!/Activities/get_activities
 func (s *ActivitiesService) GetById(id int) (*Activities, *Response, error) {
 	uri := fmt.Sprintf("/activities/%v", id)
-	req, err := s.client.NewRequest("GET", uri, nil, nil)
+	req, err := s.client.NewRequest(http.MethodGet, uri, nil, nil)
 
 	if err != nil {
 		return nil, nil, err
@@ -94,7 +97,7 @@ func (s *ActivitiesService) GetById(id int) (*Activities, *Response, error) {
 // https://developers.pipedrive.com/docs/api/v1/#!/Activities/delete_activities_id
 func (s *ActivitiesService) Delete(id int) (*Activities, *Response, error) {
 	uri := fmt.Sprintf("/activities/%v", id)
-	req, err := s.client.NewRequest("DELEtE", uri, nil, nil)
+	req, err := s.client.NewRequest(http.MethodDelete, uri, nil, nil)
 
 	if err != nil {
 		return nil, nil, err

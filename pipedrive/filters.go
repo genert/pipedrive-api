@@ -1,6 +1,9 @@
 package pipedrive
 
-import "fmt"
+import (
+	"fmt"
+	"net/http"
+)
 
 type FiltersService service
 
@@ -55,7 +58,7 @@ type FiltersDeleteMultipleOptions struct {
 // Returns data about all filters
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Filters/get_filters
 func (s *FiltersService) List(opt *FiltersListOptions) (*Filters, *Response, error) {
-	req, err := s.client.NewRequest("GET", "/filters", opt, nil)
+	req, err := s.client.NewRequest(http.MethodGet, "/filters", opt, nil)
 
 	if err != nil {
 		return nil, nil, err
@@ -76,7 +79,7 @@ func (s *FiltersService) List(opt *FiltersListOptions) (*Filters, *Response, err
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Filters/get_filters_id
 func (s *FiltersService) GetById(id int) (*SingleFilter, *Response, error) {
 	uri := fmt.Sprintf("/filters/%v", id)
-	req, err := s.client.NewRequest("GET", uri, nil, nil)
+	req, err := s.client.NewRequest(http.MethodGet, uri, nil, nil)
 
 	if err != nil {
 		return nil, nil, err
@@ -96,7 +99,7 @@ func (s *FiltersService) GetById(id int) (*SingleFilter, *Response, error) {
 // Marks multiple filters as deleted.
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Filters/delete_filters
 func (s *FiltersService) DeleteMultiple(ids []int) (*Response, error) {
-	req, err := s.client.NewRequest("DELETE", "/filter", &FiltersDeleteMultipleOptions{
+	req, err := s.client.NewRequest(http.MethodDelete, "/filter", &FiltersDeleteMultipleOptions{
 		Ids: arrayToString(ids, ","),
 	}, nil)
 
@@ -111,7 +114,7 @@ func (s *FiltersService) DeleteMultiple(ids []int) (*Response, error) {
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Filters/delete_filters_id
 func (s *FiltersService) Delete(id int) (*Response, error) {
 	uri := fmt.Sprintf("/filters/%v", id)
-	req, err := s.client.NewRequest("DELETE", uri, nil, nil)
+	req, err := s.client.NewRequest(http.MethodDelete, uri, nil, nil)
 
 	if err != nil {
 		return nil, err

@@ -2,6 +2,7 @@ package pipedrive
 
 import (
 	"fmt"
+	"net/http"
 )
 
 type DealService service
@@ -42,7 +43,7 @@ type DealRequest struct {
 // List updates about a deal
 func (s *DealService) ListDealUpdates(id int) (*Deals, *Response, error) {
 	uri := fmt.Sprintf("/deals/%v/flow", id)
-	req, err := s.client.NewRequest("GET", uri, nil, nil)
+	req, err := s.client.NewRequest(http.MethodGet, uri, nil, nil)
 
 	if err != nil {
 		return nil, nil, err
@@ -60,7 +61,7 @@ func (s *DealService) ListDealUpdates(id int) (*Deals, *Response, error) {
 }
 
 func (s *DealService) List() (*Deals, *Response, error) {
-	req, err := s.client.NewRequest("GET", "/deals", nil, nil)
+	req, err := s.client.NewRequest(http.MethodGet, "/deals", nil, nil)
 
 	if err != nil {
 		return nil, nil, err
@@ -79,7 +80,7 @@ func (s *DealService) List() (*Deals, *Response, error) {
 
 func (s *DealService) Duplicate(id int) (*DealUpdate, *Response, error) {
 	uri := fmt.Sprintf("/deals/%v/duplicate", id)
-	req, err := s.client.NewRequest("POST", uri, nil, nil)
+	req, err := s.client.NewRequest(http.MethodPost, uri, nil, nil)
 
 	if err != nil {
 		return nil, nil, err

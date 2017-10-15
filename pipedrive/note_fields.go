@@ -1,5 +1,7 @@
 package pipedrive
 
+import "net/http"
+
 type NoteFieldsService service
 
 type Option struct {
@@ -27,7 +29,7 @@ type NoteFields struct {
 
 // Return list of all fields for note.
 func (s *NoteFieldsService) List() (*NoteFields, *Response, error) {
-	req, err := s.client.NewRequest("GET", "/noteFields", nil, nil)
+	req, err := s.client.NewRequest(http.MethodGet, "/noteFields", nil, nil)
 
 	if err != nil {
 		return nil, nil, err

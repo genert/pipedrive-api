@@ -1,5 +1,7 @@
 package pipedrive
 
+import "net/http"
+
 type ActivityFieldsService service
 
 type ActivityField struct {
@@ -34,7 +36,7 @@ type ActivityFields struct {
 // Return list of all fields for activity.
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/ActivityFields/get_activityFields
 func (s *ActivityFieldsService) List() (*ActivityFields, *Response, error) {
-	req, err := s.client.NewRequest("GET", "/activityFields", nil, nil)
+	req, err := s.client.NewRequest(http.MethodGet, "/activityFields", nil, nil)
 
 	if err != nil {
 		return nil, nil, err

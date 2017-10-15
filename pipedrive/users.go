@@ -1,6 +1,9 @@
 package pipedrive
 
-import "fmt"
+import (
+	"fmt"
+	"net/http"
+)
 
 type UsersService service
 
@@ -47,7 +50,7 @@ type UsersFindByNameOptions struct {
 // Returns data about all users within the company.
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Users/get_users
 func (s *UsersService) List() (*Users, *Response, error) {
-	req, err := s.client.NewRequest("GET", "/users", nil, nil)
+	req, err := s.client.NewRequest(http.MethodGet, "/users", nil, nil)
 
 	if err != nil {
 		return nil, nil, err
@@ -67,7 +70,7 @@ func (s *UsersService) List() (*Users, *Response, error) {
 // Finds users by their name.
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Users/get_users_find
 func (s *UsersService) FindByName(opt *UsersFindByNameOptions) (*Users, *Response, error) {
-	req, err := s.client.NewRequest("GET", "/users/find", opt, nil)
+	req, err := s.client.NewRequest(http.MethodGet, "/users/find", opt, nil)
 
 	if err != nil {
 		return nil, nil, err
@@ -88,7 +91,7 @@ func (s *UsersService) FindByName(opt *UsersFindByNameOptions) (*Users, *Respons
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Users/get_users_id
 func (s *UsersService) GetById(id int) (*SingleUser, *Response, error) {
 	uri := fmt.Sprintf("/users/%v", id)
-	req, err := s.client.NewRequest("GET", uri, nil, nil)
+	req, err := s.client.NewRequest(http.MethodGet, uri, nil, nil)
 
 	if err != nil {
 		return nil, nil, err

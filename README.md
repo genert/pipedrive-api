@@ -5,7 +5,7 @@
 
 > Work in progress.
 
-go-pipedrive requires Go version 1.7 or greater.
+Requires Go version 1.7 or greater.
 
 # Supported resources
 

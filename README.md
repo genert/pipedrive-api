@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/Genert/go-pipedrive.svg?branch=master)](https://travis-ci.org/Genert/go-pipedrive)
 [![Coverage Status](https://coveralls.io/repos/github/Genert/go-pipedrive/badge.svg?branch=master)](https://coveralls.io/github/Genert/go-pipedrive?branch=master)
 
-> Work in progress. Many breaking changes, much code.
+> Work in progress.
 
 Requires Go version 1.7 or greater.
 
@@ -12,7 +12,7 @@ Requires Go version 1.7 or greater.
 - [ ] Activities
 - [x] ActivityFields
 - [x] ActivityTypes
-- [ ] Authorizations
+- [x] Authorizations
 - [x] Currencies
 - [ ] Deals
 - [ ] DealFields
@@ -35,7 +35,7 @@ Requires Go version 1.7 or greater.
 ## Usage
 
 ```go
-import "github.com/genert/api-client/pipedrive"
+import "github.com/genert/go-pipedrive/pipedrive"
 ```
 
 Construct a new Pipedrive client, then use the various services on the client to

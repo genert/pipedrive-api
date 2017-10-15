@@ -21,3 +21,8 @@ type AdditionalData struct {
 type DeleteMultipleOptions struct {
 	Ids string `url:"ids,omitempty"`
 }
+
+type ErrorFields struct {
+	Error     string `json:"error"`
+	ErrorInfo string `json:"error_info"`
+}

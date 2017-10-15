@@ -31,9 +31,9 @@ type SingleActivityType struct {
 }
 
 type ActivityTypesAddOptions struct {
-	Name    string `url:"name"`
-	IconKey string `url:"icon_key"`
-	Color   string `url:"color,omitempty"`
+	Name    string `json:"name,omitempty"`
+	IconKey string `json:"icon_key,omitempty"`
+	Color   string `json:"color,omitempty"`
 }
 
 type ActivityTypesEditOptions struct {
@@ -67,7 +67,7 @@ func (s *ActivityTypesService) List() (*ActivityTypes, *Response, error) {
 // Adds a new activity type.
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/ActivityTypes/post_activityTypes
 func (s *ActivityTypesService) Add(opt *ActivityTypesAddOptions) (*SingleActivityType, *Response, error) {
-	req, err := s.client.NewRequest(http.MethodPost, "/activityTypes", opt, nil)
+	req, err := s.client.NewRequest(http.MethodPost, "/activityTypes", nil, opt)
 
 	if err != nil {
 		return nil, nil, err

@@ -11,7 +11,7 @@ Requires Go version 1.7 or greater.
 
 - [ ] Activities
 - [x] ActivityFields
-- [ ] ActivityTypes
+- [x] ActivityTypes
 - [ ] Authorizations
 - [x] Currencies
 - [ ] Deals

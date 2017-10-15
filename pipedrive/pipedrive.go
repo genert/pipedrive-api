@@ -52,6 +52,7 @@ type Client struct {
 	Users          *UsersService
 	Filters        *FiltersService
 	ActivityFields *ActivityFieldsService
+	ActivityTypes  *ActivityTypesService
 }
 
 type service struct {
@@ -185,6 +186,7 @@ func New(options *Config) *Client {
 	c.Users = (*UsersService)(&c.common)
 	c.Filters = (*FiltersService)(&c.common)
 	c.ActivityFields = (*ActivityFieldsService)(&c.common)
+	c.ActivityTypes = (*ActivityTypesService)(&c.common)
 
 	return c
 }

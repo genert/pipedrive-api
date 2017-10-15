@@ -13,7 +13,7 @@ type Deal struct {
 	Title      string `json:"title,omitempty"`
 	Value      int    `json:"value,omitempty"`
 	Currency   string `json:"currency,omitempty"`
-	AddTime    string `json:"title,omitempty"`
+	AddTime    string `json:"add_time,omitempty"`
 	UpdateTime string `json:"update:time,omitempty"`
 }
 

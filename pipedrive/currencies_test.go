@@ -9,7 +9,7 @@ func TestCurrenciesService_List(t *testing.T) {
 	currencies, _, err := client.Currencies.List(nil)
 
 	if err != nil {
-		t.Error("Could not get currencies: %v", err)
+		t.Errorf("Could not get currencies: %v", err)
 	}
 
 	if currencies.Success != true {
@@ -37,7 +37,7 @@ func TestCurrenciesService_List2(t *testing.T) {
 	})
 
 	if err != nil {
-		t.Error("Could not get currencies: %v", err)
+		t.Errorf("Could not get currencies: %v", err)
 	}
 
 	if currencies.Success != true {

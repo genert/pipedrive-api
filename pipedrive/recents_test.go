@@ -16,7 +16,7 @@ func TestRecentsService_List(t *testing.T) {
 	recents, _, err := client.Recents.List(opt)
 
 	if err != nil {
-		t.Error("Could not get recents: %v", err)
+		t.Errorf("Could not get recents: %v", err)
 	}
 
 	if recents.Success != true {

@@ -10,7 +10,7 @@ func TestSearchResultsService_List(t *testing.T) {
 	searchResults, _, err := client.SearchResults.List(opt)
 
 	if err != nil {
-		t.Error("Could not get search results: %v", err)
+		t.Errorf("Could not get search results: %v", err)
 	}
 
 	if searchResults.Success != true {

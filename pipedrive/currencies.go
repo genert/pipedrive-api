@@ -17,13 +17,17 @@ type Currencies struct {
 	Data    []Currency `json:"data,omitempty"`
 }
 
+type CurrenciesListOptions struct {
+	Term string `url:"term,omitempty"`
+}
+
 // Returns all supported currencies in given account which should be used
 // when saving monetary values with other objects.
 // The 'code' parameter of the returning objects is
 // the currency code according to ISO 4217 for all non-custom currencies.
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Currencies/get_currencies
-func (s *CurrenciesService) List() (*Currencies, *Response, error) {
-	req, err := s.client.NewRequest("GET", "/currencies", nil, nil)
+func (s *CurrenciesService) List(opt *CurrenciesListOptions) (*Currencies, *Response, error) {
+	req, err := s.client.NewRequest("GET", "/currencies", opt, nil)
 
 	if err != nil {
 		return nil, nil, err

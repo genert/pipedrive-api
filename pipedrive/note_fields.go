@@ -27,13 +27,7 @@ type NoteFields struct {
 
 // Return list of all fields for note.
 func (s *NoteFieldsService) List() (*NoteFields, *Response, error) {
-	uri, err := s.client.CreateRequestUrl("/noteFields", nil)
-
-	if err != nil {
-		return nil, nil, err
-	}
-
-	req, err := s.client.NewRequest("GET", uri, nil)
+	req, err := s.client.NewRequest("GET", "/noteFields", nil, nil)
 
 	if err != nil {
 		return nil, nil, err

@@ -33,16 +33,10 @@ type SingleNote struct {
 	Data    Note `json:"data,omitempty"`
 }
 
-// Returns all notes
-// https://developers.pipedrive.com/docs/api/v1/#!/Notes/get_notes
+// Returns all notes.
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Notes/get_notes
 func (s *NotesService) List() (*Notes, *Response, error) {
-	uri, err := s.client.CreateRequestUrl("/notes", nil)
-
-	if err != nil {
-		return nil, nil, err
-	}
-
-	req, err := s.client.NewRequest("GET", uri, nil)
+	req, err := s.client.NewRequest("GET", "/notes", nil, nil)
 
 	if err != nil {
 		return nil, nil, err
@@ -60,15 +54,10 @@ func (s *NotesService) List() (*Notes, *Response, error) {
 }
 
 // Returns details about a specific note.
-// https://developers.pipedrive.com/docs/api/v1/#!/Notes/get_notes_id
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Notes/get_notes_id
 func (s *NotesService) GetById(id int) (*SingleNote, *Response, error) {
-	uri, err := s.client.CreateRequestUrl(fmt.Sprintf("/notes/%v", id), nil)
-
-	if err != nil {
-		return nil, nil, err
-	}
-
-	req, err := s.client.NewRequest("GET", uri, nil)
+	uri := fmt.Sprintf("/notes/%v", id)
+	req, err := s.client.NewRequest("GET", uri, nil, nil)
 
 	if err != nil {
 		return nil, nil, err

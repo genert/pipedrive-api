@@ -41,12 +41,8 @@ type DealRequest struct {
 
 // List updates about a deal
 func (s *DealService) ListDealUpdates(id int) (*Deals, *Response, error) {
-	uri, err := s.client.CreateRequestUrl(fmt.Sprintf("/deals/%v/flow", id), nil)
-
-	if err != nil {
-		return nil, nil, err
-	}
-	req, err := s.client.NewRequest("GET", uri, nil)
+	uri := fmt.Sprintf("/deals/%v/flow", id)
+	req, err := s.client.NewRequest("GET", uri, nil, nil)
 
 	if err != nil {
 		return nil, nil, err
@@ -64,13 +60,7 @@ func (s *DealService) ListDealUpdates(id int) (*Deals, *Response, error) {
 }
 
 func (s *DealService) List() (*Deals, *Response, error) {
-	uri, err := s.client.CreateRequestUrl("/deals", nil)
-
-	if err != nil {
-		return nil, nil, err
-	}
-
-	req, err := s.client.NewRequest("GET", uri, nil)
+	req, err := s.client.NewRequest("GET", "/deals", nil, nil)
 
 	if err != nil {
 		return nil, nil, err
@@ -88,13 +78,8 @@ func (s *DealService) List() (*Deals, *Response, error) {
 }
 
 func (s *DealService) Duplicate(id int) (*DealUpdate, *Response, error) {
-	uri, err := s.client.CreateRequestUrl(fmt.Sprintf("/deals/%v/duplicate", id), nil)
-
-	if err != nil {
-		return nil, nil, err
-	}
-
-	req, err := s.client.NewRequest("POST", uri, nil)
+	uri := fmt.Sprintf("/deals/%v/duplicate", id)
+	req, err := s.client.NewRequest("POST", uri, nil, nil)
 
 	if err != nil {
 		return nil, nil, err

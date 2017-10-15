@@ -11,6 +11,7 @@ import (
 	"reflect"
 	"strings"
 	"time"
+	"strconv"
 )
 
 const (
@@ -49,6 +50,7 @@ type Client struct {
 	Recents       *RecentsService
 	SearchResults *SearchResultsService
 	Users         *UsersService
+	Filters       *FiltersService
 }
 
 type service struct {
@@ -72,12 +74,12 @@ type Response struct {
 
 type Timestamp time.Time
 
-func (c *Client) NewRequest(method, url string, body interface{}) (*http.Request, error) {
+func (c *Client) NewRequest(method, url string, opt interface{}, body interface{}) (*http.Request, error) {
 	if !strings.HasSuffix(c.BaseURL.Path, "/") {
 		return nil, fmt.Errorf("BaseURL must have a trailing slash, but %q does not", c.BaseURL)
 	}
 
-	u, err := c.BaseURL.Parse(url)
+	u, err := c.createRequestUrl(url, opt)
 
 	if err != nil {
 		return nil, err
@@ -94,7 +96,7 @@ func (c *Client) NewRequest(method, url string, body interface{}) (*http.Request
 		}
 	}
 
-	request, err := http.NewRequest(method, u.String(), buf)
+	request, err := http.NewRequest(method, u, buf)
 
 	if err != nil {
 		return nil, err
@@ -129,7 +131,7 @@ func (c *Client) Do(request *http.Request, v interface{}) (*Response, error) {
 	return response, nil
 }
 
-func (c *Client) CreateRequestUrl(path string, opt interface{}) (string, error) {
+func (c *Client) createRequestUrl(path string, opt interface{}) (string, error) {
 	uri, err := c.BaseURL.Parse(hostProtocol + "://" + defaultBaseUrl + "v" + libraryVersion)
 
 	if err != nil {
@@ -180,6 +182,7 @@ func New(options *Config) *Client {
 	c.Recents = (*RecentsService)(&c.common)
 	c.SearchResults = (*SearchResultsService)(&c.common)
 	c.Users = (*UsersService)(&c.common)
+	c.Filters = (*FiltersService)(&c.common)
 
 	return c
 }
@@ -187,4 +190,15 @@ func New(options *Config) *Client {
 func newResponse(r *http.Response) *Response {
 	response := &Response{Response: r}
 	return response
+}
+
+// Converts []int to string by separator.
+func arrayToString(a []int, sep string) string {
+	b := make([]string, len(a))
+
+	for i, v := range a {
+		b[i] = strconv.Itoa(v)
+	}
+
+	return strings.Join(b, sep)
 }

@@ -41,15 +41,9 @@ type SearchResultsListOptions struct {
 }
 
 // Performs a search across the account and returns SearchResults.
-// https://developers.pipedrive.com/docs/api/v1/#!/SearchResults/get_searchResults
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/SearchResults/get_searchResults
 func (s *SearchResultsService) List(opt *SearchResultsListOptions) (*Recents, *Response, error) {
-	uri, err := s.client.CreateRequestUrl("/searchResults", opt)
-
-	if err != nil {
-		return nil, nil, err
-	}
-
-	req, err := s.client.NewRequest("GET", uri, nil)
+	req, err := s.client.NewRequest("GET", "/searchResults", opt, nil)
 
 	if err != nil {
 		return nil, nil, err

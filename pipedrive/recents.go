@@ -45,15 +45,9 @@ type RecentsListOptions struct {
 }
 
 // Returns data about all recent changes occured after given timestamp.
-// https://developers.pipedrive.com/docs/api/v1/#!/Recents/get_recents
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Recents/get_recents
 func (s *RecentsService) List(opt *RecentsListOptions) (*Recents, *Response, error) {
-	uri, err := s.client.CreateRequestUrl("/recents", opt)
-
-	if err != nil {
-		return nil, nil, err
-	}
-
-	req, err := s.client.NewRequest("GET", uri, nil)
+	req, err := s.client.NewRequest("GET", "/recents", opt, nil)
 
 	if err != nil {
 		return nil, nil, err

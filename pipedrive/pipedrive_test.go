@@ -1,8 +1,8 @@
 package pipedrive
 
 import (
-	"os"
 	"flag"
+	"os"
 )
 
 var (

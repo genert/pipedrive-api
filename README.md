@@ -29,7 +29,7 @@ Requires Go version 1.7 or greater.
 - [ ] ProductFields
 - [x] Recents
 - [x] SearchResults
-- [ ] Stages
+- [x] Stages
 - [ ] Users
 
 ## Usage

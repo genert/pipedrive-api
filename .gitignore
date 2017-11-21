@@ -26,6 +26,9 @@ _testmain.go
 .idea
 .vscode
 
+# Local API tests
+tests.sh
+
 /main.go
 
 /vendor

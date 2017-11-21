@@ -3,17 +3,19 @@ package pipedrive
 import "testing"
 
 func TestActivityTypesService_Add(t *testing.T) {
-	result, _, err := client.ActivityTypes.Add(&ActivityTypesAddOptions{
-		Name:    "test",
-		IconKey: "email",
-	})
+	if *apiIntegration {
+		result, _, err := client.ActivityTypes.Add(&ActivityTypesAddOptions{
+			Name:    "test",
+			IconKey: "email",
+		})
 
-	if err != nil {
-		t.Errorf("Could not create activity type: %v", err)
-	}
+		if err != nil {
+			t.Errorf("Could not create activity type: %v", err)
+		}
 
-	if result.Success != true {
-		t.Error("Could not create activity type successfully")
+		if result.Success != true {
+			t.Error("Could not create activity type successfully")
+		}
 	}
 }
 

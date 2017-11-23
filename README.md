@@ -31,6 +31,7 @@ Requires Go version 1.7 or greater.
 - [x] SearchResults
 - [x] Stages
 - [ ] Users
+- [x] User settings
 - [x] Webhooks
 
 ## Usage

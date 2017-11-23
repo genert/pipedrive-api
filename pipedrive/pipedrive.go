@@ -56,6 +56,7 @@ type Client struct {
 	Authorizations *AuthorizationsService
 	Stages         *StagesService
 	Webhooks       *WebhooksService
+	UserSettings   *UserSettingsService
 }
 
 type service struct {
@@ -193,6 +194,7 @@ func New(options *Config) *Client {
 	c.Authorizations = (*AuthorizationsService)(&c.common)
 	c.Stages = (*StagesService)(&c.common)
 	c.Webhooks = (*WebhooksService)(&c.common)
+	c.UserSettings = (*UserSettingsService)(&c.common)
 
 	return c
 }

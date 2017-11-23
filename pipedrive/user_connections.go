@@ -1,0 +1,32 @@
+package pipedrive
+
+import "net/http"
+
+type UserConnectionsService service
+
+type UserConnections struct {
+	Success bool `json:"success"`
+	Data    struct {
+		Google string `json:"google"`
+	} `json:"data"`
+}
+
+// Returns data about all connections for authorized user.
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/UserConnections/get_userConnections
+func (s *UserConnectionsService) List() (*UserConnections, *Response, error) {
+	req, err := s.client.NewRequest(http.MethodGet, "/userConnections", nil, nil)
+
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var record *UserConnections
+
+	resp, err := s.client.Do(req, &record)
+
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return record, resp, nil
+}

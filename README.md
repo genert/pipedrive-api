@@ -18,6 +18,7 @@ Requires Go version 1.7 or greater.
 - [ ] DealFields
 - [ ] Files
 - [ ] Filters
+- [x] Goals
 - [ ] Notes
 - [x] NoteFields
 - [ ] Organizations

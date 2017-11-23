@@ -58,6 +58,7 @@ type Client struct {
 	Webhooks        *WebhooksService
 	UserSettings    *UserSettingsService
 	UserConnections *UserConnectionsService
+	GoalsService    *GoalsService
 }
 
 type service struct {
@@ -197,6 +198,7 @@ func New(options *Config) *Client {
 	c.Webhooks = (*WebhooksService)(&c.common)
 	c.UserSettings = (*UserSettingsService)(&c.common)
 	c.UserConnections = (*UserConnectionsService)(&c.common)
+	c.GoalsService = (*GoalsService)(&c.common)
 
 	return c
 }

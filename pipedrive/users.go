@@ -32,6 +32,8 @@ type User struct {
 
 type Users struct {
 	Success        bool           `json:"success"`
+	Error          string         `json:"error,omitempty"`
+	ErrorInfo      string         `json:"error_info,omitempty"`
 	Data           []User         `json:"data"`
 	AdditionalData AdditionalData `json:"additional_data"`
 }
@@ -45,6 +47,10 @@ type SingleUser struct {
 type UsersFindByNameOptions struct {
 	Term          string `url:"term,omitempty"`
 	SearchByEmail int    `url:"search_by_email,omitempty"`
+}
+
+type DeleteRoleAssignmentOptions struct {
+	RoleId uint `url:"role_id,omitempty"`
 }
 
 // Returns data about all users within the company.
@@ -106,4 +112,23 @@ func (s *UsersService) GetById(id int) (*SingleUser, *Response, error) {
 	}
 
 	return record, resp, nil
+}
+
+// Delete a role assignment for a user.
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Users/delete_users_id_roleAssignments
+func (s *UsersService) DeleteRoleAssignment(id int, opt *DeleteRoleAssignmentOptions) (*Response, error) {
+	uri := fmt.Sprintf("/users/%v/roleAssignments", id)
+	req, err := s.client.NewRequest(http.MethodDelete, uri, nil, nil)
+
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.client.Do(req, nil)
+
+	if err != nil {
+		return resp, err
+	}
+
+	return resp, nil
 }

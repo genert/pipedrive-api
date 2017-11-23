@@ -35,7 +35,7 @@ type StagesListOptions struct {
 	PipelineId uint `url:"pipeline_id"`
 }
 
-type StagesAddOptions struct {
+type StagesCreateOptions struct {
 	Name            string `url:"name"`
 	PipelineId      uint   `url:"pipeline_id"`
 	DealProbability uint   `url:"deal_probability"`
@@ -130,7 +130,7 @@ func (s *StagesService) GetDealsInStage(id uint, opt *StagesGetDealsInStageOptio
 
 // Adds a new stage, returns the ID upon success.
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Stages/post_stages
-func (s *StagesService) Add(opt *StagesAddOptions) (*SingleStage, *Response, error) {
+func (s *StagesService) Create(opt *StagesCreateOptions) (*SingleStage, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodPost, "/stages", nil, opt)
 
 	if err != nil {

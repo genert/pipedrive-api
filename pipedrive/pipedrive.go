@@ -71,16 +71,36 @@ type Config struct {
 }
 
 type Rate struct {
-	Limit     int       `json:"limit"`
-	Remaining int       `json:"remaining"`
-	Reset     Timestamp `json:"reset"`
+	Limit     int `json:"limit"`
+	Remaining int `json:"remaining"`
+	Reset     int `json:"reset"`
 }
 
 type Response struct {
 	*http.Response
+	Rate
 }
 
 type Timestamp time.Time
+
+// Parse the rate from response headers.
+func parseRateFromResponse(r *http.Response) Rate {
+	var rate Rate
+
+	if limit := r.Header.Get(headerRateLimit); limit != "" {
+		rate.Limit, _ = strconv.Atoi(limit)
+	}
+
+	if remaining := r.Header.Get(headerRateRemaining); remaining != "" {
+		rate.Remaining, _ = strconv.Atoi(remaining)
+	}
+
+	if reset := r.Header.Get(headerRateReset); reset != "" {
+		rate.Reset, _ = strconv.Atoi(reset)
+	}
+
+	return rate
+}
 
 func (c *Client) NewRequest(method, url string, opt interface{}, body interface{}) (*http.Request, error) {
 	if !strings.HasSuffix(c.BaseURL.Path, "/") {
@@ -215,6 +235,8 @@ func New(options *Config) *Client {
 
 func newResponse(r *http.Response) *Response {
 	response := &Response{Response: r}
+	response.Rate = parseRateFromResponse(r)
+
 	return response
 }
 

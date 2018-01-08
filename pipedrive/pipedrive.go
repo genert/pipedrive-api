@@ -43,22 +43,23 @@ type Client struct {
 	// Reuse a single struct instead of allocating one for each service.
 	common service
 
-	Deals           *DealService
-	Currencies      *CurrenciesService
-	NoteFields      *NoteFieldsService
-	Notes           *NotesService
-	Recents         *RecentsService
-	SearchResults   *SearchResultsService
-	Users           *UsersService
-	Filters         *FiltersService
-	ActivityFields  *ActivityFieldsService
-	ActivityTypes   *ActivityTypesService
-	Authorizations  *AuthorizationsService
-	Stages          *StagesService
-	Webhooks        *WebhooksService
-	UserSettings    *UserSettingsService
-	UserConnections *UserConnectionsService
-	GoalsService    *GoalsService
+	Deals            *DealService
+	Currencies       *CurrenciesService
+	NoteFields       *NoteFieldsService
+	Notes            *NotesService
+	Recents          *RecentsService
+	SearchResults    *SearchResultsService
+	Users            *UsersService
+	Filters          *FiltersService
+	ActivityFields   *ActivityFieldsService
+	ActivityTypes    *ActivityTypesService
+	Authorizations   *AuthorizationsService
+	Stages           *StagesService
+	Webhooks         *WebhooksService
+	UserSettings     *UserSettingsService
+	UserConnections  *UserConnectionsService
+	GoalsService     *GoalsService
+	PipelinesService *PipelinesService
 }
 
 type service struct {
@@ -229,6 +230,7 @@ func New(options *Config) *Client {
 	c.UserSettings = (*UserSettingsService)(&c.common)
 	c.UserConnections = (*UserConnectionsService)(&c.common)
 	c.GoalsService = (*GoalsService)(&c.common)
+	c.PipelinesService = (*PipelinesService)(&c.common)
 
 	return c
 }

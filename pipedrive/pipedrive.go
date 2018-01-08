@@ -172,6 +172,16 @@ func (c *Client) createRequestUrl(path string, opt interface{}) (string, error) 
 	return uri.String(), nil
 }
 
+func (c *Client) SetOptions(options ...func(*Client) error) error {
+	for _, opt := range options {
+		if err := opt(c); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 func New(options *Config) *Client {
 	baseURL, _ := url.Parse(defaultBaseUrl)
 

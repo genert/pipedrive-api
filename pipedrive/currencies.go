@@ -15,8 +15,10 @@ type Currency struct {
 }
 
 type Currencies struct {
-	Success bool       `json:"success,omitempty"`
-	Data    []Currency `json:"data,omitempty"`
+	Success   bool       `json:"success,omitempty"`
+	Data      []Currency `json:"data,omitempty"`
+	Error     string     `json:"error"`
+	ErrorInfo string     `json:"error_info"`
 }
 
 type CurrenciesListOptions struct {

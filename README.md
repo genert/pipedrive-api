@@ -9,7 +9,7 @@ Requires Go version 1.7 or greater.
 
 # Supported resources
 
-- [ ] Activities
+- [x] Activities
 - [x] ActivityFields
 - [x] ActivityTypes
 - [x] Authorizations

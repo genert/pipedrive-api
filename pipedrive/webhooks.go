@@ -34,6 +34,12 @@ type Webhooks struct {
 	Data    []Webhook `json:"data,omitempty"`
 }
 
+type SingleWebhook struct {
+	Status  string  `json:"status,omitempty"`
+	Success bool    `json:"success,omitempty"`
+	Data    Webhook `json:"data,omitempty"`
+}
+
 type WebhooksCreateOptions struct {
 	SubscriptionUrl  string      `url:"subscription_url"`
 	EventAction      EventAction `url:"event_action"`
@@ -43,7 +49,6 @@ type WebhooksCreateOptions struct {
 	HttpAuthPassword string      `url:"http_auth_password"`
 }
 
-// Returns data about all webhooks of a company.
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Webhooks/get_webhooks
 func (s *WebhooksService) List() (*Webhooks, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "/webhooks", nil, nil)
@@ -63,20 +68,15 @@ func (s *WebhooksService) List() (*Webhooks, *Response, error) {
 	return record, resp, nil
 }
 
-// Creates a new webhook and returns its details.
-// Note that specifying an event which triggers the webhook combines 2 parameters -
-// 'event_action' and 'event_object'.
-// E.g., use '*.*' for getting notifications about all events,
-// 'added.deal' for any newly added deals, 'deleted.persons' for any deleted persons, etc.
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Webhooks/post_webhooks
-func (s *WebhooksService) Create(opt *WebhooksCreateOptions) (*SingleStage, *Response, error) {
+func (s *WebhooksService) Create(opt *WebhooksCreateOptions) (*SingleWebhook, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodPost, "/webhooks", nil, opt)
 
 	if err != nil {
 		return nil, nil, err
 	}
 
-	var record *SingleStage
+	var record *SingleWebhook
 
 	resp, err := s.client.Do(req, &record)
 
@@ -87,7 +87,6 @@ func (s *WebhooksService) Create(opt *WebhooksCreateOptions) (*SingleStage, *Res
 	return record, resp, nil
 }
 
-// Deletes the specified webhook.
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Webhooks/delete_webhooks_id
 func (s *WebhooksService) Delete(id int) (*Response, error) {
 	uri := fmt.Sprintf("/webhooks/%v", id)

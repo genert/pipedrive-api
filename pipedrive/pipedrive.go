@@ -56,10 +56,10 @@ type Client struct {
 	Authorizations   *AuthorizationsService
 	Stages           *StagesService
 	Webhooks         *WebhooksService
-	UserSettings     *UserSettingsService
 	UserConnections  *UserConnectionsService
 	GoalsService     *GoalsService
 	PipelinesService *PipelinesService
+	UserSettings     *UserSettingsService
 }
 
 type service struct {
@@ -203,7 +203,7 @@ func (c *Client) SetOptions(options ...func(*Client) error) error {
 	return nil
 }
 
-func New(options *Config) *Client {
+func NewClient(options *Config) *Client {
 	baseURL, _ := url.Parse(defaultBaseUrl)
 
 	c := &Client{
@@ -227,10 +227,10 @@ func New(options *Config) *Client {
 	c.Authorizations = (*AuthorizationsService)(&c.common)
 	c.Stages = (*StagesService)(&c.common)
 	c.Webhooks = (*WebhooksService)(&c.common)
-	c.UserSettings = (*UserSettingsService)(&c.common)
 	c.UserConnections = (*UserConnectionsService)(&c.common)
 	c.GoalsService = (*GoalsService)(&c.common)
 	c.PipelinesService = (*PipelinesService)(&c.common)
+	c.UserSettings = (*UserSettingsService)(&c.common)
 
 	return c
 }

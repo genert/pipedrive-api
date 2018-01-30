@@ -1,6 +1,5 @@
 sudo: false
 language: go
-
 go:
   - 1.9.x
   - 1.8.x
@@ -23,6 +22,6 @@ script:
   - diff -u <(echo -n) <(gofmt -d -s .)
   - go generate -x ./... && git diff --exit-code; code=$?; git checkout -- .; (exit $code) # Check that go generate ./... produces a zero diff; clean up any changes afterwards.
   - go tool vet .
-  - ls -la
-  - go test ./pipedrive -api -covermode=count -coverprofile=coverage.out
-  - $HOME/gopath/bin/goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN
+  - go test -v -race ./...
+# - go test ./pipedrive -api -covermode=count -coverprofile=coverage.out
+# - $HOME/gopath/bin/goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN

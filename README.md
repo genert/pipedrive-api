@@ -60,6 +60,15 @@ access different parts of the API. For example:
     fmt.Println("First note field: ", noteFields.Data[0].Name)
 ```
 
+### Integration Tests ###
+
+You can run integration tests from the `test` directory. See the integration tests [README](test/README.md).
+
+## Contributions & Issues
+Contributions are welcome. Please clearly explain the purpose of the PR and follow the current style.
+
+Issues can be resolved quickest if they are descriptive and include both a reduced test case and a set of steps to reproduce.
+
 ## License
 
 This library is distributed under the MIT license found in the [LICENSE](./LICENSE)

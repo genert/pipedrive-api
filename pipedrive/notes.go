@@ -23,27 +23,47 @@ type Note struct {
 	LastUpdateUserId         int       `json:"last_update_user_id,omitempty"`
 }
 
-type Notes struct {
+type NotesResponse struct {
 	Success        bool           `json:"success,omitempty"`
 	Data           []Note         `json:"data,omitempty"`
 	AdditionalData AdditionalData `json:"additional_data,omitempty"`
 }
 
-type SingleNote struct {
+type NoteResponse struct {
 	Success bool `json:"success,omitempty"`
 	Data    Note `json:"data,omitempty"`
 }
 
+type NoteCreateOptions struct {
+	DealId                   uint   `url:"deal_id"`
+	Content                  string `url:"content"`
+	PersonId                 uint   `url:"person_id"`
+	OrgId                    uint   `url:"org_id"`
+	PinnedToDealFlag         uint8  `url:"pinned_to_deal_flag"`
+	PinnedToOrganizationFlag uint8  `url:"pinned_to_organization_flag"`
+	PinnedToPersonFlag       uint8  `url:"pinned_to_person_flag"`
+}
+
+type NoteUpdateOptions struct {
+	Content                  string `url:"content"`
+	DealId                   uint   `url:"deal_id"`
+	PersonId                 uint   `url:"person_id"`
+	OrgId                    uint   `url:"org_id"`
+	PinnedToDealFlag         uint8  `url:"pinned_to_deal_flag"`
+	PinnedToOrganizationFlag uint8  `url:"pinned_to_organization_flag"`
+	PinnedToPersonFlag       uint8  `url:"pinned_to_person_flag"`
+}
+
 // Returns all notes.
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Notes/get_notes
-func (s *NotesService) List() (*Notes, *Response, error) {
+func (s *NotesService) List() (*NotesResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "/notes", nil, nil)
 
 	if err != nil {
 		return nil, nil, err
 	}
 
-	var record *Notes
+	var record *NotesResponse
 
 	resp, err := s.client.Do(req, &record)
 
@@ -56,7 +76,7 @@ func (s *NotesService) List() (*Notes, *Response, error) {
 
 // Returns details about a specific note.
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Notes/get_notes_id
-func (s *NotesService) GetById(id int) (*SingleNote, *Response, error) {
+func (s *NotesService) GetById(id int) (*NoteResponse, *Response, error) {
 	uri := fmt.Sprintf("/notes/%v", id)
 	req, err := s.client.NewRequest(http.MethodGet, uri, nil, nil)
 
@@ -64,7 +84,7 @@ func (s *NotesService) GetById(id int) (*SingleNote, *Response, error) {
 		return nil, nil, err
 	}
 
-	var record *SingleNote
+	var record *NoteResponse
 
 	resp, err := s.client.Do(req, &record)
 
@@ -73,4 +93,55 @@ func (s *NotesService) GetById(id int) (*SingleNote, *Response, error) {
 	}
 
 	return record, resp, nil
+}
+
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Notes/get_notes_id
+func (s *NotesService) Create(opt *NoteCreateOptions) (*NoteResponse, *Response, error) {
+	req, err := s.client.NewRequest(http.MethodPost, "/filters", nil, opt)
+
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var record *NoteResponse
+
+	resp, err := s.client.Do(req, &record)
+
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return record, resp, nil
+}
+
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Notes/put_notes_id
+func (s *NotesService) Update(id int, opt *NoteUpdateOptions) (*NoteResponse, *Response, error) {
+	uri := fmt.Sprintf("/filters/%v", id)
+	req, err := s.client.NewRequest(http.MethodPut, uri, nil, opt)
+
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var record *NoteResponse
+
+	resp, err := s.client.Do(req, &record)
+
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return record, resp, nil
+}
+
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Notes/delete_notes_id
+func (s *NotesService) Delete(id int) (*Response, error) {
+	uri := fmt.Sprintf("/notes/%v", id)
+	req, err := s.client.NewRequest(http.MethodDelete, uri, nil, nil)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return s.client.Do(req, nil)
 }

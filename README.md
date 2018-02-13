@@ -19,7 +19,7 @@ Requires Go version 1.7 or greater.
 - [x] Files
 - [x] Filters
 - [x] Goals
-- [ ] Notes
+- [x] Notes
 - [x] NoteFields
 - [ ] Organizations
 - [ ] OrganizationFields

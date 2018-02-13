@@ -1,9 +1,9 @@
 package integration
 
 import (
+	"github.com/genert/pipedrive-api/pipedrive"
 	"testing"
 	"time"
-	"github.com/genert/pipedrive-api/pipedrive"
 )
 
 func TestRecents_List(t *testing.T) {

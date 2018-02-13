@@ -1,9 +1,9 @@
 package integration
 
 import (
+	"github.com/genert/pipedrive-api/pipedrive"
 	"github.com/go-test/deep"
 	"testing"
-	"github.com/genert/pipedrive-api/pipedrive"
 )
 
 func TestCurrenciesService_List(t *testing.T) {

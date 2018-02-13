@@ -16,7 +16,7 @@ Requires Go version 1.7 or greater.
 - [x] Currencies
 - [ ] Deals
 - [ ] DealFields
-- [ ] Files
+- [x] Files
 - [ ] Filters
 - [x] Goals
 - [ ] Notes
@@ -36,10 +36,16 @@ Requires Go version 1.7 or greater.
 - [x] User settings
 - [x] Webhooks
 
+## Installation
+
+```go
+go get -v github.com/genert/pipedrive-api/pipedrive
+```
+
 ## Usage
 
 ```go
-import "github.com/genert/go-pipedrive/pipedrive"
+import "github.com/genert/pipedrive-api/pipedrive"
 ```
 
 Construct a new Pipedrive client, then use the various services on the client to

@@ -1,5 +1,11 @@
 # pipedrive-api tests
 
+Install required dependencies first:
+
+```shell
+go get -t ../...
+```
+
 integration
 -----------
 

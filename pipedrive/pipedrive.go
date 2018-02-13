@@ -60,6 +60,7 @@ type Client struct {
 	GoalsService     *GoalsService
 	PipelinesService *PipelinesService
 	UserSettings     *UserSettingsService
+	Files            *FilesService
 }
 
 type service struct {
@@ -231,6 +232,7 @@ func NewClient(options *Config) *Client {
 	c.GoalsService = (*GoalsService)(&c.common)
 	c.PipelinesService = (*PipelinesService)(&c.common)
 	c.UserSettings = (*UserSettingsService)(&c.common)
+	c.Files = (*FilesService)(&c.common)
 
 	return c
 }

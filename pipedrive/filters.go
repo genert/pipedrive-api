@@ -34,7 +34,7 @@ type FilterConditions struct {
 	} `json:"conditions"`
 }
 
-type SingleFilter struct {
+type FilterResponse struct {
 	Success bool `json:"success"`
 	Data    struct {
 		Filter
@@ -42,7 +42,7 @@ type SingleFilter struct {
 	} `json:"data"`
 }
 
-type Filters struct {
+type FiltersResponse struct {
 	Success bool     `json:"success"`
 	Data    []Filter `json:"data"`
 }
@@ -51,16 +51,26 @@ type FiltersListOptions struct {
 	Type string `url:"type,omitempty"`
 }
 
-// Returns data about all filters
+type FilterUpdateOptions struct {
+	Name       string `url:"name,omitempty"`
+	Conditions string `url:"conditions"`
+}
+
+type FilterCreateOptions struct {
+	Name       string `url:"name"`
+	Conditions string `url:"conditions"`
+	Type       string `url:"type"`
+}
+
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Filters/get_filters
-func (s *FiltersService) List(opt *FiltersListOptions) (*Filters, *Response, error) {
+func (s *FiltersService) List(opt *FiltersListOptions) (*FiltersResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "/filters", opt, nil)
 
 	if err != nil {
 		return nil, nil, err
 	}
 
-	var record *Filters
+	var record *FiltersResponse
 
 	resp, err := s.client.Do(req, &record)
 
@@ -71,9 +81,8 @@ func (s *FiltersService) List(opt *FiltersListOptions) (*Filters, *Response, err
 	return record, resp, nil
 }
 
-// Returns data about a specific filter. Note that this also returns the condition lines of the filter.
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Filters/get_filters_id
-func (s *FiltersService) GetById(id int) (*SingleFilter, *Response, error) {
+func (s *FiltersService) GetById(id int) (*FilterResponse, *Response, error) {
 	uri := fmt.Sprintf("/filters/%v", id)
 	req, err := s.client.NewRequest(http.MethodGet, uri, nil, nil)
 
@@ -81,7 +90,7 @@ func (s *FiltersService) GetById(id int) (*SingleFilter, *Response, error) {
 		return nil, nil, err
 	}
 
-	var record *SingleFilter
+	var record *FilterResponse
 
 	resp, err := s.client.Do(req, &record)
 
@@ -92,7 +101,45 @@ func (s *FiltersService) GetById(id int) (*SingleFilter, *Response, error) {
 	return record, resp, nil
 }
 
-// Marks multiple filters as deleted.
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Filters/post_filters
+func (s *FiltersService) Create(opt *FilterCreateOptions) (*FilterResponse, *Response, error) {
+	req, err := s.client.NewRequest(http.MethodPost, "/filters", nil, opt)
+
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var record *FilterResponse
+
+	resp, err := s.client.Do(req, &record)
+
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return record, resp, nil
+}
+
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Filters/put_filters_id
+func (s *FiltersService) Update(id int, opt *FilterUpdateOptions) (*FilterResponse, *Response, error) {
+	uri := fmt.Sprintf("/filters/%v", id)
+	req, err := s.client.NewRequest(http.MethodPut, uri, nil, opt)
+
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var record *FilterResponse
+
+	resp, err := s.client.Do(req, &record)
+
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return record, resp, nil
+}
+
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Filters/delete_filters
 func (s *FiltersService) DeleteMultiple(ids []int) (*Response, error) {
 	req, err := s.client.NewRequest(http.MethodDelete, "/filter", &DeleteMultipleOptions{
@@ -106,7 +153,6 @@ func (s *FiltersService) DeleteMultiple(ids []int) (*Response, error) {
 	return s.client.Do(req, nil)
 }
 
-// Marks a filter as deleted.
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Filters/delete_filters_id
 func (s *FiltersService) Delete(id int) (*Response, error) {
 	uri := fmt.Sprintf("/filters/%v", id)

@@ -154,9 +154,7 @@ func (c *Client) checkRateLimitBeforeDo(req *http.Request) *RateLimitError {
 	rate := c.currentRate
 	c.rateMutex.Unlock()
 
-	fmt.Printf(rate.String())
-
-	if rate.Remaining == 0 {
+	if !rate.Reset.Time.IsZero() && rate.Remaining == 0 {
 		resp := &http.Response{
 			Status:     http.StatusText(http.StatusForbidden),
 			StatusCode: http.StatusForbidden,
@@ -168,6 +166,7 @@ func (c *Client) checkRateLimitBeforeDo(req *http.Request) *RateLimitError {
 		return &RateLimitError{
 			Rate:     rate,
 			Response: resp,
+			Message: fmt.Sprintf("API rate limit of %v exceeded.", rate.Limit),
 		}
 	}
 
@@ -186,7 +185,9 @@ func (c *Client) checkResponse(r *http.Response) error {
 
 func (c *Client) Do(request *http.Request, v interface{}) (*Response, error) {
 	if err := c.checkRateLimitBeforeDo(request); err != nil {
-		fmt.Printf("What the fuck")
+		return &Response{
+			Response: err.Response,
+		}, err
 	}
 
 	resp, err := c.client.Do(request)

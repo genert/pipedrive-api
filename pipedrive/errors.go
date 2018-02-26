@@ -5,10 +5,11 @@ import "net/http"
 type RateLimitError struct {
 	Rate     Rate
 	Response *http.Response
+	Message string
 }
 
 func (e *RateLimitError) Error() string {
-	return "Something went wrong"
+	return "Something went wrong with rate"
 }
 
 type ErrorResponse struct {
@@ -16,5 +17,5 @@ type ErrorResponse struct {
 }
 
 func (e *ErrorResponse) Error() string {
-	return "Something went wrong"
+	return "Something went wrong with response"
 }

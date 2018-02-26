@@ -26,7 +26,7 @@ func Stringify(message interface{}) string {
 		}
 
 		if v.Type() == reflect.TypeOf(Timestamp{}) {
-			break;
+			break
 		}
 
 		buf.Write([]byte(string(data)))

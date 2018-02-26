@@ -5,7 +5,7 @@ import "net/http"
 type RateLimitError struct {
 	Rate     Rate
 	Response *http.Response
-	Message string
+	Message  string
 }
 
 func (e *RateLimitError) Error() string {

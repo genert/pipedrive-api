@@ -50,6 +50,46 @@ type UserFollowersResponse struct {
 	AdditionalData AdditionalData `json:"additional_data"`
 }
 
+type UserPermissionsResponse struct {
+	Success bool `json:"success"`
+	Data    struct {
+		CanAddProducts              bool `json:"can_add_products"`
+		CanBulkEditItems            bool `json:"can_bulk_edit_items"`
+		CanChangeVisibilityOfItems  bool `json:"can_change_visibility_of_items"`
+		CanDeleteActivities         bool `json:"can_delete_activities"`
+		CanDeleteDeals              bool `json:"can_delete_deals"`
+		CanEditDealsClosedDate      bool `json:"can_edit_deals_closed_date"`
+		CanEditProducts             bool `json:"can_edit_products"`
+		CanEditSharedFilters        bool `json:"can_edit_shared_filters"`
+		CanExportDataFromLists      bool `json:"can_export_data_from_lists"`
+		CanFollowOtherUsers         bool `json:"can_follow_other_users"`
+		CanMergeDeals               bool `json:"can_merge_deals"`
+		CanMergeOrganizations       bool `json:"can_merge_organizations"`
+		CanMergePeople              bool `json:"can_merge_people"`
+		CanSeeCompanyWideStatistics bool `json:"can_see_company_wide_statistics"`
+		CanSeeDealsListSummary      bool `json:"can_see_deals_list_summary"`
+		CanSeeHiddenItemsNames      bool `json:"can_see_hidden_items_names"`
+		CanSeeOtherUsers            bool `json:"can_see_other_users"`
+		CanSeeOtherUsersStatistics  bool `json:"can_see_other_users_statistics"`
+		CanShareFilters             bool `json:"can_share_filters"`
+		CanUseAPI                   bool `json:"can_use_api"`
+	} `json:"data"`
+}
+
+type UserRoleSettingsResponse struct {
+	Success bool `json:"success"`
+	Data    struct {
+		DealDefaultVisibility    int `json:"deal_default_visibility"`
+		OrgDefaultVisibility     int `json:"org_default_visibility"`
+		PersonDefaultVisibility  int `json:"person_default_visibility"`
+		ProductDefaultVisibility int `json:"product_default_visibility"`
+		DealAccessLevel          int `json:"deal_access_level"`
+		OrgAccessLevel           int `json:"org_access_level"`
+		PersonAccessLevel        int `json:"person_access_level"`
+		ProductAccessLevel       int `json:"product_access_level"`
+	} `json:"data"`
+}
+
 type UsersFindByNameOptions struct {
 	Term          string `url:"term,omitempty"`
 	SearchByEmail int    `url:"search_by_email,omitempty"`
@@ -65,6 +105,32 @@ type DeletePermissionSetAssignmentOptions struct {
 
 type DeleteRoleAssignmentOptions struct {
 	RoleId uint `url:"role_id,omitempty"`
+}
+
+type UserCreateOptions struct {
+	Name string `url:"name"`
+	Email string `url:"email"`
+	ActiveFlag uint8 `url:"active_flag"`
+}
+
+// https://developers.pipedrive.com/docs/api/v1/#!/Users/get_users_id_followers
+func (s *UsersService) ListFollowers(id int) (*UserFollowersResponse, *Response, error) {
+	uri := fmt.Sprintf("/users/%v/followers", id)
+	req, err := s.client.NewRequest(http.MethodGet, uri, nil, nil)
+
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var record *UserFollowersResponse
+
+	resp, err := s.client.Do(req, &record)
+
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return record, resp, nil
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Users/get_users
@@ -86,16 +152,15 @@ func (s *UsersService) List() (*UsersResponse, *Response, error) {
 	return record, resp, nil
 }
 
-// https://developers.pipedrive.com/docs/api/v1/#!/Users/get_users_id_followers
-func (s *UsersService) ListFollowers(id int) (*UserFollowersResponse, *Response, error) {
-	uri := fmt.Sprintf("/users/%v/followers", id)
-	req, err := s.client.NewRequest(http.MethodGet, uri, nil, nil)
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Users/post_users
+func (s *UsersService) Create(opt *UserCreateOptions) (*UserSingleResponse, *Response, error) {
+	req, err := s.client.NewRequest(http.MethodPost, "/users", nil, body)
 
 	if err != nil {
 		return nil, nil, err
 	}
 
-	var record *UserFollowersResponse
+	var record *UserSingleResponse
 
 	resp, err := s.client.Do(req, &record)
 
@@ -125,6 +190,25 @@ func (s *UsersService) FindByName(opt *UsersFindByNameOptions) (*UsersResponse, 
 	return record, resp, nil
 }
 
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Users/get_users_me
+func (s *UsersService) GetCurrentUser() (*UserSingleResponse, *Response, error) {
+	req, err := s.client.NewRequest(http.MethodGet, "/users/me", nil, nil)
+
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var record *UserSingleResponse
+
+	resp, err := s.client.Do(req, &record)
+
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return record, resp, nil
+}
+
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Users/get_users_id
 func (s *UsersService) GetById(id int) (*UserFollowersResponse, *Response, error) {
 	uri := fmt.Sprintf("/users/%v", id)
@@ -135,6 +219,46 @@ func (s *UsersService) GetById(id int) (*UserFollowersResponse, *Response, error
 	}
 
 	var record *UserFollowersResponse
+
+	resp, err := s.client.Do(req, &record)
+
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return record, resp, nil
+}
+
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Users/get_users_id_permissions
+func (s *UsersService) ListUserPermissions(id int) (*UserPermissionsResponse, *Response, error) {
+	uri := fmt.Sprintf("/users/%v/permissions", id)
+	req, err := s.client.NewRequest(http.MethodGet, uri, nil, nil)
+
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var record *UserPermissionsResponse
+
+	resp, err := s.client.Do(req, &record)
+
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return record, resp, nil
+}
+
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Users/get_users_id_roleSettings
+func (s *UsersService) ListUserRoleSettings(id int) (*UserRoleSettingsResponse, *Response, error) {
+	uri := fmt.Sprintf("/users/%v/roleSettings", id)
+	req, err := s.client.NewRequest(http.MethodGet, uri, nil, nil)
+
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var record *UserRoleSettingsResponse
 
 	resp, err := s.client.Do(req, &record)
 

@@ -79,8 +79,8 @@ type Config struct {
 }
 
 type Rate struct {
-	Limit     int `json:"limit"`
-	Remaining int `json:"remaining"`
+	Limit     int       `json:"limit"`
+	Remaining int       `json:"remaining"`
 	Reset     Timestamp `json:"reset"`
 }
 
@@ -166,7 +166,7 @@ func (c *Client) checkRateLimitBeforeDo(req *http.Request) *RateLimitError {
 		return &RateLimitError{
 			Rate:     rate,
 			Response: resp,
-			Message: fmt.Sprintf("API rate limit of %v exceeded.", rate.Limit),
+			Message:  fmt.Sprintf("API rate limit of %v exceeded.", rate.Limit),
 		}
 	}
 

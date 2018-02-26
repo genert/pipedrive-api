@@ -5,8 +5,8 @@ import (
 	"testing"
 )
 
-func TestActivityTypesService_Add(t *testing.T) {
-	result, _, err := client.ActivityTypes.Add(&pipedrive.ActivityTypesAddOptions{
+func TestActivityTypesService_Create(t *testing.T) {
+	result, _, err := client.ActivityTypes.Create(&pipedrive.ActivityTypesAddOptions{
 		Name:    "test",
 		IconKey: "email",
 	})

@@ -64,7 +64,7 @@ func (s *ActivityTypesService) List() (*ActivityTypes, *Response, error) {
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/ActivityTypes/post_activityTypes
-func (s *ActivityTypesService) Add(opt *ActivityTypesAddOptions) (*SingleActivityType, *Response, error) {
+func (s *ActivityTypesService) Create(opt *ActivityTypesAddOptions) (*SingleActivityType, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodPost, "/activityTypes", nil, opt)
 
 	if err != nil {

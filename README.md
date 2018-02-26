@@ -1,7 +1,6 @@
 # Golang Pipedrive client
 
 [![Build Status](https://travis-ci.org/Genert/go-pipedrive.svg?branch=master)](https://travis-ci.org/Genert/go-pipedrive)
-[![Coverage Status](https://coveralls.io/repos/github/Genert/go-pipedrive/badge.svg?branch=master)](https://coveralls.io/github/Genert/go-pipedrive?branch=master)
 
 > Work in progress.
 
@@ -31,7 +30,7 @@ Requires Go version 1.7 or greater.
 - [x] Recents
 - [x] SearchResults
 - [x] Stages
-- [ ] Users
+- [x] Users
 - [x] User connections
 - [x] User settings
 - [x] Webhooks

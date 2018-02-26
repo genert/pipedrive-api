@@ -6,11 +6,13 @@ import (
 	"fmt"
 	"github.com/google/go-querystring/query"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"reflect"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -32,13 +34,17 @@ const (
 )
 
 type Client struct {
-	client *http.Client // HTTP client used to communicate with the API.
+	// HTTP client used to communicate with the API.
+	client *http.Client
 
 	// Base URL for API requests. Defaults to the public Pipedrive API, but can be
 	// set to a domain endpoint to use. BaseURL should
 	// always be specified with a trailing slash.
 	BaseURL *url.URL
 	apiKey  string
+
+	rateMutex   sync.Mutex
+	currentRate Rate
 
 	// Reuse a single struct instead of allocating one for each service.
 	common service
@@ -75,15 +81,17 @@ type Config struct {
 type Rate struct {
 	Limit     int `json:"limit"`
 	Remaining int `json:"remaining"`
-	Reset     int `json:"reset"`
+	Reset     Timestamp `json:"reset"`
+}
+
+func (r Rate) String() string {
+	return Stringify(r)
 }
 
 type Response struct {
 	*http.Response
 	Rate
 }
-
-type Timestamp time.Time
 
 // Parse the rate from response headers.
 func parseRateFromResponse(r *http.Response) Rate {
@@ -98,7 +106,9 @@ func parseRateFromResponse(r *http.Response) Rate {
 	}
 
 	if reset := r.Header.Get(headerRateReset); reset != "" {
-		rate.Reset, _ = strconv.Atoi(reset)
+		if value, _ := strconv.ParseInt(reset, 10, 64); value != 0 {
+			rate.Reset = Timestamp{time.Unix(value, 0)}
+		}
 	}
 
 	return rate
@@ -139,7 +149,46 @@ func (c *Client) NewRequest(method, url string, opt interface{}, body interface{
 	return request, nil
 }
 
+func (c *Client) checkRateLimitBeforeDo(req *http.Request) *RateLimitError {
+	c.rateMutex.Lock()
+	rate := c.currentRate
+	c.rateMutex.Unlock()
+
+	fmt.Printf(rate.String())
+
+	if rate.Remaining == 0 {
+		resp := &http.Response{
+			Status:     http.StatusText(http.StatusForbidden),
+			StatusCode: http.StatusForbidden,
+			Request:    req,
+			Header:     make(http.Header, 0),
+			Body:       ioutil.NopCloser(bytes.NewBufferString("")),
+		}
+
+		return &RateLimitError{
+			Rate:     rate,
+			Response: resp,
+		}
+	}
+
+	return nil
+}
+
+func (c *Client) checkResponse(r *http.Response) error {
+	if code := r.StatusCode; 200 <= code && code <= 299 {
+		return nil
+	}
+
+	return &ErrorResponse{
+		Response: r,
+	}
+}
+
 func (c *Client) Do(request *http.Request, v interface{}) (*Response, error) {
+	if err := c.checkRateLimitBeforeDo(request); err != nil {
+		fmt.Printf("What the fuck")
+	}
+
 	resp, err := c.client.Do(request)
 
 	if err != nil {
@@ -148,9 +197,24 @@ func (c *Client) Do(request *http.Request, v interface{}) (*Response, error) {
 		}, err
 	}
 
+	defer func() {
+		io.CopyN(ioutil.Discard, resp.Body, 512)
+		resp.Body.Close()
+	}()
+
 	defer resp.Body.Close()
 
 	response := newResponse(resp)
+
+	c.rateMutex.Lock()
+	c.currentRate = response.Rate
+	c.rateMutex.Unlock()
+
+	err = c.checkResponse(response.Response)
+
+	if err != nil {
+		return response, err
+	}
 
 	err = json.NewDecoder(resp.Body).Decode(v)
 

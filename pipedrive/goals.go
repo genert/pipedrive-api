@@ -64,7 +64,6 @@ type GoalCreateOptions struct {
 	PipelineId   uint   `url:"pipeline_id"`
 }
 
-// Returns data about all goals.
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Goals/get_goals
 func (s *GoalsService) List(opt *GoalsListOptions) (*Goals, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "/goals", opt, nil)

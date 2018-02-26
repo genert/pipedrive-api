@@ -44,7 +44,6 @@ type ActivityTypesEditOptions struct {
 	OrderNr uint   `url:"order_nr,omitempty"`
 }
 
-// Returns all activity types.
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/ActivityTypes/get_activityTypes
 func (s *ActivityTypesService) List() (*ActivityTypes, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "/activityTypes", nil, nil)
@@ -64,7 +63,6 @@ func (s *ActivityTypesService) List() (*ActivityTypes, *Response, error) {
 	return record, resp, nil
 }
 
-// Adds a new activity type.
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/ActivityTypes/post_activityTypes
 func (s *ActivityTypesService) Add(opt *ActivityTypesAddOptions) (*SingleActivityType, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodPost, "/activityTypes", nil, opt)
@@ -84,7 +82,6 @@ func (s *ActivityTypesService) Add(opt *ActivityTypesAddOptions) (*SingleActivit
 	return record, resp, nil
 }
 
-// Updates an activity type.
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/ActivityTypes/put_activityTypes_id
 func (s *ActivityTypesService) Edit(opt *ActivityTypesEditOptions) (*SingleActivityType, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodPut, "/activityTypes", opt, nil)
@@ -104,7 +101,6 @@ func (s *ActivityTypesService) Edit(opt *ActivityTypesEditOptions) (*SingleActiv
 	return record, resp, nil
 }
 
-// Marks multiple activity types as deleted.
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/ActivityTypes/delete_activityTypes
 func (s *ActivityTypesService) DeleteMultiple(ids []int) (*Response, error) {
 	req, err := s.client.NewRequest(http.MethodDelete, "/activityTypes", &DeleteMultipleOptions{
@@ -118,7 +114,6 @@ func (s *ActivityTypesService) DeleteMultiple(ids []int) (*Response, error) {
 	return s.client.Do(req, nil)
 }
 
-// Marks an activity type as deleted.
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/ActivityTypes/delete_activityTypes_id
 func (s *ActivityTypesService) Delete(id int) (*Response, error) {
 	uri := fmt.Sprintf("/activityTypes/%v", id)

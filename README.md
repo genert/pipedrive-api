@@ -19,7 +19,7 @@ Requires Go version 1.7 or greater.
 - [x] Notes
 - [x] NoteFields
 - [ ] Organizations
-- [ ] OrganizationFields
+- [x] OrganizationFields
 - [ ] Persons
 - [x] PersonFields
 - [x] Pipelines

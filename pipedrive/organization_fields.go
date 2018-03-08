@@ -1,14 +1,11 @@
 package pipedrive
 
-import "net/http"
+import (
+	"fmt"
+	"net/http"
+)
 
-type OrganizationsFieldsService service
-
-type OrganizationFields struct {
-	Success        bool                `json:"success"`
-	Data           []OrganizationField `json:"data"`
-	AdditionalData AdditionalData      `json:"additional_data"`
-}
+type OrganizationFieldsService service
 
 type OrganizationField struct {
 	ID                 int         `json:"id"`
@@ -38,15 +35,38 @@ type OrganizationField struct {
 	IsSubfield bool `json:"is_subfield,omitempty"`
 }
 
+type OrganizationFieldsResponse struct {
+	Success        bool                `json:"success"`
+	Data           []OrganizationField `json:"data"`
+	AdditionalData AdditionalData      `json:"additional_data"`
+}
+
+type OrganizationFieldResponse struct {
+	Success        bool              `json:"success"`
+	Data           OrganizationField `json:"data"`
+	AdditionalData AdditionalData    `json:"additional_data"`
+}
+
+type OrganizationFieldCreateOptions struct {
+	Name      string    `url:"name"`
+	FieldType FieldType `url:"field_type"`
+	Options   string    `url:"options"`
+}
+
+type OrganizationFieldUpdateOptions struct {
+	Name    string `url:"name"`
+	Options string `url:"options"`
+}
+
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/OrganizationFields/get_organizationFields
-func (s *OrganizationsFieldsService) List() (*OrganizationFields, *Response, error) {
+func (s *OrganizationFieldsService) List() (*OrganizationFieldsResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "/organizationFields", nil, nil)
 
 	if err != nil {
 		return nil, nil, err
 	}
 
-	var record *OrganizationFields
+	var record *OrganizationFieldsResponse
 
 	resp, err := s.client.Do(req, &record)
 
@@ -55,4 +75,88 @@ func (s *OrganizationsFieldsService) List() (*OrganizationFields, *Response, err
 	}
 
 	return record, resp, nil
+}
+
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/OrganizationFields/get_organizationFields_id
+func (s *OrganizationFieldsService) GetById(id int) (*OrganizationFieldResponse, *Response, error) {
+	uri := fmt.Sprintf("/organizationFields/%v", id)
+	req, err := s.client.NewRequest(http.MethodGet, uri, nil, nil)
+
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var record *OrganizationFieldResponse
+
+	resp, err := s.client.Do(req, &record)
+
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return record, resp, nil
+}
+
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/OrganizationFields/post_organizationFields
+func (s *OrganizationFieldsService) Create(opt *OrganizationFieldCreateOptions) (*OrganizationFieldResponse, *Response, error) {
+	req, err := s.client.NewRequest(http.MethodPost, "/organizationFields", nil, opt)
+
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var record *OrganizationFieldResponse
+
+	resp, err := s.client.Do(req, &record)
+
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return record, resp, nil
+}
+
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/OrganizationFields/put_organizationFields_id
+func (s *OrganizationFieldsService) Update(id int, opt *OrganizationFieldUpdateOptions) (*OrganizationFieldResponse, *Response, error) {
+	uri := fmt.Sprintf("/organizationFields/%v", id)
+	req, err := s.client.NewRequest(http.MethodPut, uri, nil, opt)
+
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var record *OrganizationFieldResponse
+
+	resp, err := s.client.Do(req, &record)
+
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return record, resp, nil
+}
+
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/OrganizationFields/delete_organizationFields
+func (s *OrganizationFieldsService) DeleteMultiple(ids []int) (*Response, error) {
+	req, err := s.client.NewRequest(http.MethodDelete, "/organizationFields", &DeleteMultipleOptions{
+		Ids: arrayToString(ids, ","),
+	}, nil)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return s.client.Do(req, nil)
+}
+
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/OrganizationFields/delete_organizationFields_id
+func (s *OrganizationFieldsService) Delete(id uint) (*Response, error) {
+	uri := fmt.Sprintf("/organizationFields/%v", id)
+	req, err := s.client.NewRequest(http.MethodDelete, uri, nil, nil)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return s.client.Do(req, nil)
 }

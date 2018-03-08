@@ -50,27 +50,28 @@ type Client struct {
 	// Reuse a single struct instead of allocating one for each service.
 	common service
 
-	Deals            *DealService
-	Currencies       *CurrenciesService
-	NoteFields       *NoteFieldsService
-	Notes            *NotesService
-	Recents          *RecentsService
-	SearchResults    *SearchResultsService
-	Users            *UsersService
-	Filters          *FiltersService
-	ActivityFields   *ActivityFieldsService
-	ActivityTypes    *ActivityTypesService
-	Authorizations   *AuthorizationsService
-	Stages           *StagesService
-	Webhooks         *WebhooksService
-	UserConnections  *UserConnectionsService
-	GoalsService     *GoalsService
-	PipelinesService *PipelinesService
-	UserSettings     *UserSettingsService
-	Files            *FilesService
-	ProductFields    *ProductFieldsService
-	Products         *ProductsService
-	PersonFields     *PersonFieldsService
+	Deals             *DealService
+	Currencies        *CurrenciesService
+	NoteFields        *NoteFieldsService
+	Notes             *NotesService
+	Recents           *RecentsService
+	SearchResults     *SearchResultsService
+	Users             *UsersService
+	Filters           *FiltersService
+	ActivityFields    *ActivityFieldsService
+	ActivityTypes     *ActivityTypesService
+	Authorizations    *AuthorizationsService
+	Stages            *StagesService
+	Webhooks          *WebhooksService
+	UserConnections   *UserConnectionsService
+	GoalsService      *GoalsService
+	PipelinesService  *PipelinesService
+	UserSettings      *UserSettingsService
+	Files             *FilesService
+	ProductFields     *ProductFieldsService
+	Products          *ProductsService
+	PersonFields      *PersonFieldsService
+	OrganizationField *OrganizationFieldsService
 }
 
 type service struct {
@@ -305,6 +306,7 @@ func NewClient(options *Config) *Client {
 	c.ProductFields = (*ProductFieldsService)(&c.common)
 	c.Products = (*ProductsService)(&c.common)
 	c.PersonFields = (*PersonFieldsService)(&c.common)
+	c.OrganizationField = (*OrganizationFieldsService)(&c.common)
 
 	return c
 }

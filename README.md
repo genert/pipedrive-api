@@ -22,7 +22,7 @@ Requires Go version 1.7 or greater.
 - [ ] OrganizationFields
 - [ ] Persons
 - [ ] PersonFields
-- [ ] Pipelines
+- [x] Pipelines
 - [x] Products
 - [x] ProductFields
 - [x] Recents

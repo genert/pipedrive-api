@@ -91,3 +91,11 @@ const (
 	VisibleToOwnersFollowers VisibleTo = 1
 	VisibleToEntireCompany   VisibleTo = 3
 )
+
+// Deal probability
+type DealProbability uint8
+
+const (
+	DealProbabilityEnabled  DealProbability = 1
+	DealProbabilityDisabled DealProbability = 0
+)

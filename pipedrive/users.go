@@ -154,7 +154,7 @@ func (s *UsersService) List() (*UsersResponse, *Response, error) {
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Users/post_users
 func (s *UsersService) Create(opt *UserCreateOptions) (*UserSingleResponse, *Response, error) {
-	req, err := s.client.NewRequest(http.MethodPost, "/users", nil, body)
+	req, err := s.client.NewRequest(http.MethodPost, "/users", nil, opt)
 
 	if err != nil {
 		return nil, nil, err

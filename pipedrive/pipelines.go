@@ -7,12 +7,6 @@ import (
 
 type PipelinesService service
 
-type Pipelines struct {
-	Success        bool           `json:"success"`
-	Data           []Pipeline     `json:"data"`
-	AdditionalData AdditionalData `json:"additional_data"`
-}
-
 type Pipeline struct {
 	ID              int    `json:"id"`
 	Name            string `json:"name"`
@@ -25,15 +19,117 @@ type Pipeline struct {
 	Selected        bool   `json:"selected"`
 }
 
+type PipelinesResponse struct {
+	Success        bool           `json:"success"`
+	Data           []Pipeline     `json:"data"`
+	AdditionalData AdditionalData `json:"additional_data"`
+}
+
+type PipelineResponse struct {
+	Success        bool           `json:"success"`
+	Data           Pipeline       `json:"data"`
+	AdditionalData AdditionalData `json:"additional_data"`
+}
+
+type PipelineDealsConversionRateResponse struct {
+	Success bool `json:"success"`
+	Data    struct {
+		StageConversions []struct {
+			FromStageID    int     `json:"from_stage_id"`
+			ToStageID      int     `json:"to_stage_id"`
+			ConversionRate float64 `json:"conversion_rate"`
+		} `json:"stage_conversions"`
+		WonConversion  float64 `json:"won_conversion"`
+		LostConversion float64 `json:"lost_conversion"`
+	} `json:"data"`
+}
+
+type PipelineDealsMovementResponse struct {
+	Success bool `json:"success"`
+	Data    struct {
+		MovementsBetweenStages struct {
+			Count int `json:"count"`
+		} `json:"movements_between_stages"`
+		NewDeals struct {
+			Count   int   `json:"count"`
+			DealIds []int `json:"deal_ids"`
+			Values  struct {
+				EUR float64 `json:"EUR"`
+			} `json:"values"`
+			FormattedValues struct {
+				EUR string `json:"EUR"`
+			} `json:"formatted_values"`
+		} `json:"new_deals"`
+		DealsLeftOpen struct {
+			Count   int   `json:"count"`
+			DealIds []int `json:"deal_ids"`
+			Values  struct {
+				EUR float64 `json:"EUR"`
+			} `json:"values"`
+			FormattedValues struct {
+				EUR string `json:"EUR"`
+			} `json:"formatted_values"`
+		} `json:"deals_left_open"`
+		WonDeals struct {
+			Count   int   `json:"count"`
+			DealIds []int `json:"deal_ids"`
+			Values  struct {
+				EUR int `json:"EUR"`
+			} `json:"values"`
+			FormattedValues struct {
+				EUR string `json:"EUR"`
+			} `json:"formatted_values"`
+		} `json:"won_deals"`
+		LostDeals struct {
+			Count   int   `json:"count"`
+			DealIds []int `json:"deal_ids"`
+			Values  struct {
+				EUR int `json:"EUR"`
+			} `json:"values"`
+			FormattedValues struct {
+				EUR string `json:"EUR"`
+			} `json:"formatted_values"`
+		} `json:"lost_deals"`
+		AverageAgeInDays struct {
+			AcrossAllStages float64 `json:"across_all_stages"`
+			ByStages        []struct {
+				StageID int `json:"stage_id"`
+				Value   int `json:"value"`
+			} `json:"by_stages"`
+		} `json:"average_age_in_days"`
+	} `json:"data"`
+}
+
+type PipelineCreateOptions struct {
+	Name            string          `url:"name"`
+	DealProbability DealProbability `url:"deal_probability"`
+	OrderNr         int             `url:"order_nr"`
+	Active          ActiveFlag      `url:"active"`
+}
+
+type PipelineUpdateOptions struct {
+	*PipelineCreateOptions
+}
+
+type PipelineDealsConversionRateOptions struct {
+	StartDate string `url:"start_date"`
+	EndDate   string `url:"end_date"`
+}
+
+type PipelineDealsMovementOptions struct {
+	StartDate string `url:"start_date"`
+	EndDate   string `url:"end_date"`
+}
+
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Pipelines/get_pipelines
-func (s *PipelinesService) List() (*Pipelines, *Response, error) {
+func (s *PipelinesService) List() (*PipelinesResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "/pipelines", nil, nil)
 
 	if err != nil {
 		return nil, nil, err
 	}
 
-	var record *Pipelines
+	var record *PipelinesResponse
 
 	resp, err := s.client.Do(req, &record)
 
@@ -44,15 +140,121 @@ func (s *PipelinesService) List() (*Pipelines, *Response, error) {
 	return record, resp, nil
 }
 
-func (s *PipelinesService) GetById(id int) (*SingleGoal, *Response, error) {
-	uri := fmt.Sprintf("/goals/%v", id)
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Pipelines/get_pipelines_id
+func (s *PipelinesService) GetById(id int) (*PipelineResponse, *Response, error) {
+	uri := fmt.Sprintf("/pipelines/%v", id)
 	req, err := s.client.NewRequest(http.MethodGet, uri, nil, nil)
 
 	if err != nil {
 		return nil, nil, err
 	}
 
-	var record *SingleGoal
+	var record *PipelineResponse
+
+	resp, err := s.client.Do(req, &record)
+
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return record, resp, nil
+}
+
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Pipelines/get_pipelines_id_deals
+func (s *PipelinesService) GetDeals(id int) (*PipelinesResponse, *Response, error) {
+	uri := fmt.Sprintf("/pipelines/%v/deals", id)
+	req, err := s.client.NewRequest(http.MethodGet, uri, nil, nil)
+
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var record *PipelinesResponse
+
+	resp, err := s.client.Do(req, &record)
+
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return record, resp, nil
+}
+
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Pipelines/get_pipelines_id_conversion_statistics
+func (s *PipelinesService) GetDealsConversionRate(id int, startDate Timestamp, endDate Timestamp) (*PipelineDealsConversionRateResponse, *Response, error) {
+	uri := fmt.Sprintf("/pipelines/%v/conversion_statistics", id)
+	req, err := s.client.NewRequest(http.MethodGet, uri, &PipelineDealsConversionRateOptions{
+		StartDate: startDate.Format(),
+		EndDate:   endDate.Format(),
+	}, nil)
+
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var record *PipelineDealsConversionRateResponse
+
+	resp, err := s.client.Do(req, &record)
+
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return record, resp, nil
+}
+
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Pipelines/get_pipelines_id_movement_statistics
+func (s *PipelinesService) GetDealsMovement(id int, startDate Timestamp, endDate Timestamp) (*PipelineDealsMovementResponse, *Response, error) {
+	uri := fmt.Sprintf("/pipelines/%v/movement_statistics", id)
+	req, err := s.client.NewRequest(http.MethodGet, uri, &PipelineDealsMovementOptions{
+		StartDate: startDate.Format(),
+		EndDate:   endDate.Format(),
+	}, nil)
+
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var record *PipelineDealsMovementResponse
+
+	resp, err := s.client.Do(req, &record)
+
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return record, resp, nil
+}
+
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Pipelines/post_pipelines
+func (s *PipelinesService) Create(opt *PipelineCreateOptions) (*PipelineResponse, *Response, error) {
+	req, err := s.client.NewRequest(http.MethodPost, "/pipelines", nil, opt)
+
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var record *PipelineResponse
+
+	resp, err := s.client.Do(req, &record)
+
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return record, resp, nil
+}
+
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Pipelines/put_pipelines_id
+func (s *PipelinesService) Update(id int, opt *PipelineUpdateOptions) (*PipelineResponse, *Response, error) {
+	uri := fmt.Sprintf("/pipelines/%v", id)
+	req, err := s.client.NewRequest(http.MethodPost, uri, nil, opt)
+
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var record *PipelineResponse
 
 	resp, err := s.client.Do(req, &record)
 

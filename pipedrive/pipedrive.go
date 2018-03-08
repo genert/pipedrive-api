@@ -72,6 +72,7 @@ type Client struct {
 	Products          *ProductsService
 	PersonFields      *PersonFieldsService
 	OrganizationField *OrganizationFieldsService
+	DealFields        *DealFieldsService
 }
 
 type service struct {
@@ -307,6 +308,7 @@ func NewClient(options *Config) *Client {
 	c.Products = (*ProductsService)(&c.common)
 	c.PersonFields = (*PersonFieldsService)(&c.common)
 	c.OrganizationField = (*OrganizationFieldsService)(&c.common)
+	c.DealFields = (*DealFieldsService)(&c.common)
 
 	return c
 }

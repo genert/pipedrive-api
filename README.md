@@ -12,7 +12,7 @@ Requires Go version 1.7 or greater.
 - [x] Authorizations
 - [x] Currencies
 - [ ] Deals
-- [ ] DealFields
+- [x] DealFields
 - [x] Files
 - [x] Filters
 - [x] Goals

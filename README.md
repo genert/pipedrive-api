@@ -21,7 +21,7 @@ Requires Go version 1.7 or greater.
 - [ ] Organizations
 - [ ] OrganizationFields
 - [ ] Persons
-- [ ] PersonFields
+- [x] PersonFields
 - [x] Pipelines
 - [x] Products
 - [x] ProductFields

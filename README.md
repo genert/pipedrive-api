@@ -18,7 +18,7 @@ Requires Go version 1.7 or greater.
 - [x] Goals
 - [x] Notes
 - [x] NoteFields
-- [ ] Organizations
+- [x] Organizations
 - [x] OrganizationFields
 - [x] Persons
 - [x] PersonFields
@@ -52,7 +52,7 @@ access different parts of the API. For example:
     const apiKey = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
     client := pipedrive.New(&pipedrive.Config{
-        ApiKey: apiKey,
+        APIKey: apiKey,
     })
 
     // Return list of all fields for note

@@ -74,6 +74,7 @@ type Client struct {
 	OrganizationField *OrganizationFieldsService
 	DealFields        *DealFieldsService
 	Persons           *PersonsService
+	Organizations     *OrganizationsService
 }
 
 type service struct {
@@ -81,7 +82,7 @@ type service struct {
 }
 
 type Config struct {
-	ApiKey        string
+	APIKey        string
 	CompanyDomain string
 }
 
@@ -282,7 +283,7 @@ func NewClient(options *Config) *Client {
 	c := &Client{
 		client:  http.DefaultClient,
 		BaseURL: baseURL,
-		apiKey:  options.ApiKey,
+		apiKey:  options.APIKey,
 	}
 
 	c.common.client = c
@@ -311,6 +312,7 @@ func NewClient(options *Config) *Client {
 	c.OrganizationField = (*OrganizationFieldsService)(&c.common)
 	c.DealFields = (*DealFieldsService)(&c.common)
 	c.Persons = (*PersonsService)(&c.common)
+	c.Organizations = (*OrganizationsService)(&c.common)
 
 	return c
 }

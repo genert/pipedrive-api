@@ -1,8 +1,9 @@
 package integration
 
 import (
-	"github.com/genert/pipedrive-api/pipedrive"
 	"os"
+
+	"github.com/genert/pipedrive-api/pipedrive"
 )
 
 var (
@@ -17,7 +18,7 @@ func init() {
 		os.Exit(1)
 	} else {
 		config := &pipedrive.Config{
-			ApiKey: token,
+			APIKey: token,
 		}
 
 		client = pipedrive.NewClient(config)

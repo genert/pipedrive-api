@@ -8,11 +8,11 @@ import (
 type NotesService service
 
 type Note struct {
-	Id                       int       `json:"id,omitempty"`
-	UserId                   int       `json:"user_id,omitempty"`
-	DealId                   int       `json:"deal_id,omitempty"`
-	PersonId                 int       `json:"person_id,omitempty"`
-	OrgId                    int       `json:"org_id,omitempty"`
+	ID                       int       `json:"id,omitempty"`
+	UserID                   int       `json:"user_id,omitempty"`
+	DealID                   int       `json:"deal_id,omitempty"`
+	PersonID                 int       `json:"person_id,omitempty"`
+	OrgID                    int       `json:"org_id,omitempty"`
 	Content                  string    `json:"content,omitempty"`
 	AddTime                  Timestamp `json:"add_time,omitempty"`
 	UpdateTime               Timestamp `json:"update_time,omitempty"`
@@ -20,7 +20,7 @@ type Note struct {
 	PinnedToDealFlag         bool      `json:"pinned_to_deal_flag,omitempty"`
 	PinnedToPersonFlag       bool      `json:"pinned_to_person_flag,omitempty"`
 	PinnedToOrganizationFlag bool      `json:"pinned_to_organization_flag,omitempty"`
-	LastUpdateUserId         int       `json:"last_update_user_id,omitempty"`
+	LastUpdateUserID         int       `json:"last_update_user_id,omitempty"`
 }
 
 type NotesResponse struct {
@@ -35,10 +35,10 @@ type NoteResponse struct {
 }
 
 type NoteCreateOptions struct {
-	DealId                   uint   `url:"deal_id"`
+	DealID                   uint   `url:"deal_id"`
 	Content                  string `url:"content"`
-	PersonId                 uint   `url:"person_id"`
-	OrgId                    uint   `url:"org_id"`
+	PersonID                 uint   `url:"person_id"`
+	OrgID                    uint   `url:"org_id"`
 	PinnedToDealFlag         uint8  `url:"pinned_to_deal_flag"`
 	PinnedToOrganizationFlag uint8  `url:"pinned_to_organization_flag"`
 	PinnedToPersonFlag       uint8  `url:"pinned_to_person_flag"`
@@ -46,9 +46,9 @@ type NoteCreateOptions struct {
 
 type NoteUpdateOptions struct {
 	Content                  string `url:"content"`
-	DealId                   uint   `url:"deal_id"`
-	PersonId                 uint   `url:"person_id"`
-	OrgId                    uint   `url:"org_id"`
+	DealID                   uint   `url:"deal_id"`
+	PersonID                 uint   `url:"person_id"`
+	OrgID                    uint   `url:"org_id"`
 	PinnedToDealFlag         uint8  `url:"pinned_to_deal_flag"`
 	PinnedToOrganizationFlag uint8  `url:"pinned_to_organization_flag"`
 	PinnedToPersonFlag       uint8  `url:"pinned_to_person_flag"`

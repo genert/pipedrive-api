@@ -101,9 +101,16 @@ type Deal struct {
 	PersonHidden                                 bool        `json:"person_hidden"`
 }
 
-type Deals struct {
-	Success bool   `json:"success,omitempty"`
-	Data    []Deal `json:"data,omitempty"`
+type DealsResponse struct {
+	Success        bool           `json:"success,omitempty"`
+	Data           []Deal         `json:"data,omitempty"`
+	AdditionalData AdditionalData `json:"additional_data,omitempty"`
+}
+
+type DealResponse struct {
+	Success        bool           `json:"success,omitempty"`
+	Data           Deal           `json:"data,omitempty"`
+	AdditionalData AdditionalData `json:"additional_data,omitempty"`
 }
 
 type DealUpdate struct {
@@ -112,26 +119,24 @@ type DealUpdate struct {
 }
 
 type DealsMergeOptions struct {
-	Id          uint `url:"id"`
-	MergeWithId uint `url:"merge_with_id"`
+	MergeWithID uint `url:"merge_with_id"`
 }
 
 type DealsUpdateOptions struct {
-	Id             uint   `url:"id"`
 	Title          string `url:"title,omitempty"`
 	Value          string `url:"value,omitempty"`
 	Currency       string `url:"currency,omitempty"`
-	UserId         uint   `url:"user_id,omitempty"`
-	PersonId       uint   `url:"person_id,omitempty"`
-	OrganizationId uint   `url:"org_id,omitempty"`
-	StageId        uint   `url:"stage_id,omitempty"`
+	UserID         uint   `url:"user_id,omitempty"`
+	PersonID       uint   `url:"person_id,omitempty"`
+	OrganizationID uint   `url:"org_id,omitempty"`
+	StageID        uint   `url:"stage_id,omitempty"`
 	Status         string `url:"status,omitempty"`
 	LostReason     string `url:"lost_reason,omitempty"`
 	VisibleTo      uint   `url:"visible_to,omitempty"`
 }
 
-// List updates about a deal
-func (s *DealService) ListDealUpdates(id int) (*Deals, *Response, error) {
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Deals/get_deals_id_flow
+func (s *DealService) ListUpdates(id int) (*DealsResponse, *Response, error) {
 	uri := fmt.Sprintf("/deals/%v/flow", id)
 	req, err := s.client.NewRequest(http.MethodGet, uri, nil, nil)
 
@@ -139,7 +144,7 @@ func (s *DealService) ListDealUpdates(id int) (*Deals, *Response, error) {
 		return nil, nil, err
 	}
 
-	var record *Deals
+	var record *DealsResponse
 
 	resp, err := s.client.Do(req, &record)
 
@@ -150,14 +155,36 @@ func (s *DealService) ListDealUpdates(id int) (*Deals, *Response, error) {
 	return record, resp, nil
 }
 
-func (s *DealService) List() (*Deals, *Response, error) {
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Deals/get_deals_find
+func (s *DealService) Find(term string) (*DealsResponse, *Response, error) {
+	req, err := s.client.NewRequest(http.MethodGet, "/deals/find", &SearchOptions{
+		Term: term,
+	}, nil)
+
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var record *DealsResponse
+
+	resp, err := s.client.Do(req, &record)
+
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return record, resp, nil
+}
+
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Deals/get_deals
+func (s *DealService) List() (*DealsResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "/deals", nil, nil)
 
 	if err != nil {
 		return nil, nil, err
 	}
 
-	var record *Deals
+	var record *DealsResponse
 
 	resp, err := s.client.Do(req, &record)
 
@@ -189,8 +216,8 @@ func (s *DealService) Duplicate(id int) (*DealUpdate, *Response, error) {
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Deals/put_deals_id_merge
-func (s *DealService) Merge(opt *DealsMergeOptions) (*Response, error) {
-	uri := fmt.Sprintf("/deals/%v/duplicate", opt.Id)
+func (s *DealService) Merge(id uint, opt *DealsMergeOptions) (*Response, error) {
+	uri := fmt.Sprintf("/deals/%v/duplicate", id)
 	req, err := s.client.NewRequest(http.MethodPut, uri, opt, nil)
 
 	if err != nil {
@@ -200,9 +227,9 @@ func (s *DealService) Merge(opt *DealsMergeOptions) (*Response, error) {
 	return s.client.Do(req, nil)
 }
 
-// https://developers.pipedrive.com/docs/api/v1/#!/Deals/put_deals_id
-func (s *DealService) Update(opt *DealsUpdateOptions) (*Response, error) {
-	uri := fmt.Sprintf("/deals/%v", opt.Id)
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Deals/put_deals_id
+func (s *DealService) Update(id uint, opt *DealsUpdateOptions) (*Response, error) {
+	uri := fmt.Sprintf("/deals/%v", id)
 	req, err := s.client.NewRequest(http.MethodPut, uri, opt, nil)
 
 	if err != nil {
@@ -212,7 +239,6 @@ func (s *DealService) Update(opt *DealsUpdateOptions) (*Response, error) {
 	return s.client.Do(req, nil)
 }
 
-// Deletes a follower from a deal.
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Deals/delete_deals_id_followers_follower_id
 func (s *DealService) DeleteFollower(id uint, followerId uint) (*Response, error) {
 	uri := fmt.Sprintf("/deals/%v/followers/%v", id, followerId)

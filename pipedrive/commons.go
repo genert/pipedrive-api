@@ -99,3 +99,8 @@ const (
 	DealProbabilityEnabled  DealProbability = 1
 	DealProbabilityDisabled DealProbability = 0
 )
+
+// Search
+type SearchOptions struct {
+	Term string `url:"term,omitempty"`
+}

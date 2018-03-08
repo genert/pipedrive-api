@@ -2,8 +2,6 @@
 
 [![Build Status](https://travis-ci.org/Genert/go-pipedrive.svg?branch=master)](https://travis-ci.org/Genert/go-pipedrive)
 
-> Work in progress.
-
 Requires Go version 1.7 or greater.
 
 # Supported resources
@@ -25,8 +23,8 @@ Requires Go version 1.7 or greater.
 - [ ] Persons
 - [ ] PersonFields
 - [ ] Pipelines
-- [ ] Products
-- [ ] ProductFields
+- [x] Products
+- [x] ProductFields
 - [x] Recents
 - [x] SearchResults
 - [x] Stages

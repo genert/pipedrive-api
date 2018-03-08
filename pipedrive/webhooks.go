@@ -44,9 +44,9 @@ type WebhooksCreateOptions struct {
 	SubscriptionUrl  string      `url:"subscription_url"`
 	EventAction      EventAction `url:"event_action"`
 	DealProbability  EventObject `url:"event_object"`
-	UserId           uint        `url:"user_id"`
-	HttpAuthUser     string      `url:"http_auth_user"`
-	HttpAuthPassword string      `url:"http_auth_password"`
+	UserID           uint        `url:"user_id"`
+	HTTPAuthUser     string      `url:"http_auth_user"`
+	HTTPAuthPassword string      `url:"http_auth_password"`
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Webhooks/get_webhooks

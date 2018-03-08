@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/google/go-querystring/query"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -14,6 +13,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/google/go-querystring/query"
 )
 
 const (
@@ -67,6 +68,8 @@ type Client struct {
 	PipelinesService *PipelinesService
 	UserSettings     *UserSettingsService
 	Files            *FilesService
+	ProductFields    *ProductFieldsService
+	Products         *ProductsService
 }
 
 type service struct {
@@ -298,6 +301,8 @@ func NewClient(options *Config) *Client {
 	c.PipelinesService = (*PipelinesService)(&c.common)
 	c.UserSettings = (*UserSettingsService)(&c.common)
 	c.Files = (*FilesService)(&c.common)
+	c.ProductFields = (*ProductFieldsService)(&c.common)
+	c.Products = (*ProductsService)(&c.common)
 
 	return c
 }

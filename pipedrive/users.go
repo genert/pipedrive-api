@@ -108,9 +108,9 @@ type DeleteRoleAssignmentOptions struct {
 }
 
 type UserCreateOptions struct {
-	Name string `url:"name"`
-	Email string `url:"email"`
-	ActiveFlag uint8 `url:"active_flag"`
+	Name       string `url:"name"`
+	Email      string `url:"email"`
+	ActiveFlag uint8  `url:"active_flag"`
 }
 
 // https://developers.pipedrive.com/docs/api/v1/#!/Users/get_users_id_followers

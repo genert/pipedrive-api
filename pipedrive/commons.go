@@ -54,3 +54,40 @@ const (
 	OBJECT_USER          EventObject = "user"
 	OBJECT_ALL_          EventObject = "*"
 )
+
+// Active flags
+type ActiveFlag uint8
+
+const (
+	ActiveFlagEnabled  ActiveFlag = 1
+	ActiveFlagDisabled ActiveFlag = 0
+)
+
+// Field types
+type FieldType string
+
+const (
+	FieldTypeVarchar     FieldType = "varchar"
+	FieldTypeVarcharAuto FieldType = "varchar_auto"
+	FieldTypeText        FieldType = "text"
+	FieldTypeDouble      FieldType = "double"
+	FieldTypeMonetary    FieldType = "monetary"
+	FieldTypeDate        FieldType = "date"
+	FieldTypeSet         FieldType = "set"
+	FieldTypeEnum        FieldType = "enum"
+	FieldTypeUser        FieldType = "user"
+	FieldTypeOrg         FieldType = "org"
+	FieldTypePeople      FieldType = "people"
+	FieldTypePhone       FieldType = "phone"
+	FieldTypeTime        FieldType = "time"
+	FieldTypeTimerange   FieldType = "timerange"
+	FieldTypeDaterange   FieldType = "daterange"
+)
+
+// Visiblity
+type VisibleTo uint8
+
+const (
+	VisibleToOwnersFollowers VisibleTo = 1
+	VisibleToEntireCompany   VisibleTo = 3
+)

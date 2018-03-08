@@ -54,7 +54,6 @@ type NoteUpdateOptions struct {
 	PinnedToPersonFlag       uint8  `url:"pinned_to_person_flag"`
 }
 
-// Returns all notes.
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Notes/get_notes
 func (s *NotesService) List() (*NotesResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "/notes", nil, nil)
@@ -74,7 +73,6 @@ func (s *NotesService) List() (*NotesResponse, *Response, error) {
 	return record, resp, nil
 }
 
-// Returns details about a specific note.
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Notes/get_notes_id
 func (s *NotesService) GetById(id int) (*NoteResponse, *Response, error) {
 	uri := fmt.Sprintf("/notes/%v", id)

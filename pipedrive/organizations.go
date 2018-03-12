@@ -6,8 +6,13 @@ import (
 	"net/http"
 )
 
+// OrganizationsService handles organization related
+// methods of the Pipedrive API.
+//
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Organizations
 type OrganizationsService service
 
+// Organization represents a Pipedrive organization.
 type Organization struct {
 	ID        int `json:"id"`
 	CompanyID int `json:"company_id"`
@@ -68,18 +73,26 @@ type Organization struct {
 	CcEmail                         string      `json:"cc_email"`
 }
 
+func (o Organization) String() string {
+	return Stringify(o)
+}
+
+// OrganizationsResponse represents multiple organizations response.
 type OrganizationsResponse struct {
 	Success        bool           `json:"success"`
 	Data           []Organization `json:"data"`
 	AdditionalData AdditionalData `json:"additional_data,omitempty"`
 }
 
+// OrganizationResponse represents single organization response.
 type OrganizationResponse struct {
 	Success        bool           `json:"success"`
 	Data           Organization   `json:"data"`
 	AdditionalData AdditionalData `json:"additional_data,omitempty"`
 }
 
+// List all organizations.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Organizations/get_organizations
 func (s *OrganizationsService) List(ctx context.Context) (*OrganizationsResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "/organizations", nil, nil)
@@ -99,6 +112,8 @@ func (s *OrganizationsService) List(ctx context.Context) (*OrganizationsResponse
 	return record, resp, nil
 }
 
+// Merge organizations.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Persons/put_persons_id_merge
 func (s *OrganizationsService) Merge(ctx context.Context, id int, mergeWithID int) (*OrganizationResponse, *Response, error) {
 	uri := fmt.Sprintf("/organizations/%v/merge", id)
@@ -123,6 +138,8 @@ func (s *OrganizationsService) Merge(ctx context.Context, id int, mergeWithID in
 	return record, resp, nil
 }
 
+// DeleteFollower deletes a follower from an organization.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Organizations/delete_organizations_id_followers_follower_id
 func (s *OrganizationsService) DeleteFollower(ctx context.Context, id int, followerID int) (*Response, error) {
 	uri := fmt.Sprintf("/organizations/%v/followers/%v", id, followerID)
@@ -135,6 +152,8 @@ func (s *OrganizationsService) DeleteFollower(ctx context.Context, id int, follo
 	return s.client.Do(ctx, req, nil)
 }
 
+// Delete marks an organization as deleted.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Organizations/delete_organizations_id
 func (s *OrganizationsService) Delete(ctx context.Context, id int) (*Response, error) {
 	uri := fmt.Sprintf("/organizations/%v", id)
@@ -147,6 +166,8 @@ func (s *OrganizationsService) Delete(ctx context.Context, id int) (*Response, e
 	return s.client.Do(ctx, req, nil)
 }
 
+// DeleteMultiple deletes multiple organizations in bulk.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Organizations/delete_organizations
 func (s *OrganizationsService) DeleteMultiple(ctx context.Context, ids []int) (*Response, error) {
 	req, err := s.client.NewRequest(http.MethodDelete, "/organizations", &DeleteMultipleOptions{

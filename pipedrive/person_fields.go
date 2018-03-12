@@ -6,8 +6,13 @@ import (
 	"net/http"
 )
 
+// PersonFieldsService handles person fields related
+// methods of the Pipedrive API.
+//
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/PersonFields
 type PersonFieldsService service
 
+// PersonField represents a Pipedrive person field.
 type PersonField struct {
 	ID                 int         `json:"id"`
 	Key                string      `json:"key"`
@@ -38,29 +43,22 @@ type PersonField struct {
 	} `json:"options,omitempty"`
 }
 
+// PersonFieldsResponse represents multiple person fields response.
 type PersonFieldsResponse struct {
 	Success        bool           `json:"success"`
 	Data           []PersonField  `json:"data"`
 	AdditionalData AdditionalData `json:"additional_data"`
 }
 
+// PersonFieldResponse represents single person field response.
 type PersonFieldResponse struct {
 	Success        bool           `json:"success"`
 	Data           PersonField    `json:"data"`
 	AdditionalData AdditionalData `json:"additional_data"`
 }
 
-type PersonFieldCreateOptions struct {
-	Name      string    `url:"name"`
-	FieldType FieldType `url:"field_type"`
-	Options   string    `url:"options"`
-}
-
-type PersonFieldUpdateOptions struct {
-	Name    string `url:"name"`
-	Options string `url:"options"`
-}
-
+// List all person fields.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/PersonFields/get_personFields
 func (s *PersonFieldsService) List(ctx context.Context) (*PersonFieldsResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "/personFields", nil, nil)
@@ -80,8 +78,10 @@ func (s *PersonFieldsService) List(ctx context.Context) (*PersonFieldsResponse, 
 	return record, resp, nil
 }
 
+// GetByID returns a specific person field.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/ProductFields/get_productFields_id
-func (s *PersonFieldsService) GetById(ctx context.Context, id int) (*PersonFieldResponse, *Response, error) {
+func (s *PersonFieldsService) GetByID(ctx context.Context, id int) (*PersonFieldResponse, *Response, error) {
 	uri := fmt.Sprintf("/personFields/%v", id)
 	req, err := s.client.NewRequest(http.MethodGet, uri, nil, nil)
 
@@ -100,6 +100,16 @@ func (s *PersonFieldsService) GetById(ctx context.Context, id int) (*PersonField
 	return record, resp, nil
 }
 
+// PersonFieldCreateOptions specifices the optional parameters to the
+// PersonFieldsService.Create method.
+type PersonFieldCreateOptions struct {
+	Name      string    `url:"name"`
+	FieldType FieldType `url:"field_type"`
+	Options   string    `url:"options"`
+}
+
+// Create a person field.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/ProductFields/post_productFields
 func (s *PersonFieldsService) Create(ctx context.Context, opt *PersonFieldCreateOptions) (*ProductFieldResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodPost, "/personFields", nil, opt)
@@ -119,6 +129,15 @@ func (s *PersonFieldsService) Create(ctx context.Context, opt *PersonFieldCreate
 	return record, resp, nil
 }
 
+// PersonFieldUpdateOptions specifices the optional parameters to the
+// PersonFieldsService.Update method.
+type PersonFieldUpdateOptions struct {
+	Name    string `url:"name"`
+	Options string `url:"options"`
+}
+
+// Update a person field.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/PersonFields/put_personFields_id
 func (s *PersonFieldsService) Update(ctx context.Context, id int, opt *PersonFieldUpdateOptions) (*PersonFieldResponse, *Response, error) {
 	uri := fmt.Sprintf("/personFields/%v", id)
@@ -139,6 +158,8 @@ func (s *PersonFieldsService) Update(ctx context.Context, id int, opt *PersonFie
 	return record, resp, nil
 }
 
+// DeleteMultiple marks multiple person fields as deleted.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/PersonFields/delete_personFields
 func (s *PersonFieldsService) DeleteMultiple(ctx context.Context, ids []int) (*Response, error) {
 	req, err := s.client.NewRequest(http.MethodDelete, "/personFields", &DeleteMultipleOptions{
@@ -152,6 +173,8 @@ func (s *PersonFieldsService) DeleteMultiple(ctx context.Context, ids []int) (*R
 	return s.client.Do(ctx, req, nil)
 }
 
+// Delete marks person field as deleted.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/PersonFields/delete_personFields_id
 func (s *PersonFieldsService) Delete(ctx context.Context, id int) (*Response, error) {
 	uri := fmt.Sprintf("/personFields/%v", id)

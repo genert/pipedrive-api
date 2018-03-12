@@ -6,8 +6,13 @@ import (
 	"net/http"
 )
 
+// OrganizationFieldsService handles organization fields related
+// methods of the Pipedrive API.
+//
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/OrganizationFields
 type OrganizationFieldsService service
 
+// OrganizationField represents a Pipedrive organization field.
 type OrganizationField struct {
 	ID                 int         `json:"id"`
 	Key                string      `json:"key"`
@@ -36,29 +41,26 @@ type OrganizationField struct {
 	IsSubfield bool `json:"is_subfield,omitempty"`
 }
 
+func (of OrganizationField) String() string {
+	return Stringify(of)
+}
+
+// OrganizationFieldsResponse represents multiple organization fields response.
 type OrganizationFieldsResponse struct {
 	Success        bool                `json:"success"`
 	Data           []OrganizationField `json:"data"`
 	AdditionalData AdditionalData      `json:"additional_data"`
 }
 
+// OrganizationFieldResponse represents single organization field response.
 type OrganizationFieldResponse struct {
 	Success        bool              `json:"success"`
 	Data           OrganizationField `json:"data"`
 	AdditionalData AdditionalData    `json:"additional_data"`
 }
 
-type OrganizationFieldCreateOptions struct {
-	Name      string    `url:"name"`
-	FieldType FieldType `url:"field_type"`
-	Options   string    `url:"options"`
-}
-
-type OrganizationFieldUpdateOptions struct {
-	Name    string `url:"name"`
-	Options string `url:"options"`
-}
-
+// List all organization fields within company.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/OrganizationFields/get_organizationFields
 func (s *OrganizationFieldsService) List(ctx context.Context) (*OrganizationFieldsResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "/organizationFields", nil, nil)
@@ -78,8 +80,10 @@ func (s *OrganizationFieldsService) List(ctx context.Context) (*OrganizationFiel
 	return record, resp, nil
 }
 
+// GetByID returns a specific organization field.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/OrganizationFields/get_organizationFields_id
-func (s *OrganizationFieldsService) GetById(ctx context.Context, id int) (*OrganizationFieldResponse, *Response, error) {
+func (s *OrganizationFieldsService) GetByID(ctx context.Context, id int) (*OrganizationFieldResponse, *Response, error) {
 	uri := fmt.Sprintf("/organizationFields/%v", id)
 	req, err := s.client.NewRequest(http.MethodGet, uri, nil, nil)
 
@@ -98,6 +102,16 @@ func (s *OrganizationFieldsService) GetById(ctx context.Context, id int) (*Organ
 	return record, resp, nil
 }
 
+// OrganizationFieldCreateOptions specifices the optional parameters to the
+// OrganizationFieldsService.Create method.
+type OrganizationFieldCreateOptions struct {
+	Name      string    `url:"name"`
+	FieldType FieldType `url:"field_type"`
+	Options   string    `url:"options"`
+}
+
+// Create a new organization field.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/OrganizationFields/post_organizationFields
 func (s *OrganizationFieldsService) Create(ctx context.Context, opt *OrganizationFieldCreateOptions) (*OrganizationFieldResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodPost, "/organizationFields", nil, opt)
@@ -117,6 +131,15 @@ func (s *OrganizationFieldsService) Create(ctx context.Context, opt *Organizatio
 	return record, resp, nil
 }
 
+// OrganizationFieldUpdateOptions specifices the optional parameters to the
+// OrganizationFieldsService.Update method.
+type OrganizationFieldUpdateOptions struct {
+	Name    string `url:"name"`
+	Options string `url:"options"`
+}
+
+// Update a specific organization field.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/OrganizationFields/put_organizationFields_id
 func (s *OrganizationFieldsService) Update(ctx context.Context, id int, opt *OrganizationFieldUpdateOptions) (*OrganizationFieldResponse, *Response, error) {
 	uri := fmt.Sprintf("/organizationFields/%v", id)
@@ -137,6 +160,8 @@ func (s *OrganizationFieldsService) Update(ctx context.Context, id int, opt *Org
 	return record, resp, nil
 }
 
+// DeleteMultiple marks organization fields as deleted.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/OrganizationFields/delete_organizationFields
 func (s *OrganizationFieldsService) DeleteMultiple(ctx context.Context, ids []int) (*Response, error) {
 	req, err := s.client.NewRequest(http.MethodDelete, "/organizationFields", &DeleteMultipleOptions{
@@ -150,6 +175,8 @@ func (s *OrganizationFieldsService) DeleteMultiple(ctx context.Context, ids []in
 	return s.client.Do(ctx, req, nil)
 }
 
+// Delete marks a specific organization field as deleted.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/OrganizationFields/delete_organizationFields_id
 func (s *OrganizationFieldsService) Delete(ctx context.Context, id int) (*Response, error) {
 	uri := fmt.Sprintf("/organizationFields/%v", id)

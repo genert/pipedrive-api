@@ -6,8 +6,13 @@ import (
 	"net/http"
 )
 
+// PersonsService handles activities related
+// methods of the Pipedrive API.
+//
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Persons
 type PersonsService service
 
+// Person represents a Pipedrive person.
 type Person struct {
 	ID        int `json:"id"`
 	CompanyID int `json:"company_id"`
@@ -70,18 +75,21 @@ type Person struct {
 	CcEmail                         string      `json:"cc_email"`
 }
 
+// PersonsRespose represents multiple persons response.
 type PersonsRespose struct {
 	Success        bool           `json:"success"`
 	Data           []Person       `json:"data"`
 	AdditionalData AdditionalData `json:"additional_data"`
 }
 
+// PersonResponse represents single person response.
 type PersonResponse struct {
 	Success        bool           `json:"success"`
 	Data           Person         `json:"data"`
 	AdditionalData AdditionalData `json:"additional_data"`
 }
 
+// PersonAddFollowerResponse represents add follower response.
 type PersonAddFollowerResponse struct {
 	Success bool `json:"success"`
 	Data    struct {
@@ -92,25 +100,8 @@ type PersonAddFollowerResponse struct {
 	} `json:"data"`
 }
 
-type PersonCreateOptions struct {
-	Name      string    `url:"name"`
-	OwnerID   uint      `url:"owner_id"`
-	OrgID     uint      `url:"org_id"`
-	Email     string    `url:"email"`
-	Phone     string    `url:"phone"`
-	VisibleTo VisibleTo `url:"visible_to"`
-	AddTime   Timestamp `url:"add_time"`
-}
-
-type PersonUpdateOptions struct {
-	Name      string    `url:"name"`
-	OwnerID   uint      `url:"owner_id"`
-	OrgID     uint      `url:"org_id"`
-	Email     string    `url:"email"`
-	Phone     string    `url:"phone"`
-	VisibleTo VisibleTo `url:"visible_to"`
-}
-
+// List all persons.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Persons/get_persons
 func (s *PersonsService) List(ctx context.Context) (*PersonsRespose, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "/persons", nil, nil)
@@ -130,6 +121,8 @@ func (s *PersonsService) List(ctx context.Context) (*PersonsRespose, *Response, 
 	return record, resp, nil
 }
 
+// AddFollower adds a follower to person.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Persons/post_persons_id_followers
 func (s *PersonsService) AddFollower(ctx context.Context, id int, userID int) (*PersonAddFollowerResponse, *Response, error) {
 	uri := fmt.Sprintf("/persons/%v/followers", id)
@@ -154,6 +147,20 @@ func (s *PersonsService) AddFollower(ctx context.Context, id int, userID int) (*
 	return record, resp, nil
 }
 
+// PersonCreateOptions specifices the optional parameters to the
+// PersonsService.Create method.
+type PersonCreateOptions struct {
+	Name      string    `url:"name"`
+	OwnerID   uint      `url:"owner_id"`
+	OrgID     uint      `url:"org_id"`
+	Email     string    `url:"email"`
+	Phone     string    `url:"phone"`
+	VisibleTo VisibleTo `url:"visible_to"`
+	AddTime   Timestamp `url:"add_time"`
+}
+
+// Create a new person.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Persons/post_persons
 func (s *PersonsService) Create(ctx context.Context, opt *PersonCreateOptions) (*PersonResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodPost, "/persons", nil, struct {
@@ -189,6 +196,19 @@ func (s *PersonsService) Create(ctx context.Context, opt *PersonCreateOptions) (
 	return record, resp, nil
 }
 
+// PersonUpdateOptions specifices the optional parameters to the
+// PersonUpdateOptions.Update method.
+type PersonUpdateOptions struct {
+	Name      string    `url:"name"`
+	OwnerID   uint      `url:"owner_id"`
+	OrgID     uint      `url:"org_id"`
+	Email     string    `url:"email"`
+	Phone     string    `url:"phone"`
+	VisibleTo VisibleTo `url:"visible_to"`
+}
+
+// Update a specific person.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Persons/put_persons_id
 func (s *PersonsService) Update(ctx context.Context, id int, opt *PersonUpdateOptions) (*PersonResponse, *Response, error) {
 	uri := fmt.Sprintf("/persons/%v", id)
@@ -209,6 +229,8 @@ func (s *PersonsService) Update(ctx context.Context, id int, opt *PersonUpdateOp
 	return record, resp, nil
 }
 
+// Merge selected persons.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Persons/put_persons_id_merge
 func (s *PersonsService) Merge(ctx context.Context, id int, mergeWithID int) (*PersonResponse, *Response, error) {
 	uri := fmt.Sprintf("/persons/%v/merge", id)
@@ -233,6 +255,8 @@ func (s *PersonsService) Merge(ctx context.Context, id int, mergeWithID int) (*P
 	return record, resp, nil
 }
 
+// DeleteFollower removes follower from person.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Persons/delete_persons_id_followers_follower_id
 func (s *PersonsService) DeleteFollower(ctx context.Context, id int, followerID int) (*Response, error) {
 	uri := fmt.Sprintf("/persons/%v/followers/%v", id, followerID)
@@ -245,6 +269,8 @@ func (s *PersonsService) DeleteFollower(ctx context.Context, id int, followerID 
 	return s.client.Do(ctx, req, nil)
 }
 
+// Delete marks person as deleted.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Persons/delete_persons_id
 func (s *PersonsService) Delete(ctx context.Context, id int) (*Response, error) {
 	uri := fmt.Sprintf("/persons/%v", id)
@@ -257,6 +283,8 @@ func (s *PersonsService) Delete(ctx context.Context, id int) (*Response, error) 
 	return s.client.Do(ctx, req, nil)
 }
 
+// DeletePicture deletes person picture.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Persons/delete_persons_id_picture
 func (s *PersonsService) DeletePicture(ctx context.Context, id int) (*Response, error) {
 	uri := fmt.Sprintf("/persons/%v/picture", id)
@@ -269,6 +297,8 @@ func (s *PersonsService) DeletePicture(ctx context.Context, id int) (*Response, 
 	return s.client.Do(ctx, req, nil)
 }
 
+// DeleteMultiple marks multiple persons as deleted.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Persons/delete_persons
 func (s *PersonsService) DeleteMultiple(ctx context.Context, ids []int) (*Response, error) {
 	req, err := s.client.NewRequest(http.MethodDelete, "/persons", &DeleteMultipleOptions{

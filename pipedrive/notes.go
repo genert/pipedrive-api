@@ -6,8 +6,13 @@ import (
 	"net/http"
 )
 
+// NotesService handles activities related
+// methods of the Pipedrive API.
+//
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Notes
 type NotesService service
 
+// Note represents a Pipedrive note.
 type Note struct {
 	ID                       int       `json:"id,omitempty"`
 	UserID                   int       `json:"user_id,omitempty"`
@@ -24,37 +29,25 @@ type Note struct {
 	LastUpdateUserID         int       `json:"last_update_user_id,omitempty"`
 }
 
+func (n Note) String() string {
+	return Stringify(n)
+}
+
+// NotesResponse represents multiple notes response.
 type NotesResponse struct {
 	Success        bool           `json:"success,omitempty"`
 	Data           []Note         `json:"data,omitempty"`
 	AdditionalData AdditionalData `json:"additional_data,omitempty"`
 }
 
+// NoteResponse represents a single note response.
 type NoteResponse struct {
 	Success bool `json:"success,omitempty"`
 	Data    Note `json:"data,omitempty"`
 }
 
-type NoteCreateOptions struct {
-	DealID                   uint   `url:"deal_id"`
-	Content                  string `url:"content"`
-	PersonID                 uint   `url:"person_id"`
-	OrgID                    uint   `url:"org_id"`
-	PinnedToDealFlag         uint8  `url:"pinned_to_deal_flag"`
-	PinnedToOrganizationFlag uint8  `url:"pinned_to_organization_flag"`
-	PinnedToPersonFlag       uint8  `url:"pinned_to_person_flag"`
-}
-
-type NoteUpdateOptions struct {
-	Content                  string `url:"content"`
-	DealID                   uint   `url:"deal_id"`
-	PersonID                 uint   `url:"person_id"`
-	OrgID                    uint   `url:"org_id"`
-	PinnedToDealFlag         uint8  `url:"pinned_to_deal_flag"`
-	PinnedToOrganizationFlag uint8  `url:"pinned_to_organization_flag"`
-	PinnedToPersonFlag       uint8  `url:"pinned_to_person_flag"`
-}
-
+// List returns notes.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Notes/get_notes
 func (s *NotesService) List(ctx context.Context) (*NotesResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "/notes", nil, nil)
@@ -74,8 +67,10 @@ func (s *NotesService) List(ctx context.Context) (*NotesResponse, *Response, err
 	return record, resp, nil
 }
 
+// GetByID returns a specific note by id.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Notes/get_notes_id
-func (s *NotesService) GetById(ctx context.Context, id int) (*NoteResponse, *Response, error) {
+func (s *NotesService) GetByID(ctx context.Context, id int) (*NoteResponse, *Response, error) {
 	uri := fmt.Sprintf("/notes/%v", id)
 	req, err := s.client.NewRequest(http.MethodGet, uri, nil, nil)
 
@@ -94,9 +89,23 @@ func (s *NotesService) GetById(ctx context.Context, id int) (*NoteResponse, *Res
 	return record, resp, nil
 }
 
+// NoteCreateOptions specifices the optional parameters to the
+// NotesService.Create method.
+type NoteCreateOptions struct {
+	DealID                   uint   `url:"deal_id"`
+	Content                  string `url:"content"`
+	PersonID                 uint   `url:"person_id"`
+	OrgID                    uint   `url:"org_id"`
+	PinnedToDealFlag         uint8  `url:"pinned_to_deal_flag"`
+	PinnedToOrganizationFlag uint8  `url:"pinned_to_organization_flag"`
+	PinnedToPersonFlag       uint8  `url:"pinned_to_person_flag"`
+}
+
+// Create a note.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Notes/get_notes_id
 func (s *NotesService) Create(ctx context.Context, opt *NoteCreateOptions) (*NoteResponse, *Response, error) {
-	req, err := s.client.NewRequest(http.MethodPost, "/filters", nil, opt)
+	req, err := s.client.NewRequest(http.MethodPost, "/notes", nil, opt)
 
 	if err != nil {
 		return nil, nil, err
@@ -113,9 +122,23 @@ func (s *NotesService) Create(ctx context.Context, opt *NoteCreateOptions) (*Not
 	return record, resp, nil
 }
 
+// NoteUpdateOptions specifices the optional parameters to the
+// NotesService.Update method.
+type NoteUpdateOptions struct {
+	Content                  string `url:"content"`
+	DealID                   uint   `url:"deal_id"`
+	PersonID                 uint   `url:"person_id"`
+	OrgID                    uint   `url:"org_id"`
+	PinnedToDealFlag         uint8  `url:"pinned_to_deal_flag"`
+	PinnedToOrganizationFlag uint8  `url:"pinned_to_organization_flag"`
+	PinnedToPersonFlag       uint8  `url:"pinned_to_person_flag"`
+}
+
+// Update a specific note.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Notes/put_notes_id
 func (s *NotesService) Update(ctx context.Context, id int, opt *NoteUpdateOptions) (*NoteResponse, *Response, error) {
-	uri := fmt.Sprintf("/filters/%v", id)
+	uri := fmt.Sprintf("/notes/%v", id)
 	req, err := s.client.NewRequest(http.MethodPut, uri, nil, opt)
 
 	if err != nil {
@@ -133,6 +156,8 @@ func (s *NotesService) Update(ctx context.Context, id int, opt *NoteUpdateOption
 	return record, resp, nil
 }
 
+// Delete marks note as deleted.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Notes/delete_notes_id
 func (s *NotesService) Delete(ctx context.Context, id int) (*Response, error) {
 	uri := fmt.Sprintf("/notes/%v", id)

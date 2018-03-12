@@ -347,7 +347,7 @@ func (s *UsersService) DeletePermissionSetAssignment(ctx context.Context, id int
 // DeleteRoleAssignmentOptions specifices the optional parameters to the
 // UsersService.DeleteRoleAssignment method.
 type DeleteRoleAssignmentOptions struct {
-	RoleId uint `url:"role_id,omitempty"`
+	RoleID uint `url:"role_id,omitempty"`
 }
 
 // DeleteRoleAssignment deletes a role assignment for a user.

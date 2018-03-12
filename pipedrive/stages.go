@@ -6,8 +6,13 @@ import (
 	"net/http"
 )
 
+// StagesService handles stages related
+// methods of the Pipedrive API.
+//
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Stages
 type StagesService service
 
+// Stage represents a Pipedrive stage.
 type Stage struct {
 	ID              int         `json:"id"`
 	OrderNr         int         `json:"order_nr"`
@@ -22,61 +27,46 @@ type Stage struct {
 	PipelineName    string      `json:"pipeline_name"`
 }
 
-type Stages struct {
+func (s Stage) String() string {
+	return Stringify(s)
+}
+
+// StagesResponse represents multiple stages response.
+type StagesResponse struct {
 	Success bool    `json:"success"`
 	Data    []Stage `json:"data"`
 }
 
-type SingleStage struct {
+// StageResponse represents single stage response.
+type StageResponse struct {
 	Success bool  `json:"success"`
 	Data    Stage `json:"data"`
 }
 
-type StagesListOptions struct {
-	PipelineId uint `url:"pipeline_id"`
-}
-
-type StagesCreateOptions struct {
-	Name            string `url:"name"`
-	PipelineId      uint   `url:"pipeline_id"`
-	DealProbability uint   `url:"deal_probability"`
-	RottenFlag      uint8  `url:"rotten_flag"`
-	RottenDays      uint   `url:"rotten_days"`
-}
-
-type StagesUpdateOptions struct {
-	Name            string `url:"name"`
-	PipelineId      uint   `url:"pipeline_id"`
-	OrderNr         uint   `url:"order_nr"`
-	DealProbability uint   `url:"deal_probability"`
-	RottenFlag      uint8  `url:"rotten_flag"`
-	RottenDays      uint   `url:"rotten_days"`
-}
-
-type StagesGetDealsInStageOptions struct {
-	FilterId uint  `url:"filter_id"`
-	UserId   uint  `url:"user_id"`
-	Everyone uint8 `url:"everyone"`
-	Start    uint  `url:"start"`
-	Limit    uint  `url:"limit"`
-}
-
-type StagesDeals struct {
+// StageDealsResponse represents stage deals response.
+type StageDealsResponse struct {
 	Success        bool           `json:"success"`
 	Data           []Deal         `json:"data"`
 	AdditionalData AdditionalData `json:"additional_data"`
 }
 
-// Returns data about all stages.
+// StagesListOptions specifices the optional parameters to the
+// StagesService.List method.
+type StagesListOptions struct {
+	PipelineID uint `url:"pipeline_id"`
+}
+
+// List returns data about all stages.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Stages
-func (s *StagesService) List(ctx context.Context, opt *StagesListOptions) (*Stages, *Response, error) {
+func (s *StagesService) List(ctx context.Context, opt *StagesListOptions) (*StagesResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "/stages", nil, opt)
 
 	if err != nil {
 		return nil, nil, err
 	}
 
-	var record *Stages
+	var record *StagesResponse
 
 	resp, err := s.client.Do(ctx, req, &record)
 
@@ -87,9 +77,9 @@ func (s *StagesService) List(ctx context.Context, opt *StagesListOptions) (*Stag
 	return record, resp, nil
 }
 
-// Returns data about a specific stage.
+// GetByID returns data about a specific stage.
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Stages/get_stages_id
-func (s *StagesService) GetById(ctx context.Context, id int) (*SingleStage, *Response, error) {
+func (s *StagesService) GetByID(ctx context.Context, id int) (*StageResponse, *Response, error) {
 	uri := fmt.Sprintf("/stages/%v", id)
 	req, err := s.client.NewRequest(http.MethodGet, uri, nil, nil)
 
@@ -97,7 +87,7 @@ func (s *StagesService) GetById(ctx context.Context, id int) (*SingleStage, *Res
 		return nil, nil, err
 	}
 
-	var record *SingleStage
+	var record *StageResponse
 
 	resp, err := s.client.Do(ctx, req, &record)
 
@@ -108,9 +98,20 @@ func (s *StagesService) GetById(ctx context.Context, id int) (*SingleStage, *Res
 	return record, resp, nil
 }
 
-// Lists deals in a specific stage.
+// StagesGetDealsInStageOptions specifices the optional parameters to the
+// StagesService.GetDealsInStage method.
+type StagesGetDealsInStageOptions struct {
+	FilterID uint  `url:"filter_id"`
+	UserID   uint  `url:"user_id"`
+	Everyone uint8 `url:"everyone"`
+	Start    uint  `url:"start"`
+	Limit    uint  `url:"limit"`
+}
+
+// GetDealsInStage lists deals in a specific stage.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Stages/get_stages_id_deals
-func (s *StagesService) GetDealsInStage(ctx context.Context, id int, opt *StagesGetDealsInStageOptions) (*StagesDeals, *Response, error) {
+func (s *StagesService) GetDealsInStage(ctx context.Context, id int, opt *StagesGetDealsInStageOptions) (*StageDealsResponse, *Response, error) {
 	uri := fmt.Sprintf("/stages/%v/deals", id)
 	req, err := s.client.NewRequest(http.MethodGet, uri, nil, opt)
 
@@ -118,7 +119,7 @@ func (s *StagesService) GetDealsInStage(ctx context.Context, id int, opt *Stages
 		return nil, nil, err
 	}
 
-	var record *StagesDeals
+	var record *StageDealsResponse
 
 	resp, err := s.client.Do(ctx, req, &record)
 
@@ -129,16 +130,27 @@ func (s *StagesService) GetDealsInStage(ctx context.Context, id int, opt *Stages
 	return record, resp, nil
 }
 
-// Adds a new stage, returns the ID upon success.
+// StagesCreateOptions specifices the optional parameters to the
+// StagesService.Create method.
+type StagesCreateOptions struct {
+	Name            string `url:"name"`
+	PipelineID      uint   `url:"pipeline_id"`
+	DealProbability uint   `url:"deal_probability"`
+	RottenFlag      uint8  `url:"rotten_flag"`
+	RottenDays      uint   `url:"rotten_days"`
+}
+
+// Create a new stage, returns the ID upon success.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Stages/post_stages
-func (s *StagesService) Create(ctx context.Context, opt *StagesCreateOptions) (*SingleStage, *Response, error) {
+func (s *StagesService) Create(ctx context.Context, opt *StagesCreateOptions) (*StageResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodPost, "/stages", nil, opt)
 
 	if err != nil {
 		return nil, nil, err
 	}
 
-	var record *SingleStage
+	var record *StageResponse
 
 	resp, err := s.client.Do(ctx, req, &record)
 
@@ -149,9 +161,21 @@ func (s *StagesService) Create(ctx context.Context, opt *StagesCreateOptions) (*
 	return record, resp, nil
 }
 
-// Updates the properties of a stage.
+// StagesUpdateOptions specifices the optional parameters to the
+// StagesService.Update method.
+type StagesUpdateOptions struct {
+	Name            string `url:"name"`
+	PipelineID      uint   `url:"pipeline_id"`
+	OrderNr         uint   `url:"order_nr"`
+	DealProbability uint   `url:"deal_probability"`
+	RottenFlag      uint8  `url:"rotten_flag"`
+	RottenDays      uint   `url:"rotten_days"`
+}
+
+// Update the properties of a stage.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Stages/put_stages_id
-func (s *StagesService) Update(ctx context.Context, id int, opt *StagesGetDealsInStageOptions) (*SingleStage, *Response, error) {
+func (s *StagesService) Update(ctx context.Context, id int, opt *StagesUpdateOptions) (*StageResponse, *Response, error) {
 	uri := fmt.Sprintf("/stages/%v", id)
 	req, err := s.client.NewRequest(http.MethodPut, uri, nil, opt)
 
@@ -159,7 +183,7 @@ func (s *StagesService) Update(ctx context.Context, id int, opt *StagesGetDealsI
 		return nil, nil, err
 	}
 
-	var record *SingleStage
+	var record *StageResponse
 
 	resp, err := s.client.Do(ctx, req, &record)
 
@@ -170,7 +194,8 @@ func (s *StagesService) Update(ctx context.Context, id int, opt *StagesGetDealsI
 	return record, resp, nil
 }
 
-// Marks multiple stages as deleted.
+// DeleteMultiple marks multiple stages as deleted.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Stages/put_stages_id
 func (s *StagesService) DeleteMultiple(ctx context.Context, ids []int) (*Response, error) {
 	req, err := s.client.NewRequest(http.MethodDelete, "/stages", &DeleteMultipleOptions{
@@ -184,7 +209,8 @@ func (s *StagesService) DeleteMultiple(ctx context.Context, ids []int) (*Respons
 	return s.client.Do(ctx, req, nil)
 }
 
-// Marks a stage as deleted.
+// Delete marks a stage as deleted.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Stages/delete_stages_id
 func (s *StagesService) Delete(ctx context.Context, id int) (*Response, error) {
 	uri := fmt.Sprintf("/stages/%v", id)

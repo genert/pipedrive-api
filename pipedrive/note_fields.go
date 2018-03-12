@@ -5,13 +5,19 @@ import (
 	"net/http"
 )
 
+// NoteFieldsService handles note field related
+// methods of the Pipedrive API.
+//
+// Pipedrive API dcos: https://developers.pipedrive.com/docs/api/v1/#!/ActivityTypes
 type NoteFieldsService service
 
+// Option represents a Pipedrive option for note field.
 type Option struct {
 	ID    int    `json:"id,omitempty"`
 	Label string `json:"label,omitempty"`
 }
 
+// NoteField represents a Pipedrive note field.
 type NoteField struct {
 	ID                   int      `json:"id,omitempty"`
 	Key                  string   `json:"key,omitempty"`
@@ -24,21 +30,28 @@ type NoteField struct {
 	Options              []Option `json:"options,omitempty"`
 }
 
-type NoteFields struct {
+func (nf NoteField) String() string {
+	return Stringify(nf)
+}
+
+// NoteFieldsResponse represents multiple note fields esponse.
+type NoteFieldsResponse struct {
 	Success        bool           `json:"success,omitempty"`
 	Data           []NoteField    `json:"data,omitempty"`
 	AdditionalData AdditionalData `json:"additional_data,omitempty"`
 }
 
-// Return list of all fields for note.
-func (s *NoteFieldsService) List(ctx context.Context) (*NoteFields, *Response, error) {
+// List returns all fields for note.
+//
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/NoteFields/get_noteFields
+func (s *NoteFieldsService) List(ctx context.Context) (*NoteFieldsResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "/noteFields", nil, nil)
 
 	if err != nil {
 		return nil, nil, err
 	}
 
-	var record *NoteFields
+	var record *NoteFieldsResponse
 
 	resp, err := s.client.Do(ctx, req, &record)
 

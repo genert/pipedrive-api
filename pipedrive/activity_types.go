@@ -9,7 +9,7 @@ import (
 // ActivityTypesService handles activities related
 // methods of the Pipedrive API.
 //
-// Pipedrive API dcos: https://developers.pipedrive.com/docs/api/v1/#!/ActivityTypes
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/ActivityTypes
 type ActivityTypesService service
 
 // ActivityType represents a Pipedrive activity type.
@@ -67,9 +67,9 @@ func (s *ActivityTypesService) List(ctx context.Context) (*ActivityTypesResponse
 // ActivityTypesAddOptions specifices the optional parameters to the
 // ActivityTypesService.Create method.
 type ActivityTypesAddOptions struct {
-	Name    string `json:"name,omitempty"`
-	IconKey string `json:"icon_key,omitempty"`
-	Color   string `json:"color,omitempty"`
+	Name    string `url:"name,omitempty"`
+	IconKey string `url:"icon_key,omitempty"`
+	Color   string `url:"color,omitempty"`
 }
 
 // Create a new activity type.

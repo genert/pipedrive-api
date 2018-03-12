@@ -5,8 +5,13 @@ import (
 	"net/http"
 )
 
+// UserSettingsService handles user settings related
+// methods of the Pipedrive API.
+//
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/UserSettings
 type UserSettingsService service
 
+// UserSettings represents a Pipedrive user settings.
 type UserSettings struct {
 	Success bool `json:"success"`
 	Data    struct {
@@ -117,7 +122,8 @@ type UserSettings struct {
 	} `json:"data"`
 }
 
-// Lists settings of authorized user.
+// List settings of authorized user.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/UserSettings/get_userSettings
 func (s *UserSettingsService) List(ctx context.Context) (*UserSettings, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "/userSettings", nil, nil)

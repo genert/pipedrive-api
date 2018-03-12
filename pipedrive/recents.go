@@ -5,8 +5,13 @@ import (
 	"net/http"
 )
 
+// RecentsService handles activities related
+// methods of the Pipedrive API.
+//
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Recents
 type RecentsService service
 
+// RecentRecordDetails represents a Pipedrive recent record details.
 type RecentRecordDetails struct {
 	ID                  int    `json:"id"`
 	Name                string `json:"name"`
@@ -30,18 +35,26 @@ type RecentRecordDetails struct {
 	IsYou               bool   `json:"is_you"`
 }
 
+func (rrd RecentRecordDetails) String() string {
+	return Stringify(rrd)
+}
+
+// RecentRecord represents a Pipedrive recent record.
 type RecentRecord struct {
 	Item string                `json:"item"`
 	ID   int                   `json:"id"`
 	Data []RecentRecordDetails `json:"data"`
 }
 
-type Recents struct {
+// RecentsResponse represents multiple recents response.
+type RecentsResponse struct {
 	Success        bool           `json:"success"`
 	Data           []RecentRecord `json:"data"`
 	AdditionalData AdditionalData `json:"additional_data"`
 }
 
+// RecentsListOptions specifices the optional parameters to the
+// RecentsService.List method.
 type RecentsListOptions struct {
 	SinceTimestamp string `url:"since_timestamp,omitempty"`
 	Items          string `url:"items,omitempty"`
@@ -49,16 +62,17 @@ type RecentsListOptions struct {
 	Limit          uint   `url:"limit,omitempty"`
 }
 
-// Returns data about all recent changes occured after given timestamp.
+// List returns data about all recent changes occured after given timestamp.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Recents/get_recents
-func (s *RecentsService) List(ctx context.Context, opt *RecentsListOptions) (*Recents, *Response, error) {
+func (s *RecentsService) List(ctx context.Context, opt *RecentsListOptions) (*RecentsResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "/recents", opt, nil)
 
 	if err != nil {
 		return nil, nil, err
 	}
 
-	var record *Recents
+	var record *RecentsResponse
 
 	resp, err := s.client.Do(ctx, req, &record)
 

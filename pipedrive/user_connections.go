@@ -5,8 +5,13 @@ import (
 	"net/http"
 )
 
+// UserConnectionsService handles activities related
+// methods of the Pipedrive API.
+//
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/UserConnections
 type UserConnectionsService service
 
+// UserConnections represents a Pipedrive user connections.
 type UserConnections struct {
 	Success bool `json:"success"`
 	Data    struct {
@@ -14,7 +19,8 @@ type UserConnections struct {
 	} `json:"data"`
 }
 
-// Returns data about all connections for authorized user.
+// List returns data about all connections for authorized user.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/UserConnections/get_userConnections
 func (s *UserConnectionsService) List(ctx context.Context) (*UserConnections, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "/userConnections", nil, nil)

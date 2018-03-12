@@ -10,8 +10,13 @@ import (
 	"os"
 )
 
+// FilesService handles files related
+// methods of the Pipedrive API.
+//
+// Pipedrive API dcos: https://developers.pipedrive.com/docs/api/v1/#!/Files
 type FilesService service
 
+// File represents a Pipedrive file.
 type File struct {
 	ID             int         `json:"id"`
 	UserID         int         `json:"user_id"`
@@ -44,41 +49,26 @@ type File struct {
 	Description    interface{} `json:"description"`
 }
 
-type FileResponse struct {
-	Success bool `json:"success"`
-	Data    File `json:"data"`
+func (f File) String() string {
+	return Stringify(f)
 }
 
+// FileResponse represents single file response.
+type FileResponse struct {
+	Success        bool           `json:"success"`
+	Data           File           `json:"data"`
+	AdditionalData AdditionalData `json:"additional_data,omitempty"`
+}
+
+// FilesResponse represents multiple files response.
 type FilesResponse struct {
 	Success        bool           `json:"success"`
 	Data           []File         `json:"data"`
 	AdditionalData AdditionalData `json:"additional_data,omitempty"`
 }
 
-type FileUploadOptions struct {
-	File *os.File
-}
-
-type CreateRemoteLinkedFileOptions struct {
-	FileType       string `url:"file_type"`
-	Title          string `url:"title"`
-	ItemType       string `url:"item_type"`
-	ItemId         uint   `url:"item_id"`
-	RemoteLocation string `url:"remote_location"`
-}
-
-type LinkRemoteFileToItemOptions struct {
-	ItemType       string `url:"item_type"`
-	ItemId         uint   `url:"item_id"`
-	RemoteId       uint   `url:"remote_id"`
-	RemoteLocation string `url:"remote_location"`
-}
-
-type UpdateFileDetailsOptions struct {
-	Name        string `url:"name"`
-	Description string `url:"description"`
-}
-
+// List all files.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Files/get_files
 func (s *FilesService) List(ctx context.Context) (*FilesResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "/files", nil, nil)
@@ -98,8 +88,10 @@ func (s *FilesService) List(ctx context.Context) (*FilesResponse, *Response, err
 	return record, resp, nil
 }
 
+// GetByID returns specific file.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Files/get_files_id
-func (s *FilesService) GetById(ctx context.Context, id int) (*FileResponse, *Response, error) {
+func (s *FilesService) GetByID(ctx context.Context, id int) (*FileResponse, *Response, error) {
 	uri := fmt.Sprintf("/files/%v", id)
 	req, err := s.client.NewRequest(http.MethodGet, uri, nil, nil)
 
@@ -118,8 +110,10 @@ func (s *FilesService) GetById(ctx context.Context, id int) (*FileResponse, *Res
 	return record, resp, nil
 }
 
+// GetDownloadLinkByID returns link for specific file.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Files/get_files_id_download
-func (s *FilesService) GetDownloadLinkById(id int) (string, *http.Request, error) {
+func (s *FilesService) GetDownloadLinkByID(id int) (string, *http.Request, error) {
 	uri := fmt.Sprintf("/files/%v/download", id)
 	req, err := s.client.NewRequest(http.MethodGet, uri, nil, nil)
 
@@ -130,6 +124,8 @@ func (s *FilesService) GetDownloadLinkById(id int) (string, *http.Request, error
 	return string(req.URL.Scheme + "://" + req.URL.Host + req.URL.Path), req, nil
 }
 
+// Upload a file.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Files/post_files
 func (s *FilesService) Upload(ctx context.Context, fileName string, filePath string) (*FileResponse, *Response, error) {
 	file, err := os.Open(filePath)
@@ -185,6 +181,18 @@ func (s *FilesService) Upload(ctx context.Context, fileName string, filePath str
 	return record, resp, nil
 }
 
+// CreateRemoteLinkedFileOptions specifices the optional parameters to the
+// FilesService.CreateRemoteLinkedFile method.
+type CreateRemoteLinkedFileOptions struct {
+	FileType       string `url:"file_type,omitempty"`
+	Title          string `url:"title,omitempty"`
+	ItemType       string `url:"item_type,omitempty"`
+	ItemID         uint   `url:"item_id,omitempty"`
+	RemoteLocation string `url:"remote_location,omitempty"`
+}
+
+// CreateRemoteLinkedFile creates a remote file and link it to an item.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Files/post_files_remote
 func (s *FilesService) CreateRemoteLinkedFile(ctx context.Context, opt *CreateRemoteLinkedFileOptions) (*FileResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodPost, "/files/remote", nil, opt)
@@ -204,6 +212,17 @@ func (s *FilesService) CreateRemoteLinkedFile(ctx context.Context, opt *CreateRe
 	return record, resp, nil
 }
 
+// LinkRemoteFileToItemOptions specifices the optional parameters to the
+// FilesService.LinkRemoteFileToItem method.
+type LinkRemoteFileToItemOptions struct {
+	ItemType       string `url:"item_type"`
+	ItemID         uint   `url:"item_id"`
+	RemoteID       uint   `url:"remote_id"`
+	RemoteLocation string `url:"remote_location"`
+}
+
+// LinkRemoteFileToItem links an existing remote file (googledrive, etc) to the item you supply.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Files/post_files_remoteLink
 func (s *FilesService) LinkRemoteFileToItem(ctx context.Context, opt *LinkRemoteFileToItemOptions) (*FileResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodPost, "/files/remoteLink", nil, opt)
@@ -223,8 +242,17 @@ func (s *FilesService) LinkRemoteFileToItem(ctx context.Context, opt *LinkRemote
 	return record, resp, nil
 }
 
+// UpdateFileDetailsOptions specifices the optional parameters to the
+// FilesService.Update method.
+type UpdateFileDetailsOptions struct {
+	Name        string `url:"name"`
+	Description string `url:"description"`
+}
+
+// Update the properties of a file.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Files/put_files_id
-func (s *FilesService) UpdateFileDetails(ctx context.Context, id int, opt *UpdateFileDetailsOptions) (*FileResponse, *Response, error) {
+func (s *FilesService) Update(ctx context.Context, id int, opt *UpdateFileDetailsOptions) (*FileResponse, *Response, error) {
 	uri := fmt.Sprintf("/files/%v", id)
 	req, err := s.client.NewRequest(http.MethodPut, uri, nil, opt)
 
@@ -243,6 +271,8 @@ func (s *FilesService) UpdateFileDetails(ctx context.Context, id int, opt *Updat
 	return record, resp, nil
 }
 
+// Delete marks a file as deleted.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Files/delete_files_id
 func (s *FilesService) Delete(ctx context.Context, id int) (*Response, error) {
 	uri := fmt.Sprintf("/files/%v", id)

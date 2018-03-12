@@ -7,8 +7,13 @@ import (
 	"time"
 )
 
+// WebhooksService handles webhooks related
+// methods of the Pipedrive API.
+//
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Webhooks
 type WebhooksService service
 
+// Webhook represents a Pipedrive webhook.
 type Webhook struct {
 	ID               int         `json:"id"`
 	CompanyID        int         `json:"company_id"`
@@ -29,20 +34,49 @@ type Webhook struct {
 	AdminID          int         `json:"admin_id"`
 }
 
-type Webhooks struct {
+func (w Webhook) String() string {
+	return Stringify(w)
+}
+
+// WebhooksResponse represents multiple webhooks response.
+type WebhooksResponse struct {
 	Status  string    `json:"status,omitempty"`
 	Success bool      `json:"success,omitempty"`
 	Data    []Webhook `json:"data,omitempty"`
 }
 
-type SingleWebhook struct {
+// WebhookResponse represents single webhook response.
+type WebhookResponse struct {
 	Status  string  `json:"status,omitempty"`
 	Success bool    `json:"success,omitempty"`
 	Data    Webhook `json:"data,omitempty"`
 }
 
+// List all webhooks.
+//
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Webhooks/get_webhooks
+func (s *WebhooksService) List(ctx context.Context) (*WebhooksResponse, *Response, error) {
+	req, err := s.client.NewRequest(http.MethodGet, "/webhooks", nil, nil)
+
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var record *WebhooksResponse
+
+	resp, err := s.client.Do(ctx, req, &record)
+
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return record, resp, nil
+}
+
+// WebhooksCreateOptions specifices the optional parameters to the
+// WebhooksService.Create method.
 type WebhooksCreateOptions struct {
-	SubscriptionUrl  string      `url:"subscription_url"`
+	SubscriptionURL  string      `url:"subscription_url"`
 	EventAction      EventAction `url:"event_action"`
 	DealProbability  EventObject `url:"event_object"`
 	UserID           uint        `url:"user_id"`
@@ -50,34 +84,17 @@ type WebhooksCreateOptions struct {
 	HTTPAuthPassword string      `url:"http_auth_password"`
 }
 
-// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Webhooks/get_webhooks
-func (s *WebhooksService) List(ctx context.Context) (*Webhooks, *Response, error) {
-	req, err := s.client.NewRequest(http.MethodGet, "/webhooks", nil, nil)
-
-	if err != nil {
-		return nil, nil, err
-	}
-
-	var record *Webhooks
-
-	resp, err := s.client.Do(ctx, req, &record)
-
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return record, resp, nil
-}
-
+// Create a webhook.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Webhooks/post_webhooks
-func (s *WebhooksService) Create(ctx context.Context, opt *WebhooksCreateOptions) (*SingleWebhook, *Response, error) {
+func (s *WebhooksService) Create(ctx context.Context, opt *WebhooksCreateOptions) (*WebhookResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodPost, "/webhooks", nil, opt)
 
 	if err != nil {
 		return nil, nil, err
 	}
 
-	var record *SingleWebhook
+	var record *WebhookResponse
 
 	resp, err := s.client.Do(ctx, req, &record)
 
@@ -88,6 +105,8 @@ func (s *WebhooksService) Create(ctx context.Context, opt *WebhooksCreateOptions
 	return record, resp, nil
 }
 
+// Delete a webhook.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Webhooks/delete_webhooks_id
 func (s *WebhooksService) Delete(ctx context.Context, id int) (*Response, error) {
 	uri := fmt.Sprintf("/webhooks/%v", id)

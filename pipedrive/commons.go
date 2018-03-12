@@ -12,6 +12,28 @@ type Pagination struct {
 }
 
 type AdditionalData struct {
+	User struct {
+		Profile struct {
+			ID              int         `json:"id"`
+			Email           string      `json:"email"`
+			Name            string      `json:"name"`
+			IsAdmin         bool        `json:"is_admin"`
+			DefaultCurrency string      `json:"default_currency"`
+			IconURL         interface{} `json:"icon_url"`
+			Activated       bool        `json:"activated"`
+		} `json:"profile"`
+		Locale struct {
+			Language        string `json:"language"`
+			Country         string `json:"country"`
+			Uses12HourClock bool   `json:"uses_12_hour_clock"`
+		} `json:"locale"`
+		Timezone struct {
+			Name   string `json:"name"`
+			Offset int    `json:"offset"`
+		} `json:"timezone"`
+	} `json:"user"`
+	MultipleCompanies   bool       `json:"multiple_companies"`
+	DefaultCompanyID    int        `json:"default_company_id"`
 	CompanyID           int        `json:"company_id"`
 	SinceTimestamp      string     `json:"since_timestamp"`
 	LastTimestampOnPage string     `json:"last_timestamp_on_page"`

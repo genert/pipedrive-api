@@ -1,6 +1,7 @@
 package pipedrive
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 )
@@ -136,7 +137,7 @@ type DealsUpdateOptions struct {
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Deals/get_deals_id_flow
-func (s *DealService) ListUpdates(id int) (*DealsResponse, *Response, error) {
+func (s *DealService) ListUpdates(ctx context.Context, id int) (*DealsResponse, *Response, error) {
 	uri := fmt.Sprintf("/deals/%v/flow", id)
 	req, err := s.client.NewRequest(http.MethodGet, uri, nil, nil)
 
@@ -146,7 +147,7 @@ func (s *DealService) ListUpdates(id int) (*DealsResponse, *Response, error) {
 
 	var record *DealsResponse
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -156,7 +157,7 @@ func (s *DealService) ListUpdates(id int) (*DealsResponse, *Response, error) {
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Deals/get_deals_find
-func (s *DealService) Find(term string) (*DealsResponse, *Response, error) {
+func (s *DealService) Find(ctx context.Context, term string) (*DealsResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "/deals/find", &SearchOptions{
 		Term: term,
 	}, nil)
@@ -167,7 +168,7 @@ func (s *DealService) Find(term string) (*DealsResponse, *Response, error) {
 
 	var record *DealsResponse
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -177,7 +178,7 @@ func (s *DealService) Find(term string) (*DealsResponse, *Response, error) {
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Deals/get_deals
-func (s *DealService) List() (*DealsResponse, *Response, error) {
+func (s *DealService) List(ctx context.Context) (*DealsResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "/deals", nil, nil)
 
 	if err != nil {
@@ -186,7 +187,7 @@ func (s *DealService) List() (*DealsResponse, *Response, error) {
 
 	var record *DealsResponse
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -196,7 +197,7 @@ func (s *DealService) List() (*DealsResponse, *Response, error) {
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Deals/post_deals_id_duplicate
-func (s *DealService) Duplicate(id int) (*DealUpdate, *Response, error) {
+func (s *DealService) Duplicate(ctx context.Context, id int) (*DealUpdate, *Response, error) {
 	uri := fmt.Sprintf("/deals/%v/duplicate", id)
 	req, err := s.client.NewRequest(http.MethodPost, uri, nil, nil)
 
@@ -206,7 +207,7 @@ func (s *DealService) Duplicate(id int) (*DealUpdate, *Response, error) {
 
 	var record *DealUpdate
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -216,7 +217,7 @@ func (s *DealService) Duplicate(id int) (*DealUpdate, *Response, error) {
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Deals/put_deals_id_merge
-func (s *DealService) Merge(id uint, opt *DealsMergeOptions) (*Response, error) {
+func (s *DealService) Merge(ctx context.Context, id int, opt *DealsMergeOptions) (*Response, error) {
 	uri := fmt.Sprintf("/deals/%v/duplicate", id)
 	req, err := s.client.NewRequest(http.MethodPut, uri, opt, nil)
 
@@ -224,11 +225,11 @@ func (s *DealService) Merge(id uint, opt *DealsMergeOptions) (*Response, error) 
 		return nil, err
 	}
 
-	return s.client.Do(req, nil)
+	return s.client.Do(ctx, req, nil)
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Deals/put_deals_id
-func (s *DealService) Update(id uint, opt *DealsUpdateOptions) (*Response, error) {
+func (s *DealService) Update(ctx context.Context, id int, opt *DealsUpdateOptions) (*Response, error) {
 	uri := fmt.Sprintf("/deals/%v", id)
 	req, err := s.client.NewRequest(http.MethodPut, uri, opt, nil)
 
@@ -236,11 +237,11 @@ func (s *DealService) Update(id uint, opt *DealsUpdateOptions) (*Response, error
 		return nil, err
 	}
 
-	return s.client.Do(req, nil)
+	return s.client.Do(ctx, req, nil)
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Deals/delete_deals_id_followers_follower_id
-func (s *DealService) DeleteFollower(id uint, followerId uint) (*Response, error) {
+func (s *DealService) DeleteFollower(ctx context.Context, id int, followerId int) (*Response, error) {
 	uri := fmt.Sprintf("/deals/%v/followers/%v", id, followerId)
 	req, err := s.client.NewRequest(http.MethodDelete, uri, nil, nil)
 
@@ -248,11 +249,11 @@ func (s *DealService) DeleteFollower(id uint, followerId uint) (*Response, error
 		return nil, err
 	}
 
-	return s.client.Do(req, nil)
+	return s.client.Do(ctx, req, nil)
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Deals/delete_deals
-func (s *DealService) DeleteMultiple(ids []int) (*Response, error) {
+func (s *DealService) DeleteMultiple(ctx context.Context, ids []int) (*Response, error) {
 	req, err := s.client.NewRequest(http.MethodDelete, "/deals", &DeleteMultipleOptions{
 		Ids: arrayToString(ids, ","),
 	}, nil)
@@ -261,11 +262,11 @@ func (s *DealService) DeleteMultiple(ids []int) (*Response, error) {
 		return nil, err
 	}
 
-	return s.client.Do(req, nil)
+	return s.client.Do(ctx, req, nil)
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Deals/delete_deals_id_participants_deal_participant_id
-func (s *DealService) DeleteParticipant(dealId uint, participantId uint) (*Response, error) {
+func (s *DealService) DeleteParticipant(ctx context.Context, dealId int, participantId int) (*Response, error) {
 	uri := fmt.Sprintf("/deals/%v/participants/%v", dealId, participantId)
 	req, err := s.client.NewRequest(http.MethodDelete, uri, nil, nil)
 
@@ -273,11 +274,11 @@ func (s *DealService) DeleteParticipant(dealId uint, participantId uint) (*Respo
 		return nil, err
 	}
 
-	return s.client.Do(req, nil)
+	return s.client.Do(ctx, req, nil)
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Deals/delete_deals_id
-func (s *DealService) Delete(id uint) (*Response, error) {
+func (s *DealService) Delete(ctx context.Context, id int) (*Response, error) {
 	uri := fmt.Sprintf("/deals/%v", id)
 	req, err := s.client.NewRequest(http.MethodDelete, uri, nil, nil)
 
@@ -285,11 +286,11 @@ func (s *DealService) Delete(id uint) (*Response, error) {
 		return nil, err
 	}
 
-	return s.client.Do(req, nil)
+	return s.client.Do(ctx, req, nil)
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Deals/delete_deals_id_products_product_attachment_id
-func (s *DealService) DeleteAttachedProduct(dealId uint, productAttachmentId uint) (*Response, error) {
+func (s *DealService) DeleteAttachedProduct(ctx context.Context, dealId int, productAttachmentId int) (*Response, error) {
 	uri := fmt.Sprintf("/deals/%v/products/%v", dealId, productAttachmentId)
 	req, err := s.client.NewRequest(http.MethodDelete, uri, nil, nil)
 
@@ -297,5 +298,5 @@ func (s *DealService) DeleteAttachedProduct(dealId uint, productAttachmentId uin
 		return nil, err
 	}
 
-	return s.client.Do(req, nil)
+	return s.client.Do(ctx, req, nil)
 }

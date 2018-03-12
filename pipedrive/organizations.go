@@ -1,6 +1,7 @@
 package pipedrive
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 )
@@ -80,7 +81,7 @@ type OrganizationResponse struct {
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Organizations/get_organizations
-func (s *OrganizationsService) List() (*OrganizationsResponse, *Response, error) {
+func (s *OrganizationsService) List(ctx context.Context) (*OrganizationsResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "/organizations", nil, nil)
 
 	if err != nil {
@@ -89,7 +90,7 @@ func (s *OrganizationsService) List() (*OrganizationsResponse, *Response, error)
 
 	var record *OrganizationsResponse
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -99,10 +100,10 @@ func (s *OrganizationsService) List() (*OrganizationsResponse, *Response, error)
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Persons/put_persons_id_merge
-func (s *OrganizationsService) Merge(id uint, mergeWithID uint) (*OrganizationResponse, *Response, error) {
+func (s *OrganizationsService) Merge(ctx context.Context, id int, mergeWithID int) (*OrganizationResponse, *Response, error) {
 	uri := fmt.Sprintf("/organizations/%v/merge", id)
 	req, err := s.client.NewRequest(http.MethodPut, uri, nil, struct {
-		MergeWithID uint `url:"merge_with_id"`
+		MergeWithID int `url:"merge_with_id"`
 	}{
 		mergeWithID,
 	})
@@ -113,7 +114,7 @@ func (s *OrganizationsService) Merge(id uint, mergeWithID uint) (*OrganizationRe
 
 	var record *OrganizationResponse
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -123,7 +124,7 @@ func (s *OrganizationsService) Merge(id uint, mergeWithID uint) (*OrganizationRe
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Organizations/delete_organizations_id_followers_follower_id
-func (s *OrganizationsService) DeleteFollower(id uint, followerID uint) (*Response, error) {
+func (s *OrganizationsService) DeleteFollower(ctx context.Context, id int, followerID int) (*Response, error) {
 	uri := fmt.Sprintf("/organizations/%v/followers/%v", id, followerID)
 	req, err := s.client.NewRequest(http.MethodDelete, uri, nil, nil)
 
@@ -131,11 +132,11 @@ func (s *OrganizationsService) DeleteFollower(id uint, followerID uint) (*Respon
 		return nil, err
 	}
 
-	return s.client.Do(req, nil)
+	return s.client.Do(ctx, req, nil)
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Organizations/delete_organizations_id
-func (s *OrganizationsService) Delete(id uint) (*Response, error) {
+func (s *OrganizationsService) Delete(ctx context.Context, id int) (*Response, error) {
 	uri := fmt.Sprintf("/organizations/%v", id)
 	req, err := s.client.NewRequest(http.MethodDelete, uri, nil, nil)
 
@@ -143,11 +144,11 @@ func (s *OrganizationsService) Delete(id uint) (*Response, error) {
 		return nil, err
 	}
 
-	return s.client.Do(req, nil)
+	return s.client.Do(ctx, req, nil)
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Organizations/delete_organizations
-func (s *OrganizationsService) DeleteMultiple(ids []int) (*Response, error) {
+func (s *OrganizationsService) DeleteMultiple(ctx context.Context, ids []int) (*Response, error) {
 	req, err := s.client.NewRequest(http.MethodDelete, "/organizations", &DeleteMultipleOptions{
 		Ids: arrayToString(ids, ","),
 	}, nil)
@@ -156,5 +157,5 @@ func (s *OrganizationsService) DeleteMultiple(ids []int) (*Response, error) {
 		return nil, err
 	}
 
-	return s.client.Do(req, nil)
+	return s.client.Do(ctx, req, nil)
 }

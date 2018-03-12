@@ -1,6 +1,9 @@
 package pipedrive
 
-import "net/http"
+import (
+	"context"
+	"net/http"
+)
 
 type UserSettingsService service
 
@@ -116,7 +119,7 @@ type UserSettings struct {
 
 // Lists settings of authorized user.
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/UserSettings/get_userSettings
-func (s *UserSettingsService) List() (*UserSettings, *Response, error) {
+func (s *UserSettingsService) List(ctx context.Context) (*UserSettings, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "/userSettings", nil, nil)
 
 	if err != nil {
@@ -125,7 +128,7 @@ func (s *UserSettingsService) List() (*UserSettings, *Response, error) {
 
 	var record *UserSettings
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err

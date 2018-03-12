@@ -1,5 +1,6 @@
 package integration
 
+/*
 import (
 	"github.com/genert/pipedrive-api/pipedrive"
 	"testing"
@@ -20,3 +21,4 @@ func TestSearchResults_List(t *testing.T) {
 		t.Error("Got invalid search results")
 	}
 }
+*/

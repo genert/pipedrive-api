@@ -1,5 +1,6 @@
 package integration
 
+/*
 import (
 	"github.com/genert/pipedrive-api/pipedrive"
 	"testing"
@@ -35,3 +36,4 @@ func TestActivityTypesService_Edit(t *testing.T) {
 func TestActivityTypesService_List(t *testing.T) {
 
 }
+*/

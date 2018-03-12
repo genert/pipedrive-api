@@ -1,6 +1,9 @@
 package pipedrive
 
-import "net/http"
+import (
+	"context"
+	"net/http"
+)
 
 type UserConnectionsService service
 
@@ -13,7 +16,7 @@ type UserConnections struct {
 
 // Returns data about all connections for authorized user.
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/UserConnections/get_userConnections
-func (s *UserConnectionsService) List() (*UserConnections, *Response, error) {
+func (s *UserConnectionsService) List(ctx context.Context) (*UserConnections, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "/userConnections", nil, nil)
 
 	if err != nil {
@@ -22,7 +25,7 @@ func (s *UserConnectionsService) List() (*UserConnections, *Response, error) {
 
 	var record *UserConnections
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err

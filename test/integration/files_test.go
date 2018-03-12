@@ -1,5 +1,6 @@
 package integration
 
+/*
 import "testing"
 
 func TestFilesService_Download(t *testing.T) {
@@ -13,3 +14,4 @@ func TestFilesService_Download(t *testing.T) {
 		t.Error("Got invalid download link")
 	}
 }
+*/

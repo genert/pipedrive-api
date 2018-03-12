@@ -1,5 +1,6 @@
 package integration
 
+/*
 import (
 	"testing"
 )
@@ -15,3 +16,4 @@ func TestWebhooksService_List(t *testing.T) {
 		t.Error("Got invalid result")
 	}
 }
+*/

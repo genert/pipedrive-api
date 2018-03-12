@@ -1,5 +1,6 @@
 package integration
 
+/*
 import (
 	"github.com/genert/pipedrive-api/pipedrive"
 	"github.com/go-test/deep"
@@ -59,3 +60,4 @@ func TestCurrenciesService_List2(t *testing.T) {
 		t.Error(diff)
 	}
 }
+*/

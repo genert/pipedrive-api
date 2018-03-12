@@ -1,12 +1,18 @@
 package pipedrive
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 )
 
+// ActivityTypesService handles activities related
+// methods of the Pipedrive API.
+//
+// Pipedrive API dcos: https://developers.pipedrive.com/docs/api/v1/#!/ActivityTypes
 type ActivityTypesService service
 
+// ActivityType represents a Pipedrive activity type.
 type ActivityType struct {
 	ID           int         `json:"id"`
 	OrderNr      int         `json:"order_nr"`
@@ -20,41 +26,36 @@ type ActivityType struct {
 	UpdateTime   interface{} `json:"update_time"`
 }
 
-type ActivityTypes struct {
-	Success bool           `json:"success"`
-	Data    []ActivityType `json:"data"`
+func (at ActivityType) String() string {
+	return Stringify(at)
 }
 
-type SingleActivityType struct {
+// ActivityTypesResponse represents multiple activity types response.
+type ActivityTypesResponse struct {
+	Success        bool           `json:"success"`
+	Data           []ActivityType `json:"data"`
+	AdditionalData AdditionalData `json:"additional_data,omitempty"`
+}
+
+// ActivityTypeResponse represents single activity type response.
+type ActivityTypeResponse struct {
 	Success bool         `json:"success"`
 	Data    ActivityType `json:"data"`
 }
 
-type ActivityTypesAddOptions struct {
-	Name    string `json:"name,omitempty"`
-	IconKey string `json:"icon_key,omitempty"`
-	Color   string `json:"color,omitempty"`
-}
-
-type ActivityTypesEditOptions struct {
-	Id      string `url:"id"`
-	Name    string `url:"name,omitempty"`
-	IconKey string `url:"icon_key,omitempty"`
-	Color   string `url:"color,omitempty"`
-	OrderNr uint   `url:"order_nr,omitempty"`
-}
-
+// List all activity types.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/ActivityTypes/get_activityTypes
-func (s *ActivityTypesService) List() (*ActivityTypes, *Response, error) {
+func (s *ActivityTypesService) List(ctx context.Context) (*ActivityTypesResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "/activityTypes", nil, nil)
 
 	if err != nil {
 		return nil, nil, err
 	}
 
-	var record *ActivityTypes
+	var record *ActivityTypesResponse
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -63,17 +64,27 @@ func (s *ActivityTypesService) List() (*ActivityTypes, *Response, error) {
 	return record, resp, nil
 }
 
+// ActivityTypesAddOptions specifices the optional parameters to the
+// ActivityTypesService.Create method.
+type ActivityTypesAddOptions struct {
+	Name    string `json:"name,omitempty"`
+	IconKey string `json:"icon_key,omitempty"`
+	Color   string `json:"color,omitempty"`
+}
+
+// Create a new activity type.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/ActivityTypes/post_activityTypes
-func (s *ActivityTypesService) Create(opt *ActivityTypesAddOptions) (*SingleActivityType, *Response, error) {
+func (s *ActivityTypesService) Create(ctx context.Context, opt *ActivityTypesAddOptions) (*ActivityTypeResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodPost, "/activityTypes", nil, opt)
 
 	if err != nil {
 		return nil, nil, err
 	}
 
-	var record *SingleActivityType
+	var record *ActivityTypeResponse
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -82,17 +93,29 @@ func (s *ActivityTypesService) Create(opt *ActivityTypesAddOptions) (*SingleActi
 	return record, resp, nil
 }
 
+// ActivityTypesEditOptions specifices the optional parameters to the
+// ActivityTypesService.Update method.
+type ActivityTypesEditOptions struct {
+	Name    string `url:"name,omitempty"`
+	IconKey string `url:"icon_key,omitempty"`
+	Color   string `url:"color,omitempty"`
+	OrderNr uint   `url:"order_nr,omitempty"`
+}
+
+// Update activity type.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/ActivityTypes/put_activityTypes_id
-func (s *ActivityTypesService) Edit(opt *ActivityTypesEditOptions) (*SingleActivityType, *Response, error) {
-	req, err := s.client.NewRequest(http.MethodPut, "/activityTypes", opt, nil)
+func (s *ActivityTypesService) Update(ctx context.Context, id int, opt *ActivityTypesEditOptions) (*ActivityTypeResponse, *Response, error) {
+	uri := fmt.Sprintf("/activityTpes/%v", id)
+	req, err := s.client.NewRequest(http.MethodPut, uri, nil, opt)
 
 	if err != nil {
 		return nil, nil, err
 	}
 
-	var record *SingleActivityType
+	var record *ActivityTypeResponse
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -101,8 +124,10 @@ func (s *ActivityTypesService) Edit(opt *ActivityTypesEditOptions) (*SingleActiv
 	return record, resp, nil
 }
 
+// DeleteMultiple deletes activity types in bulk.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/ActivityTypes/delete_activityTypes
-func (s *ActivityTypesService) DeleteMultiple(ids []int) (*Response, error) {
+func (s *ActivityTypesService) DeleteMultiple(ctx context.Context, ids []int) (*Response, error) {
 	req, err := s.client.NewRequest(http.MethodDelete, "/activityTypes", &DeleteMultipleOptions{
 		Ids: arrayToString(ids, ","),
 	}, nil)
@@ -111,11 +136,13 @@ func (s *ActivityTypesService) DeleteMultiple(ids []int) (*Response, error) {
 		return nil, err
 	}
 
-	return s.client.Do(req, nil)
+	return s.client.Do(ctx, req, nil)
 }
 
+// Delete an activity type.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/ActivityTypes/delete_activityTypes_id
-func (s *ActivityTypesService) Delete(id int) (*Response, error) {
+func (s *ActivityTypesService) Delete(ctx context.Context, id int) (*Response, error) {
 	uri := fmt.Sprintf("/activityTypes/%v", id)
 	req, err := s.client.NewRequest(http.MethodDelete, uri, nil, nil)
 
@@ -123,5 +150,5 @@ func (s *ActivityTypesService) Delete(id int) (*Response, error) {
 		return nil, err
 	}
 
-	return s.client.Do(req, nil)
+	return s.client.Do(ctx, req, nil)
 }

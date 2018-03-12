@@ -1,9 +1,17 @@
 package pipedrive
 
-import "net/http"
+import (
+	"context"
+	"net/http"
+)
 
+// ActivityFieldsService handles activity fields related
+// methods of the Pipedrive API.
+//
+// Pipedrive API dcos: https://developers.pipedrive.com/docs/api/v1/#!/ActivityFields
 type ActivityFieldsService service
 
+// ActivityField represents a Pipedrive activity field.
 type ActivityField struct {
 	ID                 int         `json:"id"`
 	Key                string      `json:"key"`
@@ -27,24 +35,26 @@ type ActivityField struct {
 	} `json:"options,omitempty"`
 }
 
-type ActivityFields struct {
+// ActivityFieldsResponse represents multiple activity fields response.
+type ActivityFieldsResponse struct {
 	Success        bool            `json:"success"`
 	Data           []ActivityField `json:"data"`
 	AdditionalData AdditionalData  `json:"additional_data"`
 }
 
-// Return list of all fields for activity.
+// List returns all fields for activity.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/ActivityFields/get_activityFields
-func (s *ActivityFieldsService) List() (*ActivityFields, *Response, error) {
+func (s *ActivityFieldsService) List(ctx context.Context) (*ActivityFieldsResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "/activityFields", nil, nil)
 
 	if err != nil {
 		return nil, nil, err
 	}
 
-	var record *ActivityFields
+	var record *ActivityFieldsResponse
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err

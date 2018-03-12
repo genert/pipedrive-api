@@ -1,6 +1,7 @@
 package pipedrive
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 )
@@ -44,7 +45,7 @@ type Goals struct {
 }
 
 type GoalsListOptions struct {
-	UserId   uint  `url:"user_id"`
+	UserID   uint  `url:"user_id"`
 	Everyone uint8 `url:"everyone"`
 }
 
@@ -56,16 +57,16 @@ type GoalGetResultsByIdOptions struct {
 type GoalCreateOptions struct {
 	GoalType     string `url:"goal_type"`
 	ExpectedType string `url:"expected_type"`
-	UserId       uint   `url:"user_io"`
-	StageId      uint   `url:"expected_type"`
+	UserID       uint   `url:"user_io"`
+	StageID      uint   `url:"expected_type"`
 	Period       string `url:"period"`
 	Expected     uint   `url:"expected"`
 	Currency     string `url:"currency"`
-	PipelineId   uint   `url:"pipeline_id"`
+	PipelineID   uint   `url:"pipeline_id"`
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Goals/get_goals
-func (s *GoalsService) List(opt *GoalsListOptions) (*Goals, *Response, error) {
+func (s *GoalsService) List(ctx context.Context, opt *GoalsListOptions) (*Goals, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "/goals", opt, nil)
 
 	if err != nil {
@@ -74,7 +75,7 @@ func (s *GoalsService) List(opt *GoalsListOptions) (*Goals, *Response, error) {
 
 	var record *Goals
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -85,7 +86,7 @@ func (s *GoalsService) List(opt *GoalsListOptions) (*Goals, *Response, error) {
 
 // Returns data about a specific goal.
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Goals/get_goals_id
-func (s *GoalsService) GetById(id int) (*SingleGoal, *Response, error) {
+func (s *GoalsService) GetById(ctx context.Context, id int) (*SingleGoal, *Response, error) {
 	uri := fmt.Sprintf("/goals/%v", id)
 	req, err := s.client.NewRequest(http.MethodGet, uri, nil, nil)
 
@@ -95,7 +96,7 @@ func (s *GoalsService) GetById(id int) (*SingleGoal, *Response, error) {
 
 	var record *SingleGoal
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -106,7 +107,7 @@ func (s *GoalsService) GetById(id int) (*SingleGoal, *Response, error) {
 
 // Adds a new goal, returns the ID upon success.
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Goals/post_goals
-func (s *GoalsService) Create(opt *GoalCreateOptions) (*SingleGoal, *Response, error) {
+func (s *GoalsService) Create(ctx context.Context, opt *GoalCreateOptions) (*SingleGoal, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodPost, "/goals", opt, nil)
 
 	if err != nil {
@@ -115,7 +116,7 @@ func (s *GoalsService) Create(opt *GoalCreateOptions) (*SingleGoal, *Response, e
 
 	var record *SingleGoal
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -126,7 +127,7 @@ func (s *GoalsService) Create(opt *GoalCreateOptions) (*SingleGoal, *Response, e
 
 // Updates the properties of a goal.
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Goals/put_goals_id
-func (s *GoalsService) Update(id int, opt *GoalCreateOptions) (*SingleGoal, *Response, error) {
+func (s *GoalsService) Update(ctx context.Context, id int, opt *GoalCreateOptions) (*SingleGoal, *Response, error) {
 	uri := fmt.Sprintf("/goals/%v", id)
 	req, err := s.client.NewRequest(http.MethodPost, uri, opt, nil)
 
@@ -136,7 +137,7 @@ func (s *GoalsService) Update(id int, opt *GoalCreateOptions) (*SingleGoal, *Res
 
 	var record *SingleGoal
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -147,7 +148,7 @@ func (s *GoalsService) Update(id int, opt *GoalCreateOptions) (*SingleGoal, *Res
 
 // Lists results of a specific goal.
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Goals/get_goals_id_results
-func (s *GoalsService) GetResultsById(id int, opt *GoalGetResultsByIdOptions) (*Goals, *Response, error) {
+func (s *GoalsService) GetResultsById(ctx context.Context, id int, opt *GoalGetResultsByIdOptions) (*Goals, *Response, error) {
 	uri := fmt.Sprintf("/goals/%v/results", id)
 	req, err := s.client.NewRequest(http.MethodGet, uri, opt, nil)
 
@@ -157,7 +158,7 @@ func (s *GoalsService) GetResultsById(id int, opt *GoalGetResultsByIdOptions) (*
 
 	var record *Goals
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -168,7 +169,7 @@ func (s *GoalsService) GetResultsById(id int, opt *GoalGetResultsByIdOptions) (*
 
 // Marks goal as deleted.
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Goals/delete_goals_id
-func (s *GoalsService) Delete(id int) (*Response, error) {
+func (s *GoalsService) Delete(ctx context.Context, id int) (*Response, error) {
 	uri := fmt.Sprintf("/goals/%v", id)
 	req, err := s.client.NewRequest(http.MethodDelete, uri, nil, nil)
 
@@ -176,5 +177,5 @@ func (s *GoalsService) Delete(id int) (*Response, error) {
 		return nil, err
 	}
 
-	return s.client.Do(req, nil)
+	return s.client.Do(ctx, req, nil)
 }

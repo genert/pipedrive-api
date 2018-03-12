@@ -1,17 +1,24 @@
 package pipedrive
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 )
 
+// ActivitiesService handles activities related
+// methods of the Pipedrive API.
+//
+// Pipedrive API dcos: https://developers.pipedrive.com/docs/api/v1/#!/Activities
 type ActivitiesService service
 
+// Participants represents a Pipedrive participant.
 type Participants struct {
 	PersonID    int  `json:"person_id"`
 	PrimaryFlag bool `json:"primary_flag"`
 }
 
+// Activity represents a Pipedrive activity.
 type Activity struct {
 	ID                 int            `json:"id"`
 	CompanyID          int            `json:"company_id"`
@@ -46,29 +53,36 @@ type Activity struct {
 	AssignedToUserID   int            `json:"assigned_to_user_id"`
 }
 
-type SingleActivity struct {
+func (a Activity) String() string {
+	return Stringify(a)
+}
+
+// ActivityResponse represents single activity response.
+type ActivityResponse struct {
 	Success bool     `json:"success"`
 	Data    Activity `json:"data"`
 }
 
-type Activities struct {
+// ActivitiesReponse represents multiple activities response.
+type ActivitiesReponse struct {
 	Success        bool           `json:"success"`
 	Data           []Activity     `json:"data"`
 	AdditionalData AdditionalData `json:"additional_data,omitempty"`
 }
 
-// Returns all activities assigned to a particular user
+// List returns all activities assigned to a particular user
+//
 // https://developers.pipedrive.com/docs/api/v1/#!/Activities/get_activities
-func (s *ActivitiesService) List(id int) (*Activities, *Response, error) {
+func (s *ActivitiesService) List(ctx context.Context) (*ActivitiesReponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "/activities", nil, nil)
 
 	if err != nil {
 		return nil, nil, err
 	}
 
-	var record *Activities
+	var record *ActivitiesReponse
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -77,9 +91,10 @@ func (s *ActivitiesService) List(id int) (*Activities, *Response, error) {
 	return record, resp, nil
 }
 
-// Returns details of a specific activity.
+// GetByID returns details of a specific activity.
+//
 // https://developers.pipedrive.com/docs/api/v1/#!/Activities/get_activities
-func (s *ActivitiesService) GetById(id int) (*Activities, *Response, error) {
+func (s *ActivitiesService) GetByID(ctx context.Context, id int) (*ActivitiesReponse, *Response, error) {
 	uri := fmt.Sprintf("/activities/%v", id)
 	req, err := s.client.NewRequest(http.MethodGet, uri, nil, nil)
 
@@ -87,9 +102,9 @@ func (s *ActivitiesService) GetById(id int) (*Activities, *Response, error) {
 		return nil, nil, err
 	}
 
-	var record *Activities
+	var record *ActivitiesReponse
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -98,32 +113,19 @@ func (s *ActivitiesService) GetById(id int) (*Activities, *Response, error) {
 	return record, resp, nil
 }
 
-type ActivitiesCreateOptions struct {
-	Subject      string      `url:"subject"`
-	Done         uint8       `url:"done"`
-	Type         string      `url:"type"`
-	DueDate      string      `url:"due_date"`
-	DueTime      string      `url:"due_time"`
-	Duration     string      `url:"duration"`
-	UserId       uint        `url:"user_id"`
-	DealId       uint        `url:"user_id"`
-	PersonId     uint        `url:"person_id"`
-	Participants interface{} `url:"participants"`
-	OrgId        uint        `url:"org_id"`
-}
-
 // Create an activity.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Activities/post_activities
-func (s *ActivitiesService) Create(opt *ActivitiesCreateOptions) (*SingleActivity, *Response, error) {
+func (s *ActivitiesService) Create(ctx context.Context, opt *ActivitiesCreateOptions) (*ActivityResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodPost, "/activities", nil, opt)
 
 	if err != nil {
 		return nil, nil, err
 	}
 
-	var record *SingleActivity
+	var record *ActivityResponse
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -132,9 +134,26 @@ func (s *ActivitiesService) Create(opt *ActivitiesCreateOptions) (*SingleActivit
 	return record, resp, nil
 }
 
-// Edit an activity
+// ActivitiesCreateOptions specifices the optional parameters to the
+// ActivitiesService.Update method.
+type ActivitiesCreateOptions struct {
+	Subject      string      `url:"subject,omitempty"`
+	Done         uint8       `url:"done,omitempty"`
+	Type         string      `url:"type,omitempty"`
+	DueDate      string      `url:"due_date,omitempty"`
+	DueTime      string      `url:"due_time,omitempty"`
+	Duration     string      `url:"duration,omitempty"`
+	UserID       uint        `url:"user_id,omitempty"`
+	DealID       uint        `url:"user_id,omitempty"`
+	PersonID     uint        `url:"person_id,omitempty"`
+	Participants interface{} `url:"participants,omitempty"`
+	OrgID        uint        `url:"org_id,omitempty"`
+}
+
+// Update an activity
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Activities/put_activities_id
-func (s *ActivitiesService) Update(id int, opt *ActivitiesCreateOptions) (*SingleActivity, *Response, error) {
+func (s *ActivitiesService) Update(ctx context.Context, id int, opt *ActivitiesCreateOptions) (*ActivityResponse, *Response, error) {
 	uri := fmt.Sprintf("/activities/%v", id)
 	req, err := s.client.NewRequest(http.MethodPut, uri, opt, nil)
 
@@ -142,9 +161,9 @@ func (s *ActivitiesService) Update(id int, opt *ActivitiesCreateOptions) (*Singl
 		return nil, nil, err
 	}
 
-	var record *SingleActivity
+	var record *ActivityResponse
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -153,9 +172,10 @@ func (s *ActivitiesService) Update(id int, opt *ActivitiesCreateOptions) (*Singl
 	return record, resp, nil
 }
 
-// Delete multiple activities in bulk.
+// DeleteMultiple activities in bulk.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Activities/delete_activities
-func (s *ActivitiesService) DeleteMultiple(ids []int) (*Response, error) {
+func (s *ActivitiesService) DeleteMultiple(ctx context.Context, ids []int) (*Response, error) {
 	req, err := s.client.NewRequest(http.MethodDelete, "/activities", &DeleteMultipleOptions{
 		Ids: arrayToString(ids, ","),
 	}, nil)
@@ -164,12 +184,12 @@ func (s *ActivitiesService) DeleteMultiple(ids []int) (*Response, error) {
 		return nil, err
 	}
 
-	return s.client.Do(req, nil)
+	return s.client.Do(ctx, req, nil)
 }
 
-// Deletes an activity.
+// Delete an activity.
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Activities/delete_activities_id
-func (s *ActivitiesService) Delete(id int) (*Response, error) {
+func (s *ActivitiesService) Delete(ctx context.Context, id int) (*Response, error) {
 	uri := fmt.Sprintf("/activities/%v", id)
 	req, err := s.client.NewRequest(http.MethodDelete, uri, nil, nil)
 
@@ -177,5 +197,5 @@ func (s *ActivitiesService) Delete(id int) (*Response, error) {
 		return nil, err
 	}
 
-	return s.client.Do(req, nil)
+	return s.client.Do(ctx, req, nil)
 }

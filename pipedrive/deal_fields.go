@@ -1,6 +1,7 @@
 package pipedrive
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 )
@@ -63,7 +64,7 @@ type DealFieldUpdateOptions struct {
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/DealFields/get_dealFields
-func (s *DealFieldsService) List() (*DealFieldsResponse, *Response, error) {
+func (s *DealFieldsService) List(ctx context.Context) (*DealFieldsResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "/dealFields", nil, nil)
 
 	if err != nil {
@@ -72,7 +73,7 @@ func (s *DealFieldsService) List() (*DealFieldsResponse, *Response, error) {
 
 	var record *DealFieldsResponse
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -82,7 +83,7 @@ func (s *DealFieldsService) List() (*DealFieldsResponse, *Response, error) {
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/DealFields/get_dealFields_id
-func (s *DealFieldsService) GetById(id int) (*DealFieldResponse, *Response, error) {
+func (s *DealFieldsService) GetById(ctx context.Context, id int) (*DealFieldResponse, *Response, error) {
 	uri := fmt.Sprintf("/dealFields/%v", id)
 	req, err := s.client.NewRequest(http.MethodGet, uri, nil, nil)
 
@@ -92,7 +93,7 @@ func (s *DealFieldsService) GetById(id int) (*DealFieldResponse, *Response, erro
 
 	var record *DealFieldResponse
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -102,7 +103,7 @@ func (s *DealFieldsService) GetById(id int) (*DealFieldResponse, *Response, erro
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/DealFields/post_dealFields
-func (s *DealFieldsService) Create(opt *DealFieldCreateOptions) (*DealFieldResponse, *Response, error) {
+func (s *DealFieldsService) Create(ctx context.Context, opt *DealFieldCreateOptions) (*DealFieldResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodPost, "/dealFields", nil, opt)
 
 	if err != nil {
@@ -111,7 +112,7 @@ func (s *DealFieldsService) Create(opt *DealFieldCreateOptions) (*DealFieldRespo
 
 	var record *DealFieldResponse
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -121,7 +122,7 @@ func (s *DealFieldsService) Create(opt *DealFieldCreateOptions) (*DealFieldRespo
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/DealFields/put_dealFields_id
-func (s *DealFieldsService) Update(id int, opt *DealFieldUpdateOptions) (*ProductFieldResponse, *Response, error) {
+func (s *DealFieldsService) Update(ctx context.Context, id int, opt *DealFieldUpdateOptions) (*ProductFieldResponse, *Response, error) {
 	uri := fmt.Sprintf("/dealFields/%v", id)
 	req, err := s.client.NewRequest(http.MethodPut, uri, nil, opt)
 
@@ -131,7 +132,7 @@ func (s *DealFieldsService) Update(id int, opt *DealFieldUpdateOptions) (*Produc
 
 	var record *ProductFieldResponse
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -141,7 +142,7 @@ func (s *DealFieldsService) Update(id int, opt *DealFieldUpdateOptions) (*Produc
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/DealFields/delete_dealFields
-func (s *DealFieldsService) DeleteMultiple(ids []int) (*Response, error) {
+func (s *DealFieldsService) DeleteMultiple(ctx context.Context, ids []int) (*Response, error) {
 	req, err := s.client.NewRequest(http.MethodDelete, "/dealFields", &DeleteMultipleOptions{
 		Ids: arrayToString(ids, ","),
 	}, nil)
@@ -150,11 +151,11 @@ func (s *DealFieldsService) DeleteMultiple(ids []int) (*Response, error) {
 		return nil, err
 	}
 
-	return s.client.Do(req, nil)
+	return s.client.Do(ctx, req, nil)
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/DealFields/delete_dealFields_id
-func (s *DealFieldsService) Delete(id uint) (*Response, error) {
+func (s *DealFieldsService) Delete(ctx context.Context, id uint) (*Response, error) {
 	uri := fmt.Sprintf("/dealFields/%v", id)
 	req, err := s.client.NewRequest(http.MethodDelete, uri, nil, nil)
 
@@ -162,5 +163,5 @@ func (s *DealFieldsService) Delete(id uint) (*Response, error) {
 		return nil, err
 	}
 
-	return s.client.Do(req, nil)
+	return s.client.Do(ctx, req, nil)
 }

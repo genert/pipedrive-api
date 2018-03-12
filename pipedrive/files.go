@@ -2,6 +2,7 @@ package pipedrive
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"io/ioutil"
 	"mime/multipart"
@@ -79,7 +80,7 @@ type UpdateFileDetailsOptions struct {
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Files/get_files
-func (s *FilesService) List() (*FilesResponse, *Response, error) {
+func (s *FilesService) List(ctx context.Context) (*FilesResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "/files", nil, nil)
 
 	if err != nil {
@@ -88,7 +89,7 @@ func (s *FilesService) List() (*FilesResponse, *Response, error) {
 
 	var record *FilesResponse
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -98,7 +99,7 @@ func (s *FilesService) List() (*FilesResponse, *Response, error) {
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Files/get_files_id
-func (s *FilesService) GetById(id int) (*FileResponse, *Response, error) {
+func (s *FilesService) GetById(ctx context.Context, id int) (*FileResponse, *Response, error) {
 	uri := fmt.Sprintf("/files/%v", id)
 	req, err := s.client.NewRequest(http.MethodGet, uri, nil, nil)
 
@@ -108,7 +109,7 @@ func (s *FilesService) GetById(id int) (*FileResponse, *Response, error) {
 
 	var record *FileResponse
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -130,7 +131,7 @@ func (s *FilesService) GetDownloadLinkById(id int) (string, *http.Request, error
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Files/post_files
-func (s *FilesService) Upload(fileName string, filePath string) (*FileResponse, *Response, error) {
+func (s *FilesService) Upload(ctx context.Context, fileName string, filePath string) (*FileResponse, *Response, error) {
 	file, err := os.Open(filePath)
 
 	if err != nil {
@@ -175,7 +176,7 @@ func (s *FilesService) Upload(fileName string, filePath string) (*FileResponse, 
 
 	var record *FileResponse
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -185,7 +186,7 @@ func (s *FilesService) Upload(fileName string, filePath string) (*FileResponse, 
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Files/post_files_remote
-func (s *FilesService) CreateRemoteLinkedFile(opt *CreateRemoteLinkedFileOptions) (*FileResponse, *Response, error) {
+func (s *FilesService) CreateRemoteLinkedFile(ctx context.Context, opt *CreateRemoteLinkedFileOptions) (*FileResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodPost, "/files/remote", nil, opt)
 
 	if err != nil {
@@ -194,7 +195,7 @@ func (s *FilesService) CreateRemoteLinkedFile(opt *CreateRemoteLinkedFileOptions
 
 	var record *FileResponse
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -204,7 +205,7 @@ func (s *FilesService) CreateRemoteLinkedFile(opt *CreateRemoteLinkedFileOptions
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Files/post_files_remoteLink
-func (s *FilesService) LinkRemoteFileToItem(opt *LinkRemoteFileToItemOptions) (*FileResponse, *Response, error) {
+func (s *FilesService) LinkRemoteFileToItem(ctx context.Context, opt *LinkRemoteFileToItemOptions) (*FileResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodPost, "/files/remoteLink", nil, opt)
 
 	if err != nil {
@@ -213,7 +214,7 @@ func (s *FilesService) LinkRemoteFileToItem(opt *LinkRemoteFileToItemOptions) (*
 
 	var record *FileResponse
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -223,7 +224,7 @@ func (s *FilesService) LinkRemoteFileToItem(opt *LinkRemoteFileToItemOptions) (*
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Files/put_files_id
-func (s *FilesService) UpdateFileDetails(id uint, opt *UpdateFileDetailsOptions) (*FileResponse, *Response, error) {
+func (s *FilesService) UpdateFileDetails(ctx context.Context, id int, opt *UpdateFileDetailsOptions) (*FileResponse, *Response, error) {
 	uri := fmt.Sprintf("/files/%v", id)
 	req, err := s.client.NewRequest(http.MethodPut, uri, nil, opt)
 
@@ -233,7 +234,7 @@ func (s *FilesService) UpdateFileDetails(id uint, opt *UpdateFileDetailsOptions)
 
 	var record *FileResponse
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -243,7 +244,7 @@ func (s *FilesService) UpdateFileDetails(id uint, opt *UpdateFileDetailsOptions)
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Files/delete_files_id
-func (s *FilesService) Delete(id int) (*Response, error) {
+func (s *FilesService) Delete(ctx context.Context, id int) (*Response, error) {
 	uri := fmt.Sprintf("/files/%v", id)
 	req, err := s.client.NewRequest(http.MethodDelete, uri, nil, nil)
 
@@ -251,5 +252,5 @@ func (s *FilesService) Delete(id int) (*Response, error) {
 		return nil, err
 	}
 
-	return s.client.Do(req, nil)
+	return s.client.Do(ctx, req, nil)
 }

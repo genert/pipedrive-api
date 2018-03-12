@@ -1,6 +1,7 @@
 package pipedrive
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 )
@@ -55,7 +56,7 @@ type NoteUpdateOptions struct {
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Notes/get_notes
-func (s *NotesService) List() (*NotesResponse, *Response, error) {
+func (s *NotesService) List(ctx context.Context) (*NotesResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "/notes", nil, nil)
 
 	if err != nil {
@@ -64,7 +65,7 @@ func (s *NotesService) List() (*NotesResponse, *Response, error) {
 
 	var record *NotesResponse
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -74,7 +75,7 @@ func (s *NotesService) List() (*NotesResponse, *Response, error) {
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Notes/get_notes_id
-func (s *NotesService) GetById(id int) (*NoteResponse, *Response, error) {
+func (s *NotesService) GetById(ctx context.Context, id int) (*NoteResponse, *Response, error) {
 	uri := fmt.Sprintf("/notes/%v", id)
 	req, err := s.client.NewRequest(http.MethodGet, uri, nil, nil)
 
@@ -84,7 +85,7 @@ func (s *NotesService) GetById(id int) (*NoteResponse, *Response, error) {
 
 	var record *NoteResponse
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -94,7 +95,7 @@ func (s *NotesService) GetById(id int) (*NoteResponse, *Response, error) {
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Notes/get_notes_id
-func (s *NotesService) Create(opt *NoteCreateOptions) (*NoteResponse, *Response, error) {
+func (s *NotesService) Create(ctx context.Context, opt *NoteCreateOptions) (*NoteResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodPost, "/filters", nil, opt)
 
 	if err != nil {
@@ -103,7 +104,7 @@ func (s *NotesService) Create(opt *NoteCreateOptions) (*NoteResponse, *Response,
 
 	var record *NoteResponse
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -113,7 +114,7 @@ func (s *NotesService) Create(opt *NoteCreateOptions) (*NoteResponse, *Response,
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Notes/put_notes_id
-func (s *NotesService) Update(id int, opt *NoteUpdateOptions) (*NoteResponse, *Response, error) {
+func (s *NotesService) Update(ctx context.Context, id int, opt *NoteUpdateOptions) (*NoteResponse, *Response, error) {
 	uri := fmt.Sprintf("/filters/%v", id)
 	req, err := s.client.NewRequest(http.MethodPut, uri, nil, opt)
 
@@ -123,7 +124,7 @@ func (s *NotesService) Update(id int, opt *NoteUpdateOptions) (*NoteResponse, *R
 
 	var record *NoteResponse
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -133,7 +134,7 @@ func (s *NotesService) Update(id int, opt *NoteUpdateOptions) (*NoteResponse, *R
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Notes/delete_notes_id
-func (s *NotesService) Delete(id int) (*Response, error) {
+func (s *NotesService) Delete(ctx context.Context, id int) (*Response, error) {
 	uri := fmt.Sprintf("/notes/%v", id)
 	req, err := s.client.NewRequest(http.MethodDelete, uri, nil, nil)
 
@@ -141,5 +142,5 @@ func (s *NotesService) Delete(id int) (*Response, error) {
 		return nil, err
 	}
 
-	return s.client.Do(req, nil)
+	return s.client.Do(ctx, req, nil)
 }

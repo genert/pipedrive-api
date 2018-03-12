@@ -1,5 +1,6 @@
 package integration
 
+/*
 import (
 	"github.com/genert/pipedrive-api/pipedrive"
 	"testing"
@@ -24,3 +25,4 @@ func TestRecents_List(t *testing.T) {
 		t.Error("Could not get successful recents response")
 	}
 }
+*/

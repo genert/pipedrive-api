@@ -1,5 +1,6 @@
 package integration
 
+/*
 import "testing"
 
 func TestActivityFieldsService_List(t *testing.T) {
@@ -13,3 +14,4 @@ func TestActivityFieldsService_List(t *testing.T) {
 		t.Error("Got invalid activity fields")
 	}
 }
+*/

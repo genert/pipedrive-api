@@ -1,6 +1,7 @@
 package pipedrive
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 )
@@ -68,7 +69,7 @@ type StagesDeals struct {
 
 // Returns data about all stages.
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Stages
-func (s *StagesService) List(opt *StagesListOptions) (*Stages, *Response, error) {
+func (s *StagesService) List(ctx context.Context, opt *StagesListOptions) (*Stages, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "/stages", nil, opt)
 
 	if err != nil {
@@ -77,7 +78,7 @@ func (s *StagesService) List(opt *StagesListOptions) (*Stages, *Response, error)
 
 	var record *Stages
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -88,7 +89,7 @@ func (s *StagesService) List(opt *StagesListOptions) (*Stages, *Response, error)
 
 // Returns data about a specific stage.
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Stages/get_stages_id
-func (s *StagesService) GetById(id uint) (*SingleStage, *Response, error) {
+func (s *StagesService) GetById(ctx context.Context, id int) (*SingleStage, *Response, error) {
 	uri := fmt.Sprintf("/stages/%v", id)
 	req, err := s.client.NewRequest(http.MethodGet, uri, nil, nil)
 
@@ -98,7 +99,7 @@ func (s *StagesService) GetById(id uint) (*SingleStage, *Response, error) {
 
 	var record *SingleStage
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -109,7 +110,7 @@ func (s *StagesService) GetById(id uint) (*SingleStage, *Response, error) {
 
 // Lists deals in a specific stage.
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Stages/get_stages_id_deals
-func (s *StagesService) GetDealsInStage(id uint, opt *StagesGetDealsInStageOptions) (*StagesDeals, *Response, error) {
+func (s *StagesService) GetDealsInStage(ctx context.Context, id int, opt *StagesGetDealsInStageOptions) (*StagesDeals, *Response, error) {
 	uri := fmt.Sprintf("/stages/%v/deals", id)
 	req, err := s.client.NewRequest(http.MethodGet, uri, nil, opt)
 
@@ -119,7 +120,7 @@ func (s *StagesService) GetDealsInStage(id uint, opt *StagesGetDealsInStageOptio
 
 	var record *StagesDeals
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -130,7 +131,7 @@ func (s *StagesService) GetDealsInStage(id uint, opt *StagesGetDealsInStageOptio
 
 // Adds a new stage, returns the ID upon success.
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Stages/post_stages
-func (s *StagesService) Create(opt *StagesCreateOptions) (*SingleStage, *Response, error) {
+func (s *StagesService) Create(ctx context.Context, opt *StagesCreateOptions) (*SingleStage, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodPost, "/stages", nil, opt)
 
 	if err != nil {
@@ -139,7 +140,7 @@ func (s *StagesService) Create(opt *StagesCreateOptions) (*SingleStage, *Respons
 
 	var record *SingleStage
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -150,7 +151,7 @@ func (s *StagesService) Create(opt *StagesCreateOptions) (*SingleStage, *Respons
 
 // Updates the properties of a stage.
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Stages/put_stages_id
-func (s *StagesService) Update(id uint, opt *StagesGetDealsInStageOptions) (*SingleStage, *Response, error) {
+func (s *StagesService) Update(ctx context.Context, id int, opt *StagesGetDealsInStageOptions) (*SingleStage, *Response, error) {
 	uri := fmt.Sprintf("/stages/%v", id)
 	req, err := s.client.NewRequest(http.MethodPut, uri, nil, opt)
 
@@ -160,7 +161,7 @@ func (s *StagesService) Update(id uint, opt *StagesGetDealsInStageOptions) (*Sin
 
 	var record *SingleStage
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -171,7 +172,7 @@ func (s *StagesService) Update(id uint, opt *StagesGetDealsInStageOptions) (*Sin
 
 // Marks multiple stages as deleted.
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Stages/put_stages_id
-func (s *StagesService) DeleteMultiple(ids []int) (*Response, error) {
+func (s *StagesService) DeleteMultiple(ctx context.Context, ids []int) (*Response, error) {
 	req, err := s.client.NewRequest(http.MethodDelete, "/stages", &DeleteMultipleOptions{
 		Ids: arrayToString(ids, ","),
 	}, nil)
@@ -180,12 +181,12 @@ func (s *StagesService) DeleteMultiple(ids []int) (*Response, error) {
 		return nil, err
 	}
 
-	return s.client.Do(req, nil)
+	return s.client.Do(ctx, req, nil)
 }
 
 // Marks a stage as deleted.
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Stages/delete_stages_id
-func (s *StagesService) Delete(id int) (*Response, error) {
+func (s *StagesService) Delete(ctx context.Context, id int) (*Response, error) {
 	uri := fmt.Sprintf("/stages/%v", id)
 	req, err := s.client.NewRequest(http.MethodDelete, uri, nil, nil)
 
@@ -193,5 +194,5 @@ func (s *StagesService) Delete(id int) (*Response, error) {
 		return nil, err
 	}
 
-	return s.client.Do(req, nil)
+	return s.client.Do(ctx, req, nil)
 }

@@ -1,16 +1,19 @@
 package pipedrive
 
-import "net/http"
+import (
+	"context"
+	"net/http"
+)
 
 type NoteFieldsService service
 
 type Option struct {
-	Id    int    `json:"id,omitempty"`
+	ID    int    `json:"id,omitempty"`
 	Label string `json:"label,omitempty"`
 }
 
 type NoteField struct {
-	Id                   int      `json:"id,omitempty"`
+	ID                   int      `json:"id,omitempty"`
 	Key                  string   `json:"key,omitempty"`
 	Name                 string   `json:"name,omitempty"`
 	ActiveFlag           bool     `json:"active_flag,omitempty"`
@@ -28,7 +31,7 @@ type NoteFields struct {
 }
 
 // Return list of all fields for note.
-func (s *NoteFieldsService) List() (*NoteFields, *Response, error) {
+func (s *NoteFieldsService) List(ctx context.Context) (*NoteFields, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "/noteFields", nil, nil)
 
 	if err != nil {
@@ -37,7 +40,7 @@ func (s *NoteFieldsService) List() (*NoteFields, *Response, error) {
 
 	var record *NoteFields
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err

@@ -1,6 +1,7 @@
 package pipedrive
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"time"
@@ -50,7 +51,7 @@ type WebhooksCreateOptions struct {
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Webhooks/get_webhooks
-func (s *WebhooksService) List() (*Webhooks, *Response, error) {
+func (s *WebhooksService) List(ctx context.Context) (*Webhooks, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "/webhooks", nil, nil)
 
 	if err != nil {
@@ -59,7 +60,7 @@ func (s *WebhooksService) List() (*Webhooks, *Response, error) {
 
 	var record *Webhooks
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -69,7 +70,7 @@ func (s *WebhooksService) List() (*Webhooks, *Response, error) {
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Webhooks/post_webhooks
-func (s *WebhooksService) Create(opt *WebhooksCreateOptions) (*SingleWebhook, *Response, error) {
+func (s *WebhooksService) Create(ctx context.Context, opt *WebhooksCreateOptions) (*SingleWebhook, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodPost, "/webhooks", nil, opt)
 
 	if err != nil {
@@ -78,7 +79,7 @@ func (s *WebhooksService) Create(opt *WebhooksCreateOptions) (*SingleWebhook, *R
 
 	var record *SingleWebhook
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -88,7 +89,7 @@ func (s *WebhooksService) Create(opt *WebhooksCreateOptions) (*SingleWebhook, *R
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Webhooks/delete_webhooks_id
-func (s *WebhooksService) Delete(id int) (*Response, error) {
+func (s *WebhooksService) Delete(ctx context.Context, id int) (*Response, error) {
 	uri := fmt.Sprintf("/webhooks/%v", id)
 	req, err := s.client.NewRequest(http.MethodDelete, uri, nil, nil)
 
@@ -96,5 +97,5 @@ func (s *WebhooksService) Delete(id int) (*Response, error) {
 		return nil, err
 	}
 
-	return s.client.Do(req, nil)
+	return s.client.Do(ctx, req, nil)
 }

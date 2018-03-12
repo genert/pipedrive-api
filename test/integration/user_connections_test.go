@@ -1,5 +1,6 @@
 package integration
 
+/*
 import "testing"
 
 func TestUserConnectionsService_List(t *testing.T) {
@@ -13,3 +14,4 @@ func TestUserConnectionsService_List(t *testing.T) {
 		t.Error("Got invalid result")
 	}
 }
+*/

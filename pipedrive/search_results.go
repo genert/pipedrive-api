@@ -1,6 +1,9 @@
 package pipedrive
 
-import "net/http"
+import (
+	"context"
+	"net/http"
+)
 
 type SearchResultsService service
 
@@ -44,7 +47,7 @@ type SearchResultsListOptions struct {
 
 // Performs a search across the account and returns SearchResults.
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/SearchResults/get_searchResults
-func (s *SearchResultsService) List(opt *SearchResultsListOptions) (*Recents, *Response, error) {
+func (s *SearchResultsService) List(ctx context.Context, opt *SearchResultsListOptions) (*Recents, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "/searchResults", opt, nil)
 
 	if err != nil {
@@ -53,7 +56,7 @@ func (s *SearchResultsService) List(opt *SearchResultsListOptions) (*Recents, *R
 
 	var record *Recents
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err

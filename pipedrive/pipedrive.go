@@ -2,6 +2,7 @@ package pipedrive
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -58,6 +59,7 @@ type Client struct {
 	SearchResults     *SearchResultsService
 	Users             *UsersService
 	Filters           *FiltersService
+	Activities        *ActivitiesService
 	ActivityFields    *ActivityFieldsService
 	ActivityTypes     *ActivityTypesService
 	Authorizations    *AuthorizationsService
@@ -191,7 +193,11 @@ func (c *Client) checkResponse(r *http.Response) error {
 	}
 }
 
-func (c *Client) Do(request *http.Request, v interface{}) (*Response, error) {
+// Do sends an API request and returns the API response. T
+//
+// The provided ctx must be non-nil. If it is canceled or times out,
+// ctx.Err() will be returned.
+func (c *Client) Do(ctx context.Context, request *http.Request, v interface{}) (*Response, error) {
 	if err := c.checkRateLimitBeforeDo(request); err != nil {
 		return &Response{
 			Response: err.Response,
@@ -201,9 +207,13 @@ func (c *Client) Do(request *http.Request, v interface{}) (*Response, error) {
 	resp, err := c.client.Do(request)
 
 	if err != nil {
-		return &Response{
-			Response: resp,
-		}, err
+		select {
+		case <-ctx.Done():
+			return nil, ctx.Err()
+		default:
+		}
+
+		return nil, err
 	}
 
 	defer func() {
@@ -296,6 +306,7 @@ func NewClient(options *Config) *Client {
 	c.SearchResults = (*SearchResultsService)(&c.common)
 	c.Users = (*UsersService)(&c.common)
 	c.Filters = (*FiltersService)(&c.common)
+	c.Activities = (*ActivitiesService)(&c.common)
 	c.ActivityFields = (*ActivityFieldsService)(&c.common)
 	c.ActivityTypes = (*ActivityTypesService)(&c.common)
 	c.Authorizations = (*AuthorizationsService)(&c.common)

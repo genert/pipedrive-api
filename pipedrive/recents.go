@@ -1,6 +1,9 @@
 package pipedrive
 
-import "net/http"
+import (
+	"context"
+	"net/http"
+)
 
 type RecentsService service
 
@@ -48,7 +51,7 @@ type RecentsListOptions struct {
 
 // Returns data about all recent changes occured after given timestamp.
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Recents/get_recents
-func (s *RecentsService) List(opt *RecentsListOptions) (*Recents, *Response, error) {
+func (s *RecentsService) List(ctx context.Context, opt *RecentsListOptions) (*Recents, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "/recents", opt, nil)
 
 	if err != nil {
@@ -57,7 +60,7 @@ func (s *RecentsService) List(opt *RecentsListOptions) (*Recents, *Response, err
 
 	var record *Recents
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err

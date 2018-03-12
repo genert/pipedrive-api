@@ -1,6 +1,7 @@
 package pipedrive
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 )
@@ -78,7 +79,7 @@ type ProductUpdateOptions struct {
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Products/get_products_id_deals
-func (s *ProductsService) GetAttachedDeals(id int) (*ProductAttachedDealsResponse, *Response, error) {
+func (s *ProductsService) GetAttachedDeals(ctx context.Context, id int) (*ProductAttachedDealsResponse, *Response, error) {
 	uri := fmt.Sprintf("/products/%v/deals", id)
 	req, err := s.client.NewRequest(http.MethodGet, uri, nil, nil)
 
@@ -88,7 +89,7 @@ func (s *ProductsService) GetAttachedDeals(id int) (*ProductAttachedDealsRespons
 
 	var record *ProductAttachedDealsResponse
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -98,7 +99,7 @@ func (s *ProductsService) GetAttachedDeals(id int) (*ProductAttachedDealsRespons
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Products/get_products
-func (s *ProductsService) List() (*ProductsResponse, *Response, error) {
+func (s *ProductsService) List(ctx context.Context) (*ProductsResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "/products", nil, nil)
 
 	if err != nil {
@@ -107,7 +108,7 @@ func (s *ProductsService) List() (*ProductsResponse, *Response, error) {
 
 	var record *ProductsResponse
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -117,7 +118,7 @@ func (s *ProductsService) List() (*ProductsResponse, *Response, error) {
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Products/get_products_find
-func (s *ProductsService) Find(term string) (*ProductsResponse, *Response, error) {
+func (s *ProductsService) Find(ctx context.Context, term string) (*ProductsResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "/products/find", &ProductFindOptions{
 		Term: term,
 	}, nil)
@@ -128,7 +129,7 @@ func (s *ProductsService) Find(term string) (*ProductsResponse, *Response, error
 
 	var record *ProductsResponse
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -138,7 +139,7 @@ func (s *ProductsService) Find(term string) (*ProductsResponse, *Response, error
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Products/get_products_id
-func (s *ProductsService) GetById(id int) (*ProductResponse, *Response, error) {
+func (s *ProductsService) GetById(ctx context.Context, id int) (*ProductResponse, *Response, error) {
 	uri := fmt.Sprintf("/products/%v", id)
 	req, err := s.client.NewRequest(http.MethodGet, uri, nil, nil)
 
@@ -148,7 +149,7 @@ func (s *ProductsService) GetById(id int) (*ProductResponse, *Response, error) {
 
 	var record *ProductResponse
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -158,7 +159,7 @@ func (s *ProductsService) GetById(id int) (*ProductResponse, *Response, error) {
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Products/post_products
-func (s *ProductsService) Create(opt *ProductCreateOptions) (*ProductResponse, *Response, error) {
+func (s *ProductsService) Create(ctx context.Context, opt *ProductCreateOptions) (*ProductResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodPost, "/products", nil, opt)
 
 	if err != nil {
@@ -167,7 +168,7 @@ func (s *ProductsService) Create(opt *ProductCreateOptions) (*ProductResponse, *
 
 	var record *ProductResponse
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -177,7 +178,7 @@ func (s *ProductsService) Create(opt *ProductCreateOptions) (*ProductResponse, *
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Products/put_products_id
-func (s *ProductsService) Update(id int, opt *ProductUpdateOptions) (*ProductResponse, *Response, error) {
+func (s *ProductsService) Update(ctx context.Context, id int, opt *ProductUpdateOptions) (*ProductResponse, *Response, error) {
 	uri := fmt.Sprintf("/products/%v", id)
 	req, err := s.client.NewRequest(http.MethodPut, uri, nil, opt)
 
@@ -187,7 +188,7 @@ func (s *ProductsService) Update(id int, opt *ProductUpdateOptions) (*ProductRes
 
 	var record *ProductResponse
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -197,7 +198,7 @@ func (s *ProductsService) Update(id int, opt *ProductUpdateOptions) (*ProductRes
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Products/delete_products_id
-func (s *ProductsService) Delete(id int) (*Response, error) {
+func (s *ProductsService) Delete(ctx context.Context, id int) (*Response, error) {
 	uri := fmt.Sprintf("/products/%v", id)
 	req, err := s.client.NewRequest(http.MethodDelete, uri, nil, nil)
 
@@ -205,11 +206,11 @@ func (s *ProductsService) Delete(id int) (*Response, error) {
 		return nil, err
 	}
 
-	return s.client.Do(req, nil)
+	return s.client.Do(ctx, req, nil)
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Products/delete_products_id_followers_follower_id
-func (s *ProductsService) DeleteFollower(id int, followerID int) (*Response, error) {
+func (s *ProductsService) DeleteFollower(ctx context.Context, id int, followerID int) (*Response, error) {
 	uri := fmt.Sprintf("/products/%v/followers/%v", id, followerID)
 	req, err := s.client.NewRequest(http.MethodDelete, uri, nil, nil)
 
@@ -217,5 +218,5 @@ func (s *ProductsService) DeleteFollower(id int, followerID int) (*Response, err
 		return nil, err
 	}
 
-	return s.client.Do(req, nil)
+	return s.client.Do(ctx, req, nil)
 }

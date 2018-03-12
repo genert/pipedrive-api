@@ -1,6 +1,7 @@
 package pipedrive
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 )
@@ -114,7 +115,7 @@ type UserCreateOptions struct {
 }
 
 // https://developers.pipedrive.com/docs/api/v1/#!/Users/get_users_id_followers
-func (s *UsersService) ListFollowers(id int) (*UserFollowersResponse, *Response, error) {
+func (s *UsersService) ListFollowers(ctx context.Context, id int) (*UserFollowersResponse, *Response, error) {
 	uri := fmt.Sprintf("/users/%v/followers", id)
 	req, err := s.client.NewRequest(http.MethodGet, uri, nil, nil)
 
@@ -124,7 +125,7 @@ func (s *UsersService) ListFollowers(id int) (*UserFollowersResponse, *Response,
 
 	var record *UserFollowersResponse
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -134,7 +135,7 @@ func (s *UsersService) ListFollowers(id int) (*UserFollowersResponse, *Response,
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Users/get_users
-func (s *UsersService) List() (*UsersResponse, *Response, error) {
+func (s *UsersService) List(ctx context.Context) (*UsersResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "/users", nil, nil)
 
 	if err != nil {
@@ -143,7 +144,7 @@ func (s *UsersService) List() (*UsersResponse, *Response, error) {
 
 	var record *UsersResponse
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -153,7 +154,7 @@ func (s *UsersService) List() (*UsersResponse, *Response, error) {
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Users/post_users
-func (s *UsersService) Create(opt *UserCreateOptions) (*UserSingleResponse, *Response, error) {
+func (s *UsersService) Create(ctx context.Context, opt *UserCreateOptions) (*UserSingleResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodPost, "/users", nil, opt)
 
 	if err != nil {
@@ -162,7 +163,7 @@ func (s *UsersService) Create(opt *UserCreateOptions) (*UserSingleResponse, *Res
 
 	var record *UserSingleResponse
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -172,7 +173,7 @@ func (s *UsersService) Create(opt *UserCreateOptions) (*UserSingleResponse, *Res
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Users/get_users_find
-func (s *UsersService) FindByName(opt *UsersFindByNameOptions) (*UsersResponse, *Response, error) {
+func (s *UsersService) FindByName(ctx context.Context, opt *UsersFindByNameOptions) (*UsersResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "/users/find", opt, nil)
 
 	if err != nil {
@@ -181,7 +182,7 @@ func (s *UsersService) FindByName(opt *UsersFindByNameOptions) (*UsersResponse, 
 
 	var record *UsersResponse
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -191,7 +192,7 @@ func (s *UsersService) FindByName(opt *UsersFindByNameOptions) (*UsersResponse, 
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Users/get_users_me
-func (s *UsersService) GetCurrentUser() (*UserSingleResponse, *Response, error) {
+func (s *UsersService) GetCurrentUser(ctx context.Context) (*UserSingleResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "/users/me", nil, nil)
 
 	if err != nil {
@@ -200,7 +201,7 @@ func (s *UsersService) GetCurrentUser() (*UserSingleResponse, *Response, error) 
 
 	var record *UserSingleResponse
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -210,7 +211,7 @@ func (s *UsersService) GetCurrentUser() (*UserSingleResponse, *Response, error) 
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Users/get_users_id
-func (s *UsersService) GetById(id int) (*UserFollowersResponse, *Response, error) {
+func (s *UsersService) GetById(ctx context.Context, id int) (*UserFollowersResponse, *Response, error) {
 	uri := fmt.Sprintf("/users/%v", id)
 	req, err := s.client.NewRequest(http.MethodGet, uri, nil, nil)
 
@@ -220,7 +221,7 @@ func (s *UsersService) GetById(id int) (*UserFollowersResponse, *Response, error
 
 	var record *UserFollowersResponse
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -230,7 +231,7 @@ func (s *UsersService) GetById(id int) (*UserFollowersResponse, *Response, error
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Users/get_users_id_permissions
-func (s *UsersService) ListUserPermissions(id int) (*UserPermissionsResponse, *Response, error) {
+func (s *UsersService) ListUserPermissions(ctx context.Context, id int) (*UserPermissionsResponse, *Response, error) {
 	uri := fmt.Sprintf("/users/%v/permissions", id)
 	req, err := s.client.NewRequest(http.MethodGet, uri, nil, nil)
 
@@ -240,7 +241,7 @@ func (s *UsersService) ListUserPermissions(id int) (*UserPermissionsResponse, *R
 
 	var record *UserPermissionsResponse
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -250,7 +251,7 @@ func (s *UsersService) ListUserPermissions(id int) (*UserPermissionsResponse, *R
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Users/get_users_id_roleSettings
-func (s *UsersService) ListUserRoleSettings(id int) (*UserRoleSettingsResponse, *Response, error) {
+func (s *UsersService) ListUserRoleSettings(ctx context.Context, id int) (*UserRoleSettingsResponse, *Response, error) {
 	uri := fmt.Sprintf("/users/%v/roleSettings", id)
 	req, err := s.client.NewRequest(http.MethodGet, uri, nil, nil)
 
@@ -260,7 +261,7 @@ func (s *UsersService) ListUserRoleSettings(id int) (*UserRoleSettingsResponse, 
 
 	var record *UserRoleSettingsResponse
 
-	resp, err := s.client.Do(req, &record)
+	resp, err := s.client.Do(ctx, req, &record)
 
 	if err != nil {
 		return nil, resp, err
@@ -270,7 +271,7 @@ func (s *UsersService) ListUserRoleSettings(id int) (*UserRoleSettingsResponse, 
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Users/put_users_id
-func (s *UsersService) UpdateUserDetails(id int, opt *UsersUpdateUserDetailsOptions) (*Response, error) {
+func (s *UsersService) UpdateUserDetails(ctx context.Context, id int, opt *UsersUpdateUserDetailsOptions) (*Response, error) {
 	uri := fmt.Sprintf("/users/%v", id)
 	req, err := s.client.NewRequest(http.MethodPut, uri, opt, nil)
 
@@ -278,7 +279,7 @@ func (s *UsersService) UpdateUserDetails(id int, opt *UsersUpdateUserDetailsOpti
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, nil)
+	resp, err := s.client.Do(ctx, req, nil)
 
 	if err != nil {
 		return resp, err
@@ -288,7 +289,7 @@ func (s *UsersService) UpdateUserDetails(id int, opt *UsersUpdateUserDetailsOpti
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Users/delete_users_id_permissionSetAssignments
-func (s *UsersService) DeletePermissionSetAssignment(id int, opt *DeletePermissionSetAssignmentOptions) (*Response, error) {
+func (s *UsersService) DeletePermissionSetAssignment(ctx context.Context, id int, opt *DeletePermissionSetAssignmentOptions) (*Response, error) {
 	uri := fmt.Sprintf("/users/%v/permissionSetAssignments", id)
 	req, err := s.client.NewRequest(http.MethodDelete, uri, opt, nil)
 
@@ -296,7 +297,7 @@ func (s *UsersService) DeletePermissionSetAssignment(id int, opt *DeletePermissi
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, nil)
+	resp, err := s.client.Do(ctx, req, nil)
 
 	if err != nil {
 		return resp, err
@@ -306,7 +307,7 @@ func (s *UsersService) DeletePermissionSetAssignment(id int, opt *DeletePermissi
 }
 
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Users/delete_users_id_roleAssignments
-func (s *UsersService) DeleteRoleAssignment(id int, opt *DeleteRoleAssignmentOptions) (*Response, error) {
+func (s *UsersService) DeleteRoleAssignment(ctx context.Context, id int, opt *DeleteRoleAssignmentOptions) (*Response, error) {
 	uri := fmt.Sprintf("/users/%v/roleAssignments", id)
 	req, err := s.client.NewRequest(http.MethodDelete, uri, opt, nil)
 
@@ -314,7 +315,7 @@ func (s *UsersService) DeleteRoleAssignment(id int, opt *DeleteRoleAssignmentOpt
 		return nil, err
 	}
 
-	resp, err := s.client.Do(req, nil)
+	resp, err := s.client.Do(ctx, req, nil)
 
 	if err != nil {
 		return resp, err

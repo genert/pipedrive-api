@@ -6,8 +6,13 @@ import (
 	"net/http"
 )
 
+// ProductFieldsService handles pipelines related
+// methods of the Pipedrive API.
+//
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/ProductFields
 type ProductFieldsService service
 
+// ProductField represents a Pipedrive product field.
 type ProductField struct {
 	ID                 int         `json:"id"`
 	Key                string      `json:"key"`
@@ -37,29 +42,26 @@ type ProductField struct {
 	} `json:"options,omitempty"`
 }
 
+func (p ProductField) String() string {
+	return Stringify(p)
+}
+
+// ProductFieldsResponse represents multiple product fields response.
 type ProductFieldsResponse struct {
 	Success        bool           `json:"success"`
 	Data           []ProductField `json:"data"`
 	AdditionalData AdditionalData `json:"additional_data"`
 }
 
+// ProductFieldResponse represents single product field response.
 type ProductFieldResponse struct {
 	Success        bool           `json:"success"`
 	Data           ProductField   `json:"data"`
 	AdditionalData AdditionalData `json:"additional_data"`
 }
 
-type ProductFieldCreateOptions struct {
-	Name      string    `url:"name"`
-	FieldType FieldType `url:"field_type"`
-	Options   string    `url:"options"`
-}
-
-type ProductFieldUpdateOptions struct {
-	Name    string `url:"name"`
-	Options string `url:"options"`
-}
-
+// List returns all data about product fields.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/ProductFields/get_productFields
 func (s *ProductFieldsService) List(ctx context.Context) (*ProductFieldsResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "/productFields", nil, nil)
@@ -79,8 +81,10 @@ func (s *ProductFieldsService) List(ctx context.Context) (*ProductFieldsResponse
 	return record, resp, nil
 }
 
+// GetByID returns a specific product field.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/ProductFields/get_productFields_id
-func (s *ProductFieldsService) GetById(ctx context.Context, id int) (*ProductFieldResponse, *Response, error) {
+func (s *ProductFieldsService) GetByID(ctx context.Context, id int) (*ProductFieldResponse, *Response, error) {
 	uri := fmt.Sprintf("/productFields/%v", id)
 	req, err := s.client.NewRequest(http.MethodGet, uri, nil, nil)
 
@@ -99,6 +103,16 @@ func (s *ProductFieldsService) GetById(ctx context.Context, id int) (*ProductFie
 	return record, resp, nil
 }
 
+// ProductFieldCreateOptions specifices the optional parameters to the
+// ProductFieldsService.Create method.
+type ProductFieldCreateOptions struct {
+	Name      string    `url:"name"`
+	FieldType FieldType `url:"field_type"`
+	Options   string    `url:"options"`
+}
+
+// Create a new product field.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/ProductFields/post_productFields
 func (s *ProductFieldsService) Create(ctx context.Context, opt *ProductFieldCreateOptions) (*ProductFieldResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodPost, "/productFields", nil, opt)
@@ -118,6 +132,15 @@ func (s *ProductFieldsService) Create(ctx context.Context, opt *ProductFieldCrea
 	return record, resp, nil
 }
 
+// ProductFieldUpdateOptions specifices the optional parameters to the
+// ProductFieldsService.Update method.
+type ProductFieldUpdateOptions struct {
+	Name    string `url:"name"`
+	Options string `url:"options"`
+}
+
+// Update a specific product field.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/ProductFields/put_productFields_id
 func (s *ProductFieldsService) Update(ctx context.Context, id int, opt *ProductFieldUpdateOptions) (*ProductFieldResponse, *Response, error) {
 	uri := fmt.Sprintf("/productFields/%v", id)
@@ -138,6 +161,8 @@ func (s *ProductFieldsService) Update(ctx context.Context, id int, opt *ProductF
 	return record, resp, nil
 }
 
+// DeleteMultiple marks multiple product fields as deleted.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/ProductFields/delete_productFields
 func (s *ProductFieldsService) DeleteMultiple(ctx context.Context, ids []int) (*Response, error) {
 	req, err := s.client.NewRequest(http.MethodDelete, "/productFields", &DeleteMultipleOptions{
@@ -151,6 +176,8 @@ func (s *ProductFieldsService) DeleteMultiple(ctx context.Context, ids []int) (*
 	return s.client.Do(ctx, req, nil)
 }
 
+// Delete marks a specific product field as deleted.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/ProductFields/delete_productFields_id
 func (s *ProductFieldsService) Delete(ctx context.Context, id int) (*Response, error) {
 	uri := fmt.Sprintf("/productFields/%v", id)

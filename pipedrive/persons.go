@@ -75,6 +75,10 @@ type Person struct {
 	CcEmail                         string      `json:"cc_email"`
 }
 
+func (p Person) String() string {
+	return Stringify(p)
+}
+
 // PersonsRespose represents multiple persons response.
 type PersonsRespose struct {
 	Success        bool           `json:"success"`

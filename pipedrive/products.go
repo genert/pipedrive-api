@@ -6,8 +6,13 @@ import (
 	"net/http"
 )
 
+// ProductsService handles pipelines related
+// methods of the Pipedrive API.
+//
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Products
 type ProductsService service
 
+// Product represents a Pipedrive product.
 type Product struct {
 	ID         int         `json:"id"`
 	Name       string      `json:"name"`
@@ -41,43 +46,33 @@ type Product struct {
 	} `json:"prices"`
 }
 
+func (p Product) String() string {
+	return Stringify(p)
+}
+
+// ProductsResponse represents multiple products response.
 type ProductsResponse struct {
 	Success        bool           `json:"success"`
 	Data           []Product      `json:"data"`
 	AdditionalData AdditionalData `json:"additional_data,omitempty"`
 }
 
+// ProductResponse represents single product response.
 type ProductResponse struct {
 	Success        bool           `json:"success"`
 	Data           []Product      `json:"data"`
 	AdditionalData AdditionalData `json:"additional_data,omitempty"`
 }
 
+// ProductAttachedDealsResponse represents attached deals response.
 type ProductAttachedDealsResponse struct {
 	Success        bool           `json:"success"`
 	Data           []Deal         `json:"data"`
 	AdditionalData AdditionalData `json:"additional_data,omitempty"`
 }
 
-type ProductFindOptions struct {
-	Term string `url:"term"`
-}
-
-type ProductCreateOptions struct {
-	Name       string     `url:"name"`
-	Code       string     `url:"code"`
-	Unit       string     `url:"unit"`
-	Tax        int        `url:"tax"`
-	ActiveFlag ActiveFlag `url:"active_flag"`
-	VisibleTo  VisibleTo  `url:"visible_to"`
-	OwnerId    int        `url:"owner_id"`
-	Prices     string     `url:"prices"`
-}
-
-type ProductUpdateOptions struct {
-	*ProductCreateOptions
-}
-
+// GetAttachedDeals returns product attached deals.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Products/get_products_id_deals
 func (s *ProductsService) GetAttachedDeals(ctx context.Context, id int) (*ProductAttachedDealsResponse, *Response, error) {
 	uri := fmt.Sprintf("/products/%v/deals", id)
@@ -98,6 +93,8 @@ func (s *ProductsService) GetAttachedDeals(ctx context.Context, id int) (*Produc
 	return record, resp, nil
 }
 
+// List returns all data about products.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Products/get_products
 func (s *ProductsService) List(ctx context.Context) (*ProductsResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "/products", nil, nil)
@@ -117,6 +114,14 @@ func (s *ProductsService) List(ctx context.Context) (*ProductsResponse, *Respons
 	return record, resp, nil
 }
 
+// ProductFindOptions specifices the optional parameters to the
+// ProductFindOptions.Find method.
+type ProductFindOptions struct {
+	Term string `url:"term"`
+}
+
+// Find products.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Products/get_products_find
 func (s *ProductsService) Find(ctx context.Context, term string) (*ProductsResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "/products/find", &ProductFindOptions{
@@ -138,8 +143,10 @@ func (s *ProductsService) Find(ctx context.Context, term string) (*ProductsRespo
 	return record, resp, nil
 }
 
+// GetByID returns a specific product.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Products/get_products_id
-func (s *ProductsService) GetById(ctx context.Context, id int) (*ProductResponse, *Response, error) {
+func (s *ProductsService) GetByID(ctx context.Context, id int) (*ProductResponse, *Response, error) {
 	uri := fmt.Sprintf("/products/%v", id)
 	req, err := s.client.NewRequest(http.MethodGet, uri, nil, nil)
 
@@ -158,6 +165,21 @@ func (s *ProductsService) GetById(ctx context.Context, id int) (*ProductResponse
 	return record, resp, nil
 }
 
+// ProductCreateOptions specifices the optional parameters to the
+// ProductsService.Create method.
+type ProductCreateOptions struct {
+	Name       string     `url:"name"`
+	Code       string     `url:"code"`
+	Unit       string     `url:"unit"`
+	Tax        int        `url:"tax"`
+	ActiveFlag ActiveFlag `url:"active_flag"`
+	VisibleTo  VisibleTo  `url:"visible_to"`
+	OwnerID    int        `url:"owner_id"`
+	Prices     string     `url:"prices"`
+}
+
+// Create a new product.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Products/post_products
 func (s *ProductsService) Create(ctx context.Context, opt *ProductCreateOptions) (*ProductResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodPost, "/products", nil, opt)
@@ -177,6 +199,21 @@ func (s *ProductsService) Create(ctx context.Context, opt *ProductCreateOptions)
 	return record, resp, nil
 }
 
+// ProductUpdateOptions specifices the optional parameters to the
+// ProductsService.Update method.
+type ProductUpdateOptions struct {
+	Name       string     `url:"name"`
+	Code       string     `url:"code"`
+	Unit       string     `url:"unit"`
+	Tax        int        `url:"tax"`
+	ActiveFlag ActiveFlag `url:"active_flag"`
+	VisibleTo  VisibleTo  `url:"visible_to"`
+	OwnerID    int        `url:"owner_id"`
+	Prices     string     `url:"prices"`
+}
+
+// Update a specific product.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Products/put_products_id
 func (s *ProductsService) Update(ctx context.Context, id int, opt *ProductUpdateOptions) (*ProductResponse, *Response, error) {
 	uri := fmt.Sprintf("/products/%v", id)
@@ -197,6 +234,8 @@ func (s *ProductsService) Update(ctx context.Context, id int, opt *ProductUpdate
 	return record, resp, nil
 }
 
+// Delete a specific product.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Products/delete_products_id
 func (s *ProductsService) Delete(ctx context.Context, id int) (*Response, error) {
 	uri := fmt.Sprintf("/products/%v", id)
@@ -209,6 +248,8 @@ func (s *ProductsService) Delete(ctx context.Context, id int) (*Response, error)
 	return s.client.Do(ctx, req, nil)
 }
 
+// DeleteFollower removes follower from a specific product.
+//
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Products/delete_products_id_followers_follower_id
 func (s *ProductsService) DeleteFollower(ctx context.Context, id int, followerID int) (*Response, error) {
 	uri := fmt.Sprintf("/products/%v/followers/%v", id, followerID)

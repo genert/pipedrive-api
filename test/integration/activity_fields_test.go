@@ -1,17 +1,18 @@
 package integration
 
-/*
-import "testing"
+import (
+	"context"
+	"testing"
+)
 
 func TestActivityFieldsService_List(t *testing.T) {
-	searchResults, _, err := client.ActivityFields.List()
+	result, _, err := client.ActivityFields.List(context.Background())
 
 	if err != nil {
-		t.Errorf("Could not get search results: %v", err)
+		t.Errorf("Could not get results: %v", err)
 	}
 
-	if searchResults.Success != true {
-		t.Error("Got invalid activity fields")
+	if result.Success != true {
+		t.Error("Got invalid result")
 	}
 }
-*/

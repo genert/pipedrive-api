@@ -188,8 +188,22 @@ func (c *Client) checkResponse(r *http.Response) error {
 		return nil
 	}
 
-	return &ErrorResponse{
-		Response: r,
+	data, err := ioutil.ReadAll(r.Body)
+	errorResponse := &ErrorResponse{Response: r}
+
+	if err == nil && data != nil {
+		json.Unmarshal(data, errorResponse)
+	}
+
+	switch {
+	case r.StatusCode == http.StatusForbidden && r.Header.Get(headerRateRemaining) == "0":
+		return &RateLimitError{
+			Rate:     parseRateFromResponse(r),
+			Response: errorResponse.Response,
+		}
+
+	default:
+		return errorResponse
 	}
 }
 

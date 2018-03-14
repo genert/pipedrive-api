@@ -25,6 +25,7 @@ _testmain.go
 # Editors
 .idea
 .vscode
+!.vscode/launch.json
 
 # Local API tests
 tests.sh

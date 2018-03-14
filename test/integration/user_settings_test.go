@@ -1,10 +1,12 @@
 package integration
 
-/*
-import "testing"
+import (
+	"context"
+	"testing"
+)
 
 func TestUserSettings_List(t *testing.T) {
-	result, _, err := client.UserSettings.List()
+	result, _, err := client.UserSettings.List(context.Background())
 
 	if err != nil {
 		t.Errorf("Could not get webhooks list: %v", err)
@@ -14,4 +16,3 @@ func TestUserSettings_List(t *testing.T) {
 		t.Error("Got invalid result")
 	}
 }
-*/

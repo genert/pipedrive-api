@@ -1,10 +1,11 @@
 package integration
 
-/*
-import "testing"
+import (
+	"testing"
+)
 
-func TestFilesService_Download(t *testing.T) {
-	result, _, err := client.Files.GetDownloadLinkById(1)
+func TestFilesService_GetDownloadLinkByID(t *testing.T) {
+	result, _, err := client.Files.GetDownloadLinkByID(1)
 
 	if err != nil {
 		t.Errorf("Could not get result: %v", err)
@@ -14,4 +15,3 @@ func TestFilesService_Download(t *testing.T) {
 		t.Error("Got invalid download link")
 	}
 }
-*/

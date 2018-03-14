@@ -1,24 +1,22 @@
 package integration
 
-/*
 import (
-	"github.com/genert/pipedrive-api/pipedrive"
+	"context"
 	"testing"
+
+	"github.com/genert/pipedrive-api/pipedrive"
 )
 
-func TestSearchResults_List(t *testing.T) {
-	opt := &pipedrive.SearchResultsListOptions{
+func TestSearchResults_Search(t *testing.T) {
+	result, _, err := client.SearchResults.Search(context.Background(), &pipedrive.SearchResultsListOptions{
 		Term: "test",
-	}
-
-	searchResults, _, err := client.SearchResults.List(opt)
+	})
 
 	if err != nil {
 		t.Errorf("Could not get search results: %v", err)
 	}
 
-	if searchResults.Success != true {
+	if result.Success != true {
 		t.Error("Got invalid search results")
 	}
 }
-*/

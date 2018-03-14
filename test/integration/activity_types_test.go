@@ -1,14 +1,15 @@
 package integration
 
-/*
 import (
-	"github.com/genert/pipedrive-api/pipedrive"
+	"context"
 	"testing"
+
+	"github.com/genert/pipedrive-api/pipedrive"
 )
 
 func TestActivityTypesService_Create(t *testing.T) {
-	result, _, err := client.ActivityTypes.Create(&pipedrive.ActivityTypesAddOptions{
-		Name:    "test",
+	result, _, err := client.ActivityTypes.Create(context.Background(), &pipedrive.ActivityTypesAddOptions{
+		Name:    RandomString(13),
 		IconKey: "email",
 	})
 
@@ -20,20 +21,3 @@ func TestActivityTypesService_Create(t *testing.T) {
 		t.Error("Could not create activity type successfully")
 	}
 }
-
-func TestActivityTypesService_Delete(t *testing.T) {
-
-}
-
-func TestActivityTypesService_DeleteMultiple(t *testing.T) {
-
-}
-
-func TestActivityTypesService_Edit(t *testing.T) {
-
-}
-
-func TestActivityTypesService_List(t *testing.T) {
-
-}
-*/

@@ -1,20 +1,21 @@
 package integration
 
-/*
 import (
+	"context"
+	"testing"
+
 	"github.com/genert/pipedrive-api/pipedrive"
 	"github.com/go-test/deep"
-	"testing"
 )
 
 func TestCurrenciesService_List(t *testing.T) {
-	currencies, _, err := client.Currencies.List(nil)
+	result, _, err := client.Currencies.List(context.Background(), nil)
 
 	if err != nil {
 		t.Errorf("Could not get currencies: %v", err)
 	}
 
-	if currencies.Success != true {
+	if result.Success != true {
 		t.Error("Unsuccessful currencies request")
 	}
 
@@ -28,13 +29,13 @@ func TestCurrenciesService_List(t *testing.T) {
 		IsCustomFlag:  false,
 	}
 
-	if diff := deep.Equal(expectedCurrency, currencies.Data[0]); diff != nil {
+	if diff := deep.Equal(expectedCurrency, result.Data[0]); diff != nil {
 		t.Error(diff)
 	}
 }
 
 func TestCurrenciesService_List2(t *testing.T) {
-	currencies, _, err := client.Currencies.List(&pipedrive.CurrenciesListOptions{
+	result, _, err := client.Currencies.List(context.Background(), &pipedrive.CurrenciesListOptions{
 		Term: "estonia",
 	})
 
@@ -42,7 +43,7 @@ func TestCurrenciesService_List2(t *testing.T) {
 		t.Errorf("Could not get currencies: %v", err)
 	}
 
-	if currencies.Success != true {
+	if result.Success != true {
 		t.Error("Unsuccessful currencies request")
 	}
 
@@ -56,8 +57,7 @@ func TestCurrenciesService_List2(t *testing.T) {
 		IsCustomFlag:  false,
 	}
 
-	if diff := deep.Equal(expectedCurrency, currencies.Data[0]); diff != nil {
+	if diff := deep.Equal(expectedCurrency, result.Data[0]); diff != nil {
 		t.Error(diff)
 	}
 }
-*/

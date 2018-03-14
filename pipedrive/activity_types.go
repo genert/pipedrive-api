@@ -67,8 +67,8 @@ func (s *ActivityTypesService) List(ctx context.Context) (*ActivityTypesResponse
 // ActivityTypesAddOptions specifices the optional parameters to the
 // ActivityTypesService.Create method.
 type ActivityTypesAddOptions struct {
-	Name    string `url:"name,omitempty"`
-	IconKey string `url:"icon_key,omitempty"`
+	Name    string `url:"name"`
+	IconKey string `url:"icon_key"`
 	Color   string `url:"color,omitempty"`
 }
 

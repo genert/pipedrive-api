@@ -139,7 +139,9 @@ func (c *Client) NewRequest(method, url string, opt interface{}, body interface{
 
 	if body != nil {
 		buf = new(bytes.Buffer)
-		err := json.NewEncoder(buf).Encode(body)
+		enc := json.NewEncoder(buf)
+		enc.SetEscapeHTML(false)
+		err := enc.Encode(body)
 
 		if err != nil {
 			return nil, err
@@ -234,8 +236,6 @@ func (c *Client) Do(ctx context.Context, request *http.Request, v interface{}) (
 		io.CopyN(ioutil.Discard, resp.Body, 512)
 		resp.Body.Close()
 	}()
-
-	defer resp.Body.Close()
 
 	response := newResponse(resp)
 

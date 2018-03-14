@@ -33,3 +33,5 @@ tests.sh
 /main.go
 
 /vendor
+
+debug.test

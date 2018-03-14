@@ -1,6 +1,7 @@
 sudo: false
 language: go
 go:
+  - "1.10.x"
   - 1.9.x
   - 1.8.x
   - 1.7.x
@@ -23,5 +24,3 @@ script:
   - go tool vet .
   - go test -v -race ./...
   - go test -v -tags=integration -run=^$ ./test/integration # Check that integration test builds successfully
-# - go test ./pipedrive -api -covermode=count -coverprofile=coverage.out
-# - $HOME/gopath/bin/goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN

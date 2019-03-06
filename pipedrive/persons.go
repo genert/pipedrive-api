@@ -131,7 +131,7 @@ func (s *PersonsService) List(ctx context.Context) (*PersonsRespose, *Response, 
 func (s *PersonsService) AddFollower(ctx context.Context, id int, userID int) (*PersonAddFollowerResponse, *Response, error) {
 	uri := fmt.Sprintf("/persons/%v/followers", id)
 	req, err := s.client.NewRequest(http.MethodPost, uri, nil, struct {
-		UserID int `url:"user_id"`
+		UserID int `json:"user_id"`
 	}{
 		userID,
 	})
@@ -154,13 +154,13 @@ func (s *PersonsService) AddFollower(ctx context.Context, id int, userID int) (*
 // PersonCreateOptions specifices the optional parameters to the
 // PersonsService.Create method.
 type PersonCreateOptions struct {
-	Name      string    `url:"name"`
-	OwnerID   uint      `url:"owner_id"`
-	OrgID     uint      `url:"org_id"`
-	Email     string    `url:"email"`
-	Phone     string    `url:"phone"`
-	VisibleTo VisibleTo `url:"visible_to"`
-	AddTime   Timestamp `url:"add_time"`
+	Name      string    `json:"name"`
+	OwnerID   uint      `json:"owner_id"`
+	OrgID     uint      `json:"org_id"`
+	Email     string    `json:"email"`
+	Phone     string    `json:"phone"`
+	VisibleTo VisibleTo `json:"visible_to"`
+	AddTime   Timestamp `json:"add_time"`
 }
 
 // Create a new person.
@@ -168,13 +168,13 @@ type PersonCreateOptions struct {
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Persons/post_persons
 func (s *PersonsService) Create(ctx context.Context, opt *PersonCreateOptions) (*PersonResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodPost, "/persons", nil, struct {
-		Name      string    `url:"name"`
-		OwnerID   uint      `url:"owner_id"`
-		OrgID     uint      `url:"org_id"`
-		Email     string    `url:"email"`
-		Phone     string    `url:"phone"`
-		VisibleTo VisibleTo `url:"visible_to"`
-		AddTime   string    `url:"add_time"`
+		Name      string    `json:"name"`
+		OwnerID   uint      `json:"owner_id"`
+		OrgID     uint      `json:"org_id"`
+		Email     string    `json:"email"`
+		Phone     string    `json:"phone"`
+		VisibleTo VisibleTo `json:"visible_to"`
+		AddTime   string    `json:"add_time"`
 	}{
 		opt.Name,
 		opt.OwnerID,
@@ -203,12 +203,12 @@ func (s *PersonsService) Create(ctx context.Context, opt *PersonCreateOptions) (
 // PersonUpdateOptions specifices the optional parameters to the
 // PersonUpdateOptions.Update method.
 type PersonUpdateOptions struct {
-	Name      string    `url:"name"`
-	OwnerID   uint      `url:"owner_id"`
-	OrgID     uint      `url:"org_id"`
-	Email     string    `url:"email"`
-	Phone     string    `url:"phone"`
-	VisibleTo VisibleTo `url:"visible_to"`
+	Name      string    `json:"name"`
+	OwnerID   uint      `json:"owner_id"`
+	OrgID     uint      `json:"org_id"`
+	Email     string    `json:"email"`
+	Phone     string    `json:"phone"`
+	VisibleTo VisibleTo `json:"visible_to"`
 }
 
 // Update a specific person.
@@ -239,7 +239,7 @@ func (s *PersonsService) Update(ctx context.Context, id int, opt *PersonUpdateOp
 func (s *PersonsService) Merge(ctx context.Context, id int, mergeWithID int) (*PersonResponse, *Response, error) {
 	uri := fmt.Sprintf("/persons/%v/merge", id)
 	req, err := s.client.NewRequest(http.MethodPut, uri, nil, struct {
-		MergeWithID int `url:"merge_with_id"`
+		MergeWithID int `json:"merge_with_id"`
 	}{
 		mergeWithID,
 	})

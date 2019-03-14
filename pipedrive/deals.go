@@ -236,16 +236,17 @@ func (s *DealService) Merge(ctx context.Context, id int, opt *DealsMergeOptions)
 // DealsUpdateOptions specifices the optional parameters to the
 // DealService.Update method.
 type DealsUpdateOptions struct {
-	Title          string `url:"title,omitempty"`
-	Value          string `url:"value,omitempty"`
-	Currency       string `url:"currency,omitempty"`
-	UserID         uint   `url:"user_id,omitempty"`
-	PersonID       uint   `url:"person_id,omitempty"`
-	OrganizationID uint   `url:"org_id,omitempty"`
-	StageID        uint   `url:"stage_id,omitempty"`
-	Status         string `url:"status,omitempty"`
-	LostReason     string `url:"lost_reason,omitempty"`
-	VisibleTo      uint   `url:"visible_to,omitempty"`
+	Title               string `json:"title,omitempty"`
+	Value               string `json:"value,omitempty"`
+	Currency            string `json:"currency,omitempty"`
+	UserID              uint   `json:"user_id,omitempty"`
+	PersonID            uint   `json:"person_id,omitempty"`
+	OrganizationID      uint   `json:"org_id,omitempty"`
+	StageID             uint   `json:"stage_id,omitempty"`
+	Status              string `json:"status,omitempty"`
+	LostReason          string `json:"lost_reason,omitempty"`
+	VisibleTo           uint   `json:"visible_to,omitempty"`
+	RequirementAnalysis string `json:"56d3d40c37c0db60fff576ae73ba2fea0d58dc09"`
 }
 
 // Update a deal.
@@ -330,4 +331,74 @@ func (s *DealService) DeleteAttachedProduct(ctx context.Context, dealID int, pro
 	}
 
 	return s.client.Do(ctx, req, nil)
+}
+
+// DealCreateOptions specifices the optional parameters to the
+// DealsService.Create method.
+type DealCreateOptions struct {
+	Title               string    `json:"title"`
+	Value               string    `json:"value"`
+	Currency            string    `json:"currency"`
+	UserID              uint      `json:"user_id"`
+	PersonID            uint      `json:"person_id"`
+	OrgID               uint      `json:"org_id"`
+	StageID             uint      `json:"stage_id"`
+	Status              string    `json:"status"`
+	Probability         uint      `json:"probability"`
+	LostReason          string    `json:"lost_reason"`
+	AddTime             Timestamp `json:"add_time"`
+	VisibleTo           VisibleTo `json:"visible_to"`
+	RequirementAnalysis string    `json:"56d3d40c37c0db60fff576ae73ba2fea0d58dc09"`
+	WantedStartTime     Timestamp `json:"a3114acce61bb930180af173b395d76f42af8794"`
+}
+
+// Create a new deal.
+//
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Deals/post_deals
+func (s *DealService) Create(ctx context.Context, opt *DealCreateOptions) (*DealResponse, *Response, error) {
+	req, err := s.client.NewRequest(http.MethodPost, "/deals", nil, struct {
+		Title               string    `json:"title"`
+		Value               string    `json:"value"`
+		Currency            string    `json:"currency"`
+		UserID              uint      `json:"user_id"`
+		PersonID            uint      `json:"person_id"`
+		OrgID               uint      `json:"org_id"`
+		StageID             uint      `json:"stage_id"`
+		Status              string    `json:"status"`
+		Probability         uint      `json:"probability"`
+		LostReason          string    `json:"lost_reason"`
+		AddTime             string    `json:"add_time"`
+		VisibleTo           VisibleTo `json:"visible_to"`
+		RequirementAnalysis string    `json:"56d3d40c37c0db60fff576ae73ba2fea0d58dc09"`
+		WantedStartTime     string    `json:"a3114acce61bb930180af173b395d76f42af8794"`
+	}{
+		opt.Title,
+		opt.Value,
+		opt.Currency,
+		opt.UserID,
+		opt.PersonID,
+		opt.OrgID,
+		opt.StageID,
+		opt.Status,
+		opt.Probability,
+		opt.LostReason,
+		opt.AddTime.FormatFull(),
+		opt.VisibleTo,
+		opt.RequirementAnalysis,
+		opt.WantedStartTime.FormatFull(),
+	})
+
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var record *DealResponse
+
+	resp, err := s.client.Do(ctx, req, &record)
+
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return record, resp, nil
 }

@@ -137,17 +137,17 @@ func (s *ActivitiesService) Create(ctx context.Context, opt *ActivitiesCreateOpt
 // ActivitiesCreateOptions specifices the optional parameters to the
 // ActivitiesService.Update method.
 type ActivitiesCreateOptions struct {
-	Subject      string      `url:"subject,omitempty"`
-	Done         uint8       `url:"done,omitempty"`
-	Type         string      `url:"type,omitempty"`
-	DueDate      string      `url:"due_date,omitempty"`
-	DueTime      string      `url:"due_time,omitempty"`
-	Duration     string      `url:"duration,omitempty"`
-	UserID       uint        `url:"user_id,omitempty"`
-	DealID       uint        `url:"user_id,omitempty"`
-	PersonID     uint        `url:"person_id,omitempty"`
-	Participants interface{} `url:"participants,omitempty"`
-	OrgID        uint        `url:"org_id,omitempty"`
+	Subject      string      `json:"subject,omitempty"`
+	Done         uint8       `json:"done,omitempty"`
+	Type         string      `json:"type,omitempty"`
+	DueDate      string      `json:"due_date,omitempty"`
+	DueTime      string      `json:"due_time,omitempty"`
+	Duration     string      `json:"duration,omitempty"`
+	UserID       uint        `json:"user_id,omitempty"`
+	DealID       uint        `json:"user_id,omitempty"`
+	PersonID     uint        `json:"person_id,omitempty"`
+	Participants interface{} `json:"participants,omitempty"`
+	OrgID        uint        `json:"org_id,omitempty"`
 }
 
 // Update an activity

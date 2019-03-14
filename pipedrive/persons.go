@@ -73,6 +73,7 @@ type Person struct {
 	OrgName                         interface{} `json:"org_name"`
 	OwnerName                       string      `json:"owner_name"`
 	CcEmail                         string      `json:"cc_email"`
+	Label                           uint        `json:"label"`
 }
 
 func (p Person) String() string {
@@ -161,6 +162,7 @@ type PersonCreateOptions struct {
 	Phone     string    `json:"phone"`
 	VisibleTo VisibleTo `json:"visible_to"`
 	AddTime   Timestamp `json:"add_time"`
+	Label     uint      `json:"label"`
 }
 
 // Create a new person.
@@ -173,6 +175,7 @@ func (s *PersonsService) Create(ctx context.Context, opt *PersonCreateOptions) (
 		OrgID     uint      `json:"org_id"`
 		Email     string    `json:"email"`
 		Phone     string    `json:"phone"`
+		Label     uint      `json:"label"`
 		VisibleTo VisibleTo `json:"visible_to"`
 		AddTime   string    `json:"add_time"`
 	}{
@@ -181,6 +184,7 @@ func (s *PersonsService) Create(ctx context.Context, opt *PersonCreateOptions) (
 		opt.OrgID,
 		opt.Email,
 		opt.Phone,
+		opt.Label,
 		opt.VisibleTo,
 		opt.AddTime.FormatFull(),
 	})
@@ -314,4 +318,25 @@ func (s *PersonsService) DeleteMultiple(ctx context.Context, ids []int) (*Respon
 	}
 
 	return s.client.Do(ctx, req, nil)
+}
+
+// Get a person.
+//
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Persons/get_persons_id
+func (s *PersonsService) Get(ctx context.Context, personID int) (*PersonResponse, *Response, error) {
+	req, err := s.client.NewRequest(http.MethodGet, fmt.Sprintf("/persons/%d", personID), nil, nil)
+
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var record *PersonResponse
+
+	resp, err := s.client.Do(ctx, req, &record)
+
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return record, resp, nil
 }

@@ -180,3 +180,46 @@ func (s *OrganizationsService) DeleteMultiple(ctx context.Context, ids []int) (*
 
 	return s.client.Do(ctx, req, nil)
 }
+
+// OrganizationCreateOptions specifices the optional parameters to the
+// OrganizationsService.Create method.
+type OrganizationCreateOptions struct {
+	Name      string    `json:"name"`
+	OwnerID   uint      `json:"owner_id"`
+	VisibleTo VisibleTo `json:"visible_to"`
+	AddTime   Timestamp `json:"add_time"`
+	Label     uint      `json:"label"`
+}
+
+// Create a new organizations.
+//
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Organizations/post_organizations
+func (s *OrganizationsService) Create(ctx context.Context, opt *OrganizationCreateOptions) (*OrganizationResponse, *Response, error) {
+	req, err := s.client.NewRequest(http.MethodPost, "/organizations", nil, struct {
+		Name      string    `json:"name"`
+		OwnerID   uint      `json:"owner_id"`
+		Label     uint      `json:"label"`
+		VisibleTo VisibleTo `json:"visible_to"`
+		AddTime   string    `json:"add_time"`
+	}{
+		opt.Name,
+		opt.OwnerID,
+		opt.Label,
+		opt.VisibleTo,
+		opt.AddTime.FormatFull(),
+	})
+
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var record *OrganizationResponse
+
+	resp, err := s.client.Do(ctx, req, &record)
+
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return record, resp, nil
+}

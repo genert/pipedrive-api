@@ -385,7 +385,7 @@ func (s *DealService) Create(ctx context.Context, opt *DealCreateOptions) (*Deal
 		opt.AddTime.FormatFull(),
 		opt.VisibleTo,
 		opt.RequirementAnalysis,
-		opt.WantedStartTime.FormatFull(),
+		opt.WantedStartTime.Format(),
 	})
 
 	if err != nil {

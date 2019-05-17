@@ -12,6 +12,12 @@ import (
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Persons
 type PersonsService service
 
+type Email struct {
+	Label   string `json:"label"`
+	Value   string `json:"value"`
+	Primary bool   `json:"primary"`
+}
+
 // Person represents a Pipedrive person.
 type Person struct {
 	ID        int `json:"id"`
@@ -52,10 +58,7 @@ type Person struct {
 		Value   string `json:"value"`
 		Primary bool   `json:"primary"`
 	} `json:"phone"`
-	Email []struct {
-		Value   string `json:"value"`
-		Primary bool   `json:"primary"`
-	} `json:"email"`
+	Email                           []Email     `json:"email"`
 	FirstChar                       string      `json:"first_char"`
 	UpdateTime                      string      `json:"update_time"`
 	AddTime                         string      `json:"add_time"`
@@ -74,6 +77,8 @@ type Person struct {
 	OwnerName                       string      `json:"owner_name"`
 	CcEmail                         string      `json:"cc_email"`
 	Label                           uint        `json:"label"`
+	BillingAddress                  string      `json:"d5d6ecba25dd34146d3b9d0f1bb34dedf384143a"`
+	DeliveryAddress                 string      `json:"fb3875ae1de17d63a1a0a9a7643bb677b95ae7fb"`
 }
 
 func (p Person) String() string {
@@ -207,12 +212,14 @@ func (s *PersonsService) Create(ctx context.Context, opt *PersonCreateOptions) (
 // PersonUpdateOptions specifices the optional parameters to the
 // PersonUpdateOptions.Update method.
 type PersonUpdateOptions struct {
-	Name      string    `json:"name"`
-	OwnerID   uint      `json:"owner_id"`
-	OrgID     uint      `json:"org_id"`
-	Email     string    `json:"email"`
-	Phone     string    `json:"phone"`
-	VisibleTo VisibleTo `json:"visible_to"`
+	Name            string    `json:"name,omitempty"`
+	OwnerID         uint      `json:"owner_id,omitempty"`
+	OrgID           uint      `json:"org_id,omitempty"`
+	Email           []Email   `json:"email,omitempty"`
+	Phone           string    `json:"phone,omitempty"`
+	VisibleTo       VisibleTo `json:"visible_to,omitempty"`
+	BillingAddress  string    `json:"d5d6ecba25dd34146d3b9d0f1bb34dedf384143a,omitempty"`
+	DeliveryAddress string    `json:"fb3875ae1de17d63a1a0a9a7643bb677b95ae7fb,omitempty"`
 }
 
 // Update a specific person.

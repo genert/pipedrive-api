@@ -276,7 +276,7 @@ type DealsUpdateOptions struct {
 	Status              string `json:"status,omitempty"`
 	LostReason          string `json:"lost_reason,omitempty"`
 	VisibleTo           uint   `json:"visible_to,omitempty"`
-	RequirementAnalysis string `json:"56d3d40c37c0db60fff576ae73ba2fea0d58dc09"`
+	RequirementAnalysis string `json:"56d3d40c37c0db60fff576ae73ba2fea0d58dc09,omitempty"`
 }
 
 // Update a deal.

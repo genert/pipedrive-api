@@ -277,6 +277,7 @@ type DealsUpdateOptions struct {
 	LostReason          string `json:"lost_reason,omitempty"`
 	VisibleTo           uint   `json:"visible_to,omitempty"`
 	RequirementAnalysis string `json:"56d3d40c37c0db60fff576ae73ba2fea0d58dc09,omitempty"`
+	TemporaryLink       string `json:"4fe88fad67d8dcbc17d18d9ee1faac55122249fd,omitempty"`
 }
 
 // Update a deal.
@@ -380,6 +381,7 @@ type DealCreateOptions struct {
 	VisibleTo           VisibleTo `json:"visible_to"`
 	RequirementAnalysis string    `json:"56d3d40c37c0db60fff576ae73ba2fea0d58dc09"`
 	WantedStartTime     Timestamp `json:"a3114acce61bb930180af173b395d76f42af8794"`
+	TemporaryLink       string    `json:"4fe88fad67d8dcbc17d18d9ee1faac55122249fd,omitempty"`
 }
 
 // Create a new deal.
@@ -401,6 +403,7 @@ func (s *DealService) Create(ctx context.Context, opt *DealCreateOptions) (*Deal
 		VisibleTo           VisibleTo `json:"visible_to"`
 		RequirementAnalysis string    `json:"56d3d40c37c0db60fff576ae73ba2fea0d58dc09"`
 		WantedStartTime     string    `json:"a3114acce61bb930180af173b395d76f42af8794"`
+		TemporaryLink       string    `json:"4fe88fad67d8dcbc17d18d9ee1faac55122249fd,omitempty"`
 	}{
 		opt.Title,
 		opt.Value,
@@ -416,6 +419,7 @@ func (s *DealService) Create(ctx context.Context, opt *DealCreateOptions) (*Deal
 		opt.VisibleTo,
 		opt.RequirementAnalysis,
 		opt.WantedStartTime.Format(),
+		opt.TemporaryLink,
 	})
 
 	if err != nil {

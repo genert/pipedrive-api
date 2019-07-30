@@ -118,7 +118,8 @@ type Deal struct {
 	RequirementAnalysis string `json:"56d3d40c37c0db60fff576ae73ba2fea0d58dc09"`
 	DepartureCurrentCT  string `json:"ffd2a712d781417ef17a33b3540d3ecd8d945f76"`
 	ArrivalNextCT       string `json:"f5bb67b24aec5f9733be8b3402bf1fe5b1ac6ed6"`
-	LeadSource          string `json:"c3c82947da5d9cc0b98f150a9535a5c8bdfc9bda"`
+	LeadSource          uint   `json:"5d4fbabc9b032aeb3df515d9c66994d6892ee062"`
+	TemporaryLink       string `json:"4fe88fad67d8dcbc17d18d9ee1faac55122249fd"`
 	RideCosts           string `json:"31443a48d1405182dfccac9bf378bbe8216ffc9a"`
 }
 
@@ -382,6 +383,7 @@ type DealCreateOptions struct {
 	RequirementAnalysis string    `json:"56d3d40c37c0db60fff576ae73ba2fea0d58dc09"`
 	WantedStartTime     Timestamp `json:"a3114acce61bb930180af173b395d76f42af8794"`
 	TemporaryLink       string    `json:"4fe88fad67d8dcbc17d18d9ee1faac55122249fd,omitempty"`
+	LeadSource          uint      `json:"5d4fbabc9b032aeb3df515d9c66994d6892ee062,omitempty"`
 }
 
 // Create a new deal.
@@ -404,6 +406,7 @@ func (s *DealService) Create(ctx context.Context, opt *DealCreateOptions) (*Deal
 		RequirementAnalysis string    `json:"56d3d40c37c0db60fff576ae73ba2fea0d58dc09"`
 		WantedStartTime     string    `json:"a3114acce61bb930180af173b395d76f42af8794"`
 		TemporaryLink       string    `json:"4fe88fad67d8dcbc17d18d9ee1faac55122249fd,omitempty"`
+		LeadSource          uint      `json:"5d4fbabc9b032aeb3df515d9c66994d6892ee062,omitempty"`
 	}{
 		opt.Title,
 		opt.Value,
@@ -420,6 +423,7 @@ func (s *DealService) Create(ctx context.Context, opt *DealCreateOptions) (*Deal
 		opt.RequirementAnalysis,
 		opt.WantedStartTime.Format(),
 		opt.TemporaryLink,
+		opt.LeadSource,
 	})
 
 	if err != nil {

@@ -12,6 +12,12 @@ import (
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Persons
 type PersonsService service
 
+type Email struct {
+	Label   string `json:"label"`
+	Value   string `json:"value"`
+	Primary bool   `json:"primary"`
+}
+
 // Person represents a Pipedrive person.
 type Person struct {
 	ID        int `json:"id"`
@@ -52,10 +58,7 @@ type Person struct {
 		Value   string `json:"value"`
 		Primary bool   `json:"primary"`
 	} `json:"phone"`
-	Email []struct {
-		Value   string `json:"value"`
-		Primary bool   `json:"primary"`
-	} `json:"email"`
+	Email                           []Email     `json:"email"`
 	FirstChar                       string      `json:"first_char"`
 	UpdateTime                      string      `json:"update_time"`
 	AddTime                         string      `json:"add_time"`
@@ -73,6 +76,9 @@ type Person struct {
 	OrgName                         interface{} `json:"org_name"`
 	OwnerName                       string      `json:"owner_name"`
 	CcEmail                         string      `json:"cc_email"`
+	Label                           uint        `json:"label"`
+	BillingAddress                  string      `json:"d5d6ecba25dd34146d3b9d0f1bb34dedf384143a"`
+	DeliveryAddress                 string      `json:"fb3875ae1de17d63a1a0a9a7643bb677b95ae7fb"`
 }
 
 func (p Person) String() string {
@@ -131,7 +137,7 @@ func (s *PersonsService) List(ctx context.Context) (*PersonsRespose, *Response, 
 func (s *PersonsService) AddFollower(ctx context.Context, id int, userID int) (*PersonAddFollowerResponse, *Response, error) {
 	uri := fmt.Sprintf("/persons/%v/followers", id)
 	req, err := s.client.NewRequest(http.MethodPost, uri, nil, struct {
-		UserID int `url:"user_id"`
+		UserID int `json:"user_id"`
 	}{
 		userID,
 	})
@@ -154,13 +160,14 @@ func (s *PersonsService) AddFollower(ctx context.Context, id int, userID int) (*
 // PersonCreateOptions specifices the optional parameters to the
 // PersonsService.Create method.
 type PersonCreateOptions struct {
-	Name      string    `url:"name"`
-	OwnerID   uint      `url:"owner_id"`
-	OrgID     uint      `url:"org_id"`
-	Email     string    `url:"email"`
-	Phone     string    `url:"phone"`
-	VisibleTo VisibleTo `url:"visible_to"`
-	AddTime   Timestamp `url:"add_time"`
+	Name      string    `json:"name"`
+	OwnerID   uint      `json:"owner_id"`
+	OrgID     uint      `json:"org_id"`
+	Email     string    `json:"email"`
+	Phone     string    `json:"phone"`
+	VisibleTo VisibleTo `json:"visible_to"`
+	AddTime   Timestamp `json:"add_time"`
+	Label     uint      `json:"label"`
 }
 
 // Create a new person.
@@ -168,19 +175,21 @@ type PersonCreateOptions struct {
 // Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Persons/post_persons
 func (s *PersonsService) Create(ctx context.Context, opt *PersonCreateOptions) (*PersonResponse, *Response, error) {
 	req, err := s.client.NewRequest(http.MethodPost, "/persons", nil, struct {
-		Name      string    `url:"name"`
-		OwnerID   uint      `url:"owner_id"`
-		OrgID     uint      `url:"org_id"`
-		Email     string    `url:"email"`
-		Phone     string    `url:"phone"`
-		VisibleTo VisibleTo `url:"visible_to"`
-		AddTime   string    `url:"add_time"`
+		Name      string    `json:"name"`
+		OwnerID   uint      `json:"owner_id"`
+		OrgID     uint      `json:"org_id"`
+		Email     string    `json:"email"`
+		Phone     string    `json:"phone"`
+		Label     uint      `json:"label"`
+		VisibleTo VisibleTo `json:"visible_to"`
+		AddTime   string    `json:"add_time"`
 	}{
 		opt.Name,
 		opt.OwnerID,
 		opt.OrgID,
 		opt.Email,
 		opt.Phone,
+		opt.Label,
 		opt.VisibleTo,
 		opt.AddTime.FormatFull(),
 	})
@@ -203,12 +212,14 @@ func (s *PersonsService) Create(ctx context.Context, opt *PersonCreateOptions) (
 // PersonUpdateOptions specifices the optional parameters to the
 // PersonUpdateOptions.Update method.
 type PersonUpdateOptions struct {
-	Name      string    `url:"name"`
-	OwnerID   uint      `url:"owner_id"`
-	OrgID     uint      `url:"org_id"`
-	Email     string    `url:"email"`
-	Phone     string    `url:"phone"`
-	VisibleTo VisibleTo `url:"visible_to"`
+	Name            string    `json:"name,omitempty"`
+	OwnerID         uint      `json:"owner_id,omitempty"`
+	OrgID           uint      `json:"org_id,omitempty"`
+	Email           []Email   `json:"email,omitempty"`
+	Phone           string    `json:"phone,omitempty"`
+	VisibleTo       VisibleTo `json:"visible_to,omitempty"`
+	BillingAddress  string    `json:"d5d6ecba25dd34146d3b9d0f1bb34dedf384143a,omitempty"`
+	DeliveryAddress string    `json:"fb3875ae1de17d63a1a0a9a7643bb677b95ae7fb,omitempty"`
 }
 
 // Update a specific person.
@@ -239,7 +250,7 @@ func (s *PersonsService) Update(ctx context.Context, id int, opt *PersonUpdateOp
 func (s *PersonsService) Merge(ctx context.Context, id int, mergeWithID int) (*PersonResponse, *Response, error) {
 	uri := fmt.Sprintf("/persons/%v/merge", id)
 	req, err := s.client.NewRequest(http.MethodPut, uri, nil, struct {
-		MergeWithID int `url:"merge_with_id"`
+		MergeWithID int `json:"merge_with_id"`
 	}{
 		mergeWithID,
 	})
@@ -314,4 +325,25 @@ func (s *PersonsService) DeleteMultiple(ctx context.Context, ids []int) (*Respon
 	}
 
 	return s.client.Do(ctx, req, nil)
+}
+
+// Get a person.
+//
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Persons/get_persons_id
+func (s *PersonsService) Get(ctx context.Context, personID int) (*PersonResponse, *Response, error) {
+	req, err := s.client.NewRequest(http.MethodGet, fmt.Sprintf("/persons/%d", personID), nil, nil)
+
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var record *PersonResponse
+
+	resp, err := s.client.Do(ctx, req, &record)
+
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return record, resp, nil
 }

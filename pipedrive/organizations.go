@@ -58,19 +58,20 @@ type Organization struct {
 	LastActivityDate                string      `json:"last_activity_date"`
 	TimelineLastActivityTime        interface{} `json:"timeline_last_activity_time"`
 	TimelineLastActivityTimeByOwner interface{} `json:"timeline_last_activity_time_by_owner"`
-	Address                         interface{} `json:"address"`
-	AddressSubpremise               interface{} `json:"address_subpremise"`
-	AddressStreetNumber             interface{} `json:"address_street_number"`
-	AddressRoute                    interface{} `json:"address_route"`
-	AddressSublocality              interface{} `json:"address_sublocality"`
-	AddressLocality                 interface{} `json:"address_locality"`
-	AddressAdminAreaLevel1          interface{} `json:"address_admin_area_level_1"`
-	AddressAdminAreaLevel2          interface{} `json:"address_admin_area_level_2"`
-	AddressCountry                  interface{} `json:"address_country"`
-	AddressPostalCode               interface{} `json:"address_postal_code"`
-	AddressFormattedAddress         interface{} `json:"address_formatted_address"`
+	Address                         string      `json:"address"`
+	AddressSubpremise               string      `json:"address_subpremise"`
+	AddressStreetNumber             string      `json:"address_street_number"`
+	AddressRoute                    string      `json:"address_route"`
+	AddressSublocality              string      `json:"address_sublocality"`
+	AddressLocality                 string      `json:"address_locality"`
+	AddressAdminAreaLevel1          string      `json:"address_admin_area_level_1"`
+	AddressAdminAreaLevel2          string      `json:"address_admin_area_level_2"`
+	AddressCountry                  string      `json:"address_country"`
+	AddressPostalCode               string      `json:"address_postal_code"`
+	AddressFormattedAddress         string      `json:"address_formatted_address"`
 	OwnerName                       string      `json:"owner_name"`
 	CcEmail                         string      `json:"cc_email"`
+	Phone                           string      `json:"3eb8874b7a3c9f3fe4f5b6435d4d009b15ec0c77"`
 }
 
 func (o Organization) String() string {
@@ -112,9 +113,40 @@ func (s *OrganizationsService) List(ctx context.Context) (*OrganizationsResponse
 	return record, resp, nil
 }
 
+// OrganizationUpdateOptions specifices the optional parameters to the
+// OrganizationUpdateOptions.Update method.
+type OrganizationUpdateOptions struct {
+	Name      string    `json:"name,omitempty"`
+	OwnerID   uint      `json:"owner_id,omitempty"`
+	VisibleTo VisibleTo `json:"visible_to,omitempty"`
+	Address   string    `json:"address,omitempty"`
+	Phone     string    `json:"3eb8874b7a3c9f3fe4f5b6435d4d009b15ec0c77,omitempty"`
+}
+
+// Update a specific person.
+//
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Organizations/put_persons_id
+func (s *OrganizationsService) Update(ctx context.Context, id int, opt *OrganizationUpdateOptions) (*OrganizationResponse, *Response, error) {
+	uri := fmt.Sprintf("/organizations/%v", id)
+	req, err := s.client.NewRequest(http.MethodPut, uri, nil, opt)
+
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var record *OrganizationResponse
+	resp, err := s.client.Do(ctx, req, &record)
+
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return record, resp, nil
+}
+
 // Merge organizations.
 //
-// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Persons/put_persons_id_merge
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/organizations/_id_/merge
 func (s *OrganizationsService) Merge(ctx context.Context, id int, mergeWithID int) (*OrganizationResponse, *Response, error) {
 	uri := fmt.Sprintf("/organizations/%v/merge", id)
 	req, err := s.client.NewRequest(http.MethodPut, uri, nil, struct {
@@ -179,4 +211,47 @@ func (s *OrganizationsService) DeleteMultiple(ctx context.Context, ids []int) (*
 	}
 
 	return s.client.Do(ctx, req, nil)
+}
+
+// OrganizationCreateOptions specifices the optional parameters to the
+// OrganizationsService.Create method.
+type OrganizationCreateOptions struct {
+	Name      string    `json:"name"`
+	OwnerID   uint      `json:"owner_id"`
+	VisibleTo VisibleTo `json:"visible_to"`
+	AddTime   Timestamp `json:"add_time"`
+	Label     uint      `json:"label"`
+}
+
+// Create a new organizations.
+//
+// Pipedrive API docs: https://developers.pipedrive.com/docs/api/v1/#!/Organizations/post_organizations
+func (s *OrganizationsService) Create(ctx context.Context, opt *OrganizationCreateOptions) (*OrganizationResponse, *Response, error) {
+	req, err := s.client.NewRequest(http.MethodPost, "/organizations", nil, struct {
+		Name      string    `json:"name"`
+		OwnerID   uint      `json:"owner_id"`
+		Label     uint      `json:"label"`
+		VisibleTo VisibleTo `json:"visible_to"`
+		AddTime   string    `json:"add_time"`
+	}{
+		opt.Name,
+		opt.OwnerID,
+		opt.Label,
+		opt.VisibleTo,
+		opt.AddTime.FormatFull(),
+	})
+
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var record *OrganizationResponse
+
+	resp, err := s.client.Do(ctx, req, &record)
+
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return record, resp, nil
 }
